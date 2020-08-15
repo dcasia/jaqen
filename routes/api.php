@@ -8,3 +8,5 @@ Route::get('/{resource}/filters', [ ResourceController::class, 'filters' ]);
 Route::post('/create/{resource}', [ ResourceController::class, 'create' ]);
 Route::post('/{resource}/{key}', [ ResourceController::class, 'update' ]);
 Route::get('/{resource}/{key}', [ ResourceController::class, 'fetch' ]);
+
+Route::get('/belongs-to/{resource}/{key}/{field}', [ ResourceController::class, 'searchBelongsTo' ]);

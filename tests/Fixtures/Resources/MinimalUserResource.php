@@ -16,7 +16,7 @@ class MinimalUserResource extends AbstractResource
     public function fields(): array
     {
         return [
-            EditableField::make('name'),
+            EditableField::make('Name'),
         ];
     }
 

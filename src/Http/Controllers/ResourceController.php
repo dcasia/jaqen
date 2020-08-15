@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Controllers;
 
+use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Http\Requests\CreateResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
@@ -12,6 +13,11 @@ use Illuminate\Routing\Controller;
 
 class ResourceController extends Controller
 {
+
+    public function searchBelongsTo(BaseRequest $request)
+    {
+        return $request->resourceInstance()->searchBelongsToRelation();
+    }
 
     public function filters(IndexResourceRequest $request)
     {

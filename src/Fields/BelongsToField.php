@@ -9,6 +9,7 @@ use DigitalCreative\Dashboard\AbstractResource;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Http\Requests\CreateResourceRequest;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -65,21 +66,10 @@ class BelongsToField extends AbstractField
         return $this;
     }
 
-    private function resolveValue(): array
+    protected function resolveValue(): array
     {
 
-        if ($this->resourceClass) {
-
-            if (is_subclass_of($this->resourceClass, AbstractResource::class) === false) {
-
-                throw new RuntimeException('Please provide a valid resource class.');
-
-            }
-
-            /**
-             * @var AbstractResource $resource
-             */
-            $resource = new $this->resourceClass(app(CreateResourceRequest::class));
+        if ($resource = $this->resolveRelatedResource()) {
 
             return [
                 'belongsToId' => $this->value,
@@ -91,6 +81,62 @@ class BelongsToField extends AbstractField
         return [
             'belongsToId' => $this->value,
         ];
+
+    }
+
+    private function resolveRelatedResource(): ?AbstractResource
+    {
+
+        if ($this->resourceClass) {
+
+            if (is_subclass_of($this->resourceClass, AbstractResource::class) === false) {
+
+                throw new RuntimeException('Please provide a valid resource class.');
+
+            }
+
+            return new $this->resourceClass(app(CreateResourceRequest::class));
+
+        }
+
+        return null;
+
+    }
+
+    public function getRelationAttribute(): string
+    {
+        return $this->relationAttribute;
+    }
+
+    public function getRelatedResource(): AbstractResource
+    {
+        return $this->resolveRelatedResource();
+    }
+
+    public function getRelatedModel(AbstractResource $parentResource): Model
+    {
+
+        if ($resource = $this->resolveRelatedResource()) {
+
+            return $resource->getModel();
+
+        }
+
+        $baseModel = $parentResource->getModel();
+
+        if (method_exists($baseModel, $this->relationAttribute)) {
+
+            $relation = $baseModel->{$this->relationAttribute}();
+
+            if ($relation instanceof BelongsTo) {
+
+                return $relation->getRelated();
+
+            }
+
+        }
+
+        throw new RuntimeException('Could not determined the related model for this resource.');
 
     }
 

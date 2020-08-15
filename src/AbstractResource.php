@@ -5,12 +5,14 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
+use DigitalCreative\Dashboard\Fields\SearchableBelongsToField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Traits\MakeableTrait;
 use DigitalCreative\Dashboard\Traits\ResolveFieldsTrait;
 use DigitalCreative\Dashboard\Traits\ResolveFiltersTrait;
 use DigitalCreative\Dashboard\Traits\ResolveUriKey;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 abstract class AbstractResource
 {
@@ -120,6 +122,30 @@ abstract class AbstractResource
             'total' => $total,
             'resources' => $resources
         ];
+
+    }
+
+    public function searchBelongsToRelation(): Collection
+    {
+
+        $request = $this->getRequest();
+
+        $field = $this->findFieldByAttribute($request->route('field'));
+
+        if ($field instanceof SearchableBelongsToField) {
+
+            $resource = $field->getRelatedResource();
+            $repository = new ResourceRepository($resource->getModel());
+
+            $models = $repository->searchForRelatedEntries(
+                $field->resolveSearchCallback(), $request
+            );
+
+            return $models->map(static function (Model $model) use ($resource) {
+                return collect($resource->resolveFieldsUsingModel($model)->jsonSerialize())->pluck('value', 'attribute');
+            });
+
+        }
 
     }
 

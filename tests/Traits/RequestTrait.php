@@ -76,6 +76,11 @@ trait RequestTrait
         return $this->makeRequest([ '/{resource}/{key}' => "/$resourceKey/$key" ], 'GET', $data, DetailResourceRequest::class);
     }
 
+    protected function belongsToRequest(string $resourceKey, int $key, string $field, array $data = []): BaseRequest
+    {
+        return $this->makeRequest([ '/belongs-to/{resource}/{key}/{field}' => "/belongs-to/$resourceKey/$key/$field" ], 'GET', $data, BaseRequest::class);
+    }
+
     protected function blankRequest(): BaseRequest
     {
         return $this->makeRequest('/', 'GET', [], BaseRequest::class);

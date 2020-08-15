@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Traits;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
+use DigitalCreative\Dashboard\Fields\BelongsToField;
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
@@ -128,6 +129,22 @@ trait ResolveFieldsTrait
         $this->fields = array_merge($this->fields, $fields);
 
         return $this;
+    }
+
+    public function findFieldByAttribute(string $attribute): ?AbstractField
+    {
+        return $this->resolveFields()
+                    ->first(static function (AbstractField $field) use ($attribute) {
+
+                        if ($field instanceof BelongsToField) {
+
+                            return $field->getRelationAttribute() === $attribute;
+
+                        }
+
+                        return $field->attribute === $attribute;
+
+                    });
     }
 
 }

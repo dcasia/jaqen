@@ -8,7 +8,6 @@ use DigitalCreative\Dashboard\Fields\BelongsToField;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article as ArticleModel;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\Article as ArticleResource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\MinimalUserResource;
@@ -55,7 +54,7 @@ class BelongsToFieldTest extends TestCase
                                 'belongsToId' => $article->user->id,
                                 'blueprint' => [
                                     [
-                                        'label' => 'name',
+                                        'label' => 'Name',
                                         'attribute' => 'name',
                                         'value' => null,
                                         'component' => 'editable-field',

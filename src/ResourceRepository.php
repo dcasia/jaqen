@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard;
 
+use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -23,6 +24,11 @@ class ResourceRepository
     public function __construct(Model $model)
     {
         $this->model = $model;
+    }
+
+    public function searchForRelatedEntries(callable $userDefinedCallback, BaseRequest $request): Collection
+    {
+        return tap($this->newQuery(), fn(Builder $builder) => $userDefinedCallback($builder, $request))->get();
     }
 
     public function create(FieldsData $data): bool
