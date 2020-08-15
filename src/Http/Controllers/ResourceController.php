@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Http\Controllers;
 
 use DigitalCreative\Dashboard\Http\Requests\CreateResourceRequest;

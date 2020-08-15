@@ -1,7 +1,8 @@
 <?php
 
-namespace DigitalCreative\Dashboard\Traits;
+declare(strict_types = 1);
 
+namespace DigitalCreative\Dashboard\Traits;
 
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 

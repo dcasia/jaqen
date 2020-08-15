@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class CoreDashboardServiceProvider extends ServiceProvider
