@@ -11,6 +11,11 @@ use Illuminate\Routing\Controller;
 class ResourceController extends Controller
 {
 
+    public function filters(IndexResourceRequest $request)
+    {
+        return $request->resourceInstance()->getFiltersListing();
+    }
+
     public function index(IndexResourceRequest $request)
     {
         return $request->resourceInstance()->index();

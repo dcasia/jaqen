@@ -14,11 +14,11 @@ class ResourceCreationTest extends TestCase
         $data = [
             'name' => 'demo',
             'email' => 'demo@email.com',
-            'gender' => 'male'
+            'gender' => 'male',
+            'password' => 123456
         ];
 
-        $this->withExceptionHandling()
-             ->postJson('/dashboard-api/create/clients', $data)
+        $this->postJson('/dashboard-api/create/clients', $data)
              ->assertStatus(200);
 
         $this->assertDatabaseHas('clients', $data);

@@ -4,6 +4,7 @@ namespace DigitalCreative\Dashboard\Fields;
 
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Traits\MakeableTrait;
 use DigitalCreative\Dashboard\Traits\ResolveRulesTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -13,11 +14,13 @@ abstract class AbstractField implements JsonSerializable
 {
 
     use ResolveRulesTrait;
+    use MakeableTrait;
 
     public string $label;
     public string $attribute;
     public ?string $value = null;
     public ?array $additionalInformation = null;
+    public bool $dirty = false;
 
     public function __construct(string $label, string $attribute = null)
     {
@@ -25,17 +28,12 @@ abstract class AbstractField implements JsonSerializable
         $this->attribute = Str::slug($attribute ?? $label);
     }
 
-    public function clone(): self
-    {
-        return clone $this;
-    }
-
     /**
      * @param Model $model
      *
      * @return AbstractField
      */
-    public function resolve(Model $model): self
+    public function resolveUsingModel(Model $model): self
     {
         return $this->setValue($model->getAttribute($this->attribute));
     }
@@ -45,16 +43,27 @@ abstract class AbstractField implements JsonSerializable
      *
      * @return AbstractField
      */
-    public function resolveFromRequest(BaseRequest $request): self
+    public function resolveUsingRequest(BaseRequest $request): self
     {
         return $this->setValue($request->input($this->attribute));
     }
 
     public function setValue($value): self
     {
+        $this->dirty = $this->value !== $value;
         $this->value = $value;
 
         return $this;
+    }
+
+    public function isDirty(): bool
+    {
+        return $this->dirty;
+    }
+
+    public function isRequired(BaseRequest $request): bool
+    {
+        return in_array('required', $this->resolveRules($request), true);
     }
 
     /**
@@ -67,11 +76,9 @@ abstract class AbstractField implements JsonSerializable
      */
     public function fillUsingRequest(FieldsData $dataBag, BaseRequest $request): ?callable
     {
-
         $dataBag->setAttribute($this->attribute, $request->input([ $this->attribute ], null));
 
         return null;
-
     }
 
     public function getAdditionalInformation(): ?array

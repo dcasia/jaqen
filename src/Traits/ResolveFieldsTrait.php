@@ -21,8 +21,8 @@ trait ResolveFieldsTrait
 {
 
     public array $resourceListingFields = [ '*' ];
-    public array $resourceDetailFields = [ '*' ];
     public array $resourceCreateFields = [ '*' ];
+    public array $fields = [];
 
     public function fields(): array
     {
@@ -32,23 +32,21 @@ trait ResolveFieldsTrait
     /**
      * Resolve fields and remove every field that is not necessary for this given request
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     private function resolveFields(): Collection
     {
         return once(function () {
+
+            $request = $this->getRequest();
+
             return collect($this->fields())
-                ->filter(function (AbstractField $field) {
+                ->merge($this->fields)
+                ->filter(function (AbstractField $field) use ($request) {
 
                     $fields = [ '*' ];
 
-                    $request = $this->getRequest();
-
-                    if ($request->isUpdate()) {
-
-                        $fields = $request->keys();
-
-                    } else if ($request->isCreate()) {
+                    if ($request->isCreate()) {
 
                         $fields = $this->resourceCreateFields;
 
@@ -73,12 +71,12 @@ trait ResolveFieldsTrait
 
     private function resolveFieldsUsingModel(Model $model): Collection
     {
-        return $this->resolveFields()->each(fn(AbstractField $field) => $field->resolve($model));
+        return $this->resolveFields()->each(fn(AbstractField $field) => $field->resolveUsingModel($model));
     }
 
     private function resolveFieldsUsingRequest(BaseRequest $request): Collection
     {
-        return $this->resolveFields()->each(fn(AbstractField $field) => $field->resolveFromRequest($request));
+        return $this->resolveFields()->each(fn(AbstractField $field) => $field->resolveUsingRequest($request));
     }
 
     private function filterNonUpdatableFields(Collection $fields): Collection
@@ -122,6 +120,13 @@ trait ResolveFieldsTrait
     private function getRequest(): BaseRequest
     {
         return $this->request ?? app(BaseRequest::class);
+    }
+
+    public function addFields(AbstractField ...$fields): self
+    {
+        $this->fields = array_merge($this->fields, $fields);
+
+        return $this;
     }
 
 }

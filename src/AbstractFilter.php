@@ -2,13 +2,11 @@
 
 namespace DigitalCreative\Dashboard;
 
-use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Http\Requests\FilterRequest;
 use DigitalCreative\Dashboard\Traits\ResolveFieldsTrait;
 use DigitalCreative\Dashboard\Traits\ResolveUriKey;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use JsonSerializable;
 
 class AbstractFilter implements JsonSerializable
@@ -27,15 +25,6 @@ class AbstractFilter implements JsonSerializable
         return FilterRequest::createFromFilter(
             app(BaseRequest::class), $this::uriKey()
         );
-    }
-
-    public function toValues(): Collection
-    {
-        return $this->resolveFields()->mapWithKeys(function (AbstractField $field) {
-            return [
-                $field->attribute => $field->value
-            ];
-        });
     }
 
     public function jsonSerialize()

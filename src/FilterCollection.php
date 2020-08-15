@@ -40,6 +40,13 @@ class FilterCollection extends Collection
 
     public static function decode(?string $filters): array
     {
+
+        if (is_null($filters)) {
+
+            return [];
+
+        }
+
         return once(static function () use ($filters) {
 
             try {
@@ -53,21 +60,6 @@ class FilterCollection extends Collection
             }
 
         });
-    }
-
-    public static function fromEncodedString(Collection $availableFilters, string $filters)
-    {
-
-
-        $filterData = $availableFilters->map(function (AbstractFilter $filter) {
-            return $filter->getFieldsDataFromRequest($request);
-        });
-
-        dd($request->all());
-
-        dd(json_decode(base64_decode($filters)));
-
-        $decoded = base64_decode($filters);
     }
 
     public function applyOnQuery(Builder $builder)

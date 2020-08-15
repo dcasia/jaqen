@@ -2,7 +2,7 @@
 
 namespace DigitalCreative\Dashboard\Tests\Controller;
 
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client as ClientModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 
 class ResourceDetailTest extends TestCase
@@ -11,10 +11,9 @@ class ResourceDetailTest extends TestCase
     public function test_resource_detail(): void
     {
 
-        factory(Client::class)->create();
+        factory(ClientModel::class)->create();
 
-        $response = $this->withExceptionHandling()
-                         ->getJson('/dashboard-api/clients/1')
+        $response = $this->getJson('/dashboard-api/clients/1')
                          ->assertStatus(200);
 
         $response->assertJsonStructure([

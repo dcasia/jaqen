@@ -4,6 +4,7 @@ namespace DigitalCreative\Dashboard;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Traits\MakeableTrait;
 use DigitalCreative\Dashboard\Traits\ResolveFieldsTrait;
 use DigitalCreative\Dashboard\Traits\ResolveFiltersTrait;
 use DigitalCreative\Dashboard\Traits\ResolveUriKey;
@@ -15,6 +16,7 @@ abstract class AbstractResource
     use ResolveFieldsTrait;
     use ResolveFiltersTrait;
     use ResolveUriKey;
+    use MakeableTrait;
 
     private BaseRequest $request;
 
@@ -34,7 +36,7 @@ abstract class AbstractResource
 
         return [
             'key' => $model->getKey(),
-            'fields' => $this->resolveFieldsUsingModel($model)
+            'fields' => $this->resolveFieldsUsingModel($model)->jsonSerialize()
         ];
     }
 
@@ -58,9 +60,11 @@ abstract class AbstractResource
 
     public function update(): bool
     {
-
         $fields = $this->filterNonUpdatableFields(
             $this->resolveFieldsUsingRequest($this->request)
+                 ->filter(function (AbstractField $field) {
+                     return $field->isRequired($this->getRequest()) || $field->isDirty();
+                 })
         );
 
         $this->validateFields($fields);
@@ -83,6 +87,11 @@ abstract class AbstractResource
         return app(ResourceRepository::class, [ 'model' => $this->getModel() ]);
     }
 
+    public function getFiltersListing(): array
+    {
+        return $this->resolveFilters()->toArray();
+    }
+
     public function index(): array
     {
 
@@ -98,7 +107,7 @@ abstract class AbstractResource
 
                               return [
                                   'key' => $model->getKey(),
-                                  'fields' => $fields->map(fn(AbstractField $field) => $field->resolve($model)->jsonSerialize())
+                                  'fields' => $fields->map(fn(AbstractField $field) => $field->resolveUsingModel($model)->jsonSerialize())
                               ];
 
                           });

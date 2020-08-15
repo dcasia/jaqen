@@ -8,9 +8,9 @@ use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\FilterCollection;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client as ClientModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
+use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 
@@ -18,6 +18,7 @@ use Illuminate\Validation\ValidationException;
 class FilterTest extends TestCase
 {
 
+    use RequestTrait;
 
     public function test_filter_works(): void
     {
@@ -42,7 +43,7 @@ class FilterTest extends TestCase
             BaseRequest::create('/', 'GET', [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ])
         );
 
-        $resource->addFilter($filter);
+        $resource->addFilters($filter);
 
         $result = $resource->index();
 
@@ -70,7 +71,7 @@ class FilterTest extends TestCase
             BaseRequest::create('/', 'GET', [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ])
         );
 
-        $resource->addFilter($filter);
+        $resource->addFilters($filter);
 
         $this->expectException(ValidationException::class);
 
@@ -108,12 +109,12 @@ class FilterTest extends TestCase
             $filter2::uriKey() => [ 'gender' => null ],
         ]);
 
-        $request = $this->createRequest('/', 'GET', [ 'filters' => $filters ]);
+        $request = $this->makeRequest('/', 'GET', [ 'filters' => $filters ]);
 
         $resource = $this->getResource($request);
 
-        $resource->addFilter($filter1);
-        $resource->addFilter($filter2);
+        $resource->addFilters($filter1);
+        $resource->addFilters($filter2);
 
         $this->expectException(ValidationException::class);
 
@@ -121,11 +122,58 @@ class FilterTest extends TestCase
 
     }
 
-    private function createRequest(string $uri, string $method = 'GET', array $parameters = []): BaseRequest
+    public function test_value_from_the_fields_are_passed_correctly_to_the_apply_method(): void
     {
-        return tap(BaseRequest::create($uri, $method, $parameters), function (BaseRequest $request) {
-            $this->app->instance(BaseRequest::class, $request);
-        });
+
+        $filter = new class($this) extends AbstractFilter {
+
+            /**
+             * @var FilterTest
+             */
+            private FilterTest $runner;
+
+            public function __construct(FilterTest $runner)
+            {
+                $this->runner = $runner;
+            }
+
+            public function apply(Builder $builder, FieldsData $value): Builder
+            {
+                $this->runner->assertSame([ 'hello', 'world' ], $value->get('array'));
+                $this->runner->assertSame('hello world', $value->get('string'));
+                $this->runner->assertSame(2020, $value->get('int'));
+                $this->runner->assertSame([ 'hello' => 'world' ], $value->get('object'));
+
+                return $builder;
+            }
+
+            public function fields(): array
+            {
+                return [
+                    new EditableField('Array'),
+                    new EditableField('String'),
+                    new EditableField('Int'),
+                    new EditableField('Object'),
+                ];
+            }
+
+        };
+
+        $filters = FilterCollection::test([
+            $filter::uriKey() => [
+                'array' => [ 'hello', 'world' ],
+                'string' => 'hello world',
+                'int' => 2020,
+                'object' => [ 'hello' => 'world' ],
+            ],
+        ]);
+
+        $request = $this->makeRequest('/', 'GET', [ 'filters' => $filters ]);
+
+        $this->getResource($request)
+             ->addFilters($filter)
+             ->index();
+
     }
 
     private function getResource(BaseRequest $request): AbstractResource

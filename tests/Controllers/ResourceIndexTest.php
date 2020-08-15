@@ -4,7 +4,7 @@ namespace DigitalCreative\Dashboard\Tests\Controller;
 
 use DigitalCreative\Dashboard\FilterCollection;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\GenderFilter;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client as ClientModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 
 
@@ -14,10 +14,9 @@ class ResourceIndexTest extends TestCase
     public function test_resource_listing(): void
     {
 
-        factory(Client::class)->create();
+        factory(ClientModel::class)->create();
 
-        $response = $this->withExceptionHandling()
-                         ->getJson('/dashboard-api/clients')
+        $response = $this->getJson('/dashboard-api/clients')
                          ->assertStatus(200);
 
         $response->assertJsonStructure([
@@ -43,8 +42,8 @@ class ResourceIndexTest extends TestCase
     public function test_resource_listing_filters(): void
     {
 
-        factory(Client::class, 5)->create([ 'gender' => 'male' ]);
-        factory(Client::class, 5)->create([ 'gender' => 'female' ]);
+        factory(ClientModel::class, 5)->create([ 'gender' => 'male' ]);
+        factory(ClientModel::class, 5)->create([ 'gender' => 'female' ]);
 
         $filters = FilterCollection::test([
             GenderFilter::uriKey() => [

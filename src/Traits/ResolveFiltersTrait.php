@@ -31,9 +31,9 @@ trait ResolveFiltersTrait
         });
     }
 
-    public function addFilter(AbstractFilter $filter): self
+    public function addFilters(AbstractFilter ...$filters): self
     {
-        $this->filters[] = $filter;
+        $this->filters = array_merge($this->fields, $filters);
 
         return $this;
     }

@@ -59,19 +59,21 @@ trait ResolveRulesTrait
         return $this;
     }
 
-    public function resolveRules(BaseRequest $request): ?array
+    public function resolveRules(BaseRequest $request): array
     {
+        return once(function () use ($request) {
 
-        $rules = $this->rules;
+            $rules = $this->rules;
 
-        if ($request->isCreate()) {
-            $rules = $this->createRules ?? $this->rules;
-        } else if ($request->isUpdate()) {
-            $rules = $this->updateRules ?? $this->rules;
-        }
+            if ($request->isCreate()) {
+                $rules = $this->createRules ?? $this->rules;
+            } else if ($request->isUpdate()) {
+                $rules = $this->updateRules ?? $this->rules;
+            }
 
-        return is_callable($rules) ? $rules($request) : (array) $rules;
+            return is_callable($rules) ? $rules($request) : (array) $rules;
 
+        });
     }
 
 }
