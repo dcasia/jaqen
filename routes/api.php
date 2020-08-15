@@ -1,0 +1,9 @@
+<?php
+
+use DigitalCreative\Dashboard\Http\Controllers\ResourceController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/{resource}', [ ResourceController::class, 'index' ]);
+Route::post('/create/{resource}', [ ResourceController::class, 'create' ]);
+Route::post('/{resource}/{key}', [ ResourceController::class, 'update' ]);
+Route::get('/{resource}/{key}', [ ResourceController::class, 'fetch' ]);

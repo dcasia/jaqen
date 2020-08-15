@@ -1,0 +1,40 @@
+{
+    "name": "digital-creative/dashboard",
+    "description": "A Laravel Nova card.",
+    "keywords": [
+        "laravel",
+        "nova"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=7.4",
+        "spatie/once": "^2.2",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "DigitalCreative\\Dashboard\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DigitalCreative\\Dashboard\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+              "DigitalCreative\\Dashboard\\CoreDashboardServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "orchestra/testbench": "^5.0",
+        "phpunit/phpunit": "^9.3"
+    }
+}
