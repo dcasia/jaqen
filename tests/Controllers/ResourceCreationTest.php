@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Tests\Controller;
 
 use DigitalCreative\Dashboard\Tests\TestCase;
-
 
 class ResourceCreationTest extends TestCase
 {
@@ -18,10 +19,10 @@ class ResourceCreationTest extends TestCase
             'password' => 123456
         ];
 
-        $this->postJson('/dashboard-api/create/clients', $data)
+        $this->postJson('/dashboard-api/create/users', $data)
              ->assertStatus(200);
 
-        $this->assertDatabaseHas('clients', $data);
+        $this->assertDatabaseHas('users', $data);
 
     }
 

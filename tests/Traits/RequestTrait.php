@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Tests\Traits;
 
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
@@ -57,10 +59,10 @@ trait RequestTrait
         return $this->makeRequest([ '/create/{resource}' => "/create/$resourceKey" ], 'POST', $data, CreateResourceRequest::class);
     }
 
-    protected function updateRequest(string $uri, array $data = []): BaseRequest
+    protected function updateRequest(string $resourceKey, int $key, array $data = []): BaseRequest
     {
         return $this->makeRequest(
-            [ '/{resource}/{key}' => $uri ], 'POST', $data, UpdateResourceRequest::class
+            [ '/{resource}/{key}' => "$resourceKey/$key" ], 'POST', $data, UpdateResourceRequest::class
         );
     }
 
@@ -72,6 +74,11 @@ trait RequestTrait
     protected function detailRequest(string $resourceKey, int $key, array $data = []): BaseRequest
     {
         return $this->makeRequest([ '/{resource}/{key}' => "/$resourceKey/$key" ], 'GET', $data, DetailResourceRequest::class);
+    }
+
+    protected function blankRequest(): BaseRequest
+    {
+        return $this->makeRequest('/', 'GET', [], BaseRequest::class);
     }
 
 }

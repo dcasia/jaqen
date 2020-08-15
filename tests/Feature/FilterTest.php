@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
 use DigitalCreative\Dashboard\AbstractFilter;
@@ -8,7 +10,7 @@ use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\FilterCollection;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client as ClientModel;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,11 +26,11 @@ class FilterTest extends TestCase
     {
 
         /**
-         * @var ClientModel $client
+         * @var UserModel $user
          */
-        $client = factory(ClientModel::class)->create([ 'name' => 'Demo' ]);
+        $user = factory(UserModel::class)->create([ 'name' => 'Demo' ]);
 
-        factory(ClientModel::class, 10)->create();
+        factory(UserModel::class, 10)->create();
 
         $filter = new class extends AbstractFilter {
 
@@ -48,8 +50,8 @@ class FilterTest extends TestCase
         $result = $resource->index();
 
         $this->assertSame($result[ 'total' ], 1);
-        $this->assertEquals($client->id, data_get($result, 'resources.0.key'));
-        $this->assertEquals($client->name, data_get($result, 'resources.0.fields.0.value'));
+        $this->assertEquals($user->id, data_get($result, 'resources.0.key'));
+        $this->assertEquals($user->name, data_get($result, 'resources.0.fields.0.value'));
 
     }
 
@@ -181,7 +183,7 @@ class FilterTest extends TestCase
 
         return new class($request) extends AbstractResource {
 
-            public static string $model = ClientModel::class;
+            public static string $model = UserModel::class;
 
             public function fields(): array
             {

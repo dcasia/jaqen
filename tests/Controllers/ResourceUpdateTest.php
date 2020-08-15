@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Tests\Controller;
 
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client as ClientModel;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 
 class ResourceUpdateTest extends TestCase
@@ -11,17 +13,17 @@ class ResourceUpdateTest extends TestCase
     public function test_resource_update(): void
     {
 
-        factory(ClientModel::class)->create();
+        factory(UserModel::class)->create();
 
         $data = [
             'name' => 'Demo',
             'email' => 'email@email.com'
         ];
 
-        $this->postJson('/dashboard-api/clients/1', $data)
+        $this->postJson('/dashboard-api/users/1', $data)
              ->assertStatus(200);
 
-        $this->assertDatabaseHas('clients', $data);
+        $this->assertDatabaseHas('users', $data);
 
     }
 
@@ -29,17 +31,17 @@ class ResourceUpdateTest extends TestCase
     {
 
         /**
-         * @var ClientModel $client
+         * @var UserModel $user
          */
-        $client = factory(ClientModel::class)->create();
+        $user = factory(UserModel::class)->create();
 
-        $this->postJson('/dashboard-api/clients/1', [ 'id' => 2 ])
+        $this->postJson('/dashboard-api/users/1', [ 'id' => 2 ])
              ->assertStatus(200);
 
-        $this->assertDatabaseHas('clients', [
+        $this->assertDatabaseHas('users', [
             'id' => 1,
-            'name' => $client->name,
-            'email' => $client->email,
+            'name' => $user->name,
+            'email' => $user->email,
         ]);
 
     }

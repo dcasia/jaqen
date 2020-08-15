@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Tests\Fixtures\Resources;
 
 use DigitalCreative\Dashboard\AbstractResource;
@@ -8,12 +10,12 @@ use DigitalCreative\Dashboard\Fields\PasswordField;
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
 use DigitalCreative\Dashboard\Fields\SelectField;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\GenderFilter;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client as ClientModel;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 
-class Client extends AbstractResource
+class User extends AbstractResource
 {
 
-    public static $model = ClientModel::class;
+    public static $model = UserModel::class;
 
     public function fields(): array
     {

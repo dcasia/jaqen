@@ -1,7 +1,8 @@
 <?php
 
-namespace DigitalCreative\Dashboard\Traits;
+declare(strict_types = 1);
 
+namespace DigitalCreative\Dashboard\Traits;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
@@ -34,7 +35,7 @@ trait ResolveFieldsTrait
      *
      * @return Collection
      */
-    private function resolveFields(): Collection
+    public function resolveFields(): Collection
     {
         return once(function () {
 
@@ -71,7 +72,7 @@ trait ResolveFieldsTrait
 
     private function resolveFieldsUsingModel(Model $model): Collection
     {
-        return $this->resolveFields()->each(fn(AbstractField $field) => $field->resolveUsingModel($model));
+        return $this->resolveFields()->each(fn(AbstractField $field) => $field->resolveUsingModel($this->getRequest(), $model));
     }
 
     private function resolveFieldsUsingRequest(BaseRequest $request): Collection

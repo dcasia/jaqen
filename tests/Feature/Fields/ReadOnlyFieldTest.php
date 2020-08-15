@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
+use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
@@ -18,13 +21,13 @@ class ReadOnlyFieldTest extends TestCase
     {
 
         /**
-         * @var Client $client
+         * @var User $user
          */
-        $client = factory(Client::class)->create([ 'name' => 'original' ]);
+        $user = factory(User::class)->create([ 'name' => 'original' ]);
 
-        $request = $this->updateRequest("/clients/$client->id", [ 'name' => 'updated' ]);
+        $request = $this->updateRequest(UserResource::uriKey(), $user->id, [ 'name' => 'updated' ]);
 
-        $this->getResource($request)
+        $this->makeResource($request)
              ->addFields(
                  ReadOnlyField::make('Name')->rulesForUpdate('required'),
                  ReadOnlyField::make('Email')->rules('required'),
@@ -32,8 +35,8 @@ class ReadOnlyFieldTest extends TestCase
              )
              ->update();
 
-        $this->assertDatabaseHas('clients', [
-            'id' => $client->id,
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
             'name' => 'original'
         ]);
 

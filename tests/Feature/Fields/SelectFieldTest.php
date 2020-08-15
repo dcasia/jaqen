@@ -1,13 +1,18 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\SelectField;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client as ClientModel;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
+use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 
 class SelectFieldTest extends TestCase
 {
+
+    use RequestTrait;
 
     public function test_select_field_sends_the_options_correctly(): void
     {
@@ -32,15 +37,15 @@ class SelectFieldTest extends TestCase
     {
 
         /**
-         * @var ClientModel $client
+         * @var UserModel $user
          */
-        $client = factory(ClientModel::class)->create();
+        $user = factory(UserModel::class)->create();
 
         $field = SelectField::make('Gender')
                             ->options([ 'male' => 'Male', 'female' => 'Female' ])
-                            ->resolveUsingModel($client);
+                            ->resolveUsingModel($this->blankRequest(),$user);
 
-        $this->assertSame($field->value, $client->gender);
+        $this->assertSame($field->value, $user->gender);
 
     }
 

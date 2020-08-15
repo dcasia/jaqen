@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Fields;
 
 use DigitalCreative\Dashboard\FieldsData;
@@ -16,24 +18,29 @@ abstract class AbstractField implements JsonSerializable
     use ResolveRulesTrait;
     use MakeableTrait;
 
+    /**
+     * @var string|int|null
+     */
+    public $value;
+
     public string $label;
     public string $attribute;
-    public ?string $value = null;
     public ?array $additionalInformation = null;
     public bool $dirty = false;
 
     public function __construct(string $label, string $attribute = null)
     {
         $this->label = $label;
-        $this->attribute = Str::slug($attribute ?? $label);
+        $this->attribute = $attribute ?? Str::slug($label);
     }
 
     /**
+     * @param BaseRequest $request
      * @param Model $model
      *
      * @return AbstractField
      */
-    public function resolveUsingModel(Model $model): self
+    public function resolveUsingModel(BaseRequest $request, Model $model): self
     {
         return $this->setValue($model->getAttribute($this->attribute));
     }
@@ -98,7 +105,7 @@ abstract class AbstractField implements JsonSerializable
         return Str::kebab(class_basename(static::class));
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'label' => $this->label,

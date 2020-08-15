@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
 use DigitalCreative\Dashboard\AbstractResource;
@@ -7,7 +9,7 @@ use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Http\Requests\CreateResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client as ClientModel;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use Illuminate\Validation\ValidationException;
@@ -81,7 +83,7 @@ class FieldTest extends TestCase
     public function getResource(BaseRequest $request): AbstractResource
     {
         return new class($request) extends AbstractResource {
-            public static string $model = ClientModel::class;
+            public static string $model = UserModel::class;
         };
     }
 

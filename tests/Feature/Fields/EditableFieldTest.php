@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Fields\PasswordField;
-use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client as ClientModel;
-use DigitalCreative\Dashboard\Tests\Fixtures\Resources\Client as ClientResource;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User;
+use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
@@ -27,9 +28,9 @@ class EditableFieldTest extends TestCase
             'password' => 123456
         ];
 
-        $request = $this->createRequest(ClientResource::uriKey(), $data);
+        $request = $this->createRequest(UserResource::uriKey(), $data);
 
-        $this->getResource($request)
+        $this->makeResource($request)
              ->addFields(
                  (new EditableField('Name'))->rulesForCreate('required'),
                  (new EditableField('Email'))->rulesForCreate('required'),
@@ -38,7 +39,7 @@ class EditableFieldTest extends TestCase
              )
              ->create();
 
-        $this->assertDatabaseHas('clients', $data);
+        $this->assertDatabaseHas('users', $data);
 
     }
 
@@ -46,15 +47,13 @@ class EditableFieldTest extends TestCase
     {
 
         /**
-         * @var ClientModel $client
+         * @var UserModel $user
          */
-        $client = factory(ClientModel::class)->create();
+        $user = factory(UserModel::class)->create();
 
-        $request = $this->makeRequest([
-            '/{resource}/{key}' => "/clients/{$client->id}" ], 'POST', [ 'name' => 'updated' ], UpdateResourceRequest::class
-        );
+        $request = $this->updateRequest(UserResource::uriKey(), $user->id, [ 'name' => 'updated' ]);
 
-        $this->getResource($request, ClientModel::class)
+        $this->makeResource($request, UserModel::class)
              ->addFields(
                  new EditableField('Name'),
                  new EditableField('Email'),
@@ -62,9 +61,9 @@ class EditableFieldTest extends TestCase
              )
              ->update();
 
-        $this->assertDatabaseHas('clients', [
-            'id' => $client->id,
-            'email' => $client->email,
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'email' => $user->email,
             'name' => 'updated'
         ]);
 

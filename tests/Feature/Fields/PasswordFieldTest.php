@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\PasswordField;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Client as ClientModel;
-use DigitalCreative\Dashboard\Tests\Fixtures\Resources\Client as ClientResource;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
@@ -19,13 +21,13 @@ class PasswordFieldTest extends TestCase
     {
 
         /**
-         * @var ClientModel $client
+         * @var UserModel $user
          */
-        $client = factory(ClientModel::class)->create();
+        $user = factory(UserModel::class)->create();
 
-        $request = $this->detailRequest(ClientResource::uriKey(), $client->id);
+        $request = $this->detailRequest(UserResource::uriKey(), $user->id);
 
-        $response = $this->getResource($request)
+        $response = $this->makeResource($request)
                          ->addFields(PasswordField::make('Password'))
                          ->detail();
 

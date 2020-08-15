@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
@@ -77,14 +79,15 @@ abstract class AbstractResource
     private function findResource(): ?Model
     {
         return once(function () {
-            return $this->repository()
-                        ->findByKey($this->request->route('key'));
+            return $this->repository()->findByKey(
+                $this->request->route('key')
+            );
         });
     }
 
     public function repository(): ResourceRepository
     {
-        return app(ResourceRepository::class, [ 'model' => $this->getModel() ]);
+        return new ResourceRepository($this->getModel());
     }
 
     public function getFiltersListing(): array
@@ -96,18 +99,19 @@ abstract class AbstractResource
     {
 
         $fields = $this->resolveFields();
+        $request = $this->getRequest();
 
-        $filters = new FilterCollection($this->resolveFilters(), $this->getRequest()->query('filters'));
+        $filters = new FilterCollection($this->resolveFilters(), $request->query('filters'));
 
         $total = $this->repository()->count($filters);
 
         $resources = $this->repository()
                           ->findCollection($filters, $this->request->query('page', 1))
-                          ->map(static function (Model $model) use ($fields) {
+                          ->map(static function (Model $model) use ($request, $fields) {
 
                               return [
                                   'key' => $model->getKey(),
-                                  'fields' => $fields->map(fn(AbstractField $field) => $field->resolveUsingModel($model)->jsonSerialize())
+                                  'fields' => $fields->map(fn(AbstractField $field) => $field->resolveUsingModel($request, $model)->jsonSerialize())
                               ];
 
                           });

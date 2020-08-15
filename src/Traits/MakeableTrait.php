@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace DigitalCreative\Dashboard\Traits;
 
 trait MakeableTrait
@@ -9,7 +11,7 @@ trait MakeableTrait
      *
      * @return static
      */
-    public static function make(...$arguments)
+    public static function make(...$arguments): self
     {
         return new static(...$arguments);
     }
