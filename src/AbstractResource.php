@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
-use DigitalCreative\Dashboard\Fields\SearchableBelongsToField;
+use DigitalCreative\Dashboard\Fields\BelongsToField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Traits\MakeableTrait;
 use DigitalCreative\Dashboard\Traits\ResolveFieldsTrait;
@@ -44,7 +44,12 @@ abstract class AbstractResource
         ];
     }
 
-    public function create(): void
+    public function create(): Collection
+    {
+        return $this->resolveFields();
+    }
+
+    public function store(): void
     {
 
         $bag = new FieldsData();
@@ -53,8 +58,10 @@ abstract class AbstractResource
 
         $this->validateFields($fields);
 
+        $request = $this->getRequest();
+
         $callbacks = $this->filterNonUpdatableFields($fields)
-                          ->map(fn(AbstractField $field) => $field->fillUsingRequest($bag, $this->request));
+                          ->map(fn(AbstractField $field) => $field->fillUsingRequest($bag, $request));
 
         $this->repository()->create($bag);
 
@@ -108,7 +115,7 @@ abstract class AbstractResource
         $total = $this->repository()->count($filters);
 
         $resources = $this->repository()
-                          ->findCollection($filters, $this->request->query('page', 1))
+                          ->findCollection($filters, (int) $this->request->query('page', 1))
                           ->map(static function (Model $model) use ($request, $fields) {
 
                               return [
@@ -132,7 +139,7 @@ abstract class AbstractResource
 
         $field = $this->findFieldByAttribute($request->route('field'));
 
-        if ($field instanceof SearchableBelongsToField) {
+        if ($field instanceof BelongsToField && $field->isSearchable()) {
 
             $resource = $field->getRelatedResource();
             $repository = new ResourceRepository($resource->getModel());
@@ -146,6 +153,8 @@ abstract class AbstractResource
             });
 
         }
+
+        return abort(404);
 
     }
 

@@ -44,6 +44,7 @@ trait ResolveFieldsTrait
 
             return collect($this->fields())
                 ->merge($this->fields)
+                ->each->setRequest($request)
                 ->filter(function (AbstractField $field) use ($request) {
 
                     $fields = [ '*' ];

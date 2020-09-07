@@ -33,7 +33,8 @@ class BaseRequest extends FormRequest
 
     public function isCreate(): bool
     {
-        return $this instanceof CreateResourceRequest;
+        return $this instanceof StoreResourceRequest
+            || $this instanceof CreateResourceRequest;
     }
 
     public function isUpdate(): bool

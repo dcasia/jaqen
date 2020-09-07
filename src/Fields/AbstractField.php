@@ -8,11 +8,12 @@ use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Traits\MakeableTrait;
 use DigitalCreative\Dashboard\Traits\ResolveRulesTrait;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use JsonSerializable;
 
-abstract class AbstractField implements JsonSerializable
+abstract class AbstractField implements JsonSerializable, Arrayable
 {
 
     use ResolveRulesTrait;
@@ -27,6 +28,12 @@ abstract class AbstractField implements JsonSerializable
     public string $attribute;
     public ?array $additionalInformation = null;
     public bool $dirty = false;
+    protected BaseRequest $request;
+
+    /**
+     * @var mixed
+     */
+    private $defaultCallback;
 
     public function __construct(string $label, string $attribute = null)
     {
@@ -61,6 +68,11 @@ abstract class AbstractField implements JsonSerializable
         $this->value = $value;
 
         return $this;
+    }
+
+    public function setRequest(BaseRequest $request): void
+    {
+        $this->request = $request;
     }
 
     public function isDirty(): bool
@@ -105,14 +117,43 @@ abstract class AbstractField implements JsonSerializable
         return Str::kebab(class_basename(static::class));
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @return AbstractField
+     */
+    public function default($value): self
+    {
+        $this->defaultCallback = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function resolveValue()
+    {
+        if ($this->request->isCreate()) {
+            return value($this->defaultCallback);
+        }
+
+        return $this->value;
+    }
+
+    public function toArray(): array
+    {
+        return $this->jsonSerialize();
+    }
+
     public function jsonSerialize(): array
     {
         return [
             'label' => $this->label,
             'attribute' => $this->attribute,
-            'value' => $this->value,
+            'value' => $this->resolveValue(),
             'component' => $this->component(),
-            'additionalInformation' => $this->getAdditionalInformation()
+            'additionalInformation' => $this->getAdditionalInformation(),
         ];
     }
 

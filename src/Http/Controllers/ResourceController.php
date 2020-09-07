@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Http\Controllers;
 
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Http\Requests\CreateResourceRequest;
+use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
@@ -34,7 +34,12 @@ class ResourceController extends Controller
         return $request->resourceInstance()->update();
     }
 
-    public function create(CreateResourceRequest $request)
+    public function store(StoreResourceRequest $request)
+    {
+        return $request->resourceInstance()->store();
+    }
+
+    public function create(StoreResourceRequest $request)
     {
         return $request->resourceInstance()->create();
     }

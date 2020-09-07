@@ -5,9 +5,11 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Traits;
 
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Http\Requests\BelongsToResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\CreateResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
+use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
 use Illuminate\Routing\Route;
 
@@ -54,9 +56,14 @@ trait RequestTrait
 
     }
 
+    protected function storeRequest(string $resourceKey, array $data = []): BaseRequest
+    {
+        return $this->makeRequest([ '/create/{resource}' => "/create/$resourceKey" ], 'POST', $data, StoreResourceRequest::class);
+    }
+
     protected function createRequest(string $resourceKey, array $data = []): BaseRequest
     {
-        return $this->makeRequest([ '/create/{resource}' => "/create/$resourceKey" ], 'POST', $data, CreateResourceRequest::class);
+        return $this->makeRequest([ '/{resource}/create' => "/$resourceKey/create" ], 'GET', $data, CreateResourceRequest::class);
     }
 
     protected function updateRequest(string $resourceKey, int $key, array $data = []): BaseRequest
@@ -78,7 +85,7 @@ trait RequestTrait
 
     protected function belongsToRequest(string $resourceKey, int $key, string $field, array $data = []): BaseRequest
     {
-        return $this->makeRequest([ '/belongs-to/{resource}/{key}/{field}' => "/belongs-to/$resourceKey/$key/$field" ], 'GET', $data, BaseRequest::class);
+        return $this->makeRequest([ '/belongs-to/{resource}/{key}/{field}' => "/belongs-to/$resourceKey/$key/$field" ], 'GET', $data, BelongsToResourceRequest::class);
     }
 
     protected function blankRequest(): BaseRequest

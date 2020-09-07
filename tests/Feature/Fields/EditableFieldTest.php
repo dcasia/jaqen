@@ -28,7 +28,7 @@ class EditableFieldTest extends TestCase
             'password' => 123456
         ];
 
-        $request = $this->createRequest(UserResource::uriKey(), $data);
+        $request = $this->storeRequest(UserResource::uriKey(), $data);
 
         $this->makeResource($request)
              ->addFields(
@@ -37,7 +37,7 @@ class EditableFieldTest extends TestCase
                  (new EditableField('Gender'))->rulesForCreate('required'),
                  (new EditableField('Password'))->rulesForCreate('required'),
              )
-             ->create();
+             ->store();
 
         $this->assertDatabaseHas('users', $data);
 

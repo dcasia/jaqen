@@ -31,6 +31,11 @@ class ResourceRepository
         return tap($this->newQuery(), fn(Builder $builder) => $userDefinedCallback($builder, $request))->get();
     }
 
+    public function getOptionsForRelatedResource(callable $userDefinedCallback, BaseRequest $request): Collection
+    {
+        return $this->searchForRelatedEntries($userDefinedCallback, $request);
+    }
+
     public function create(FieldsData $data): bool
     {
         return $this->newModel()->forceFill($data->toArray())->save();

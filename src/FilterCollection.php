@@ -68,15 +68,17 @@ class FilterCollection extends Collection
     {
         return $builder->where(function (Builder $query) {
 
-            $this->filter(function (AbstractFilter $filter) {
+            $this
+                ->filter(function (AbstractFilter $filter) {
 
-                if ($this->rawEncodedString) {
-                    return in_array($filter::uriKey(), $this->rawEncodedString, true);
-                }
+                    if ($this->rawEncodedString) {
+                        return in_array($filter::uriKey(), $this->rawEncodedString, true);
+                    }
 
-                return false;
+                    return false;
 
-            })->each(fn(AbstractFilter $filter) => $filter->apply($query, $filter->getFieldsDataFromRequest()));
+                })
+                ->each(fn(AbstractFilter $filter) => $filter->apply($query, $filter->getFieldsDataFromRequest()));
 
         });
     }

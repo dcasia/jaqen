@@ -7,7 +7,8 @@ namespace DigitalCreative\Dashboard\Fields;
 use Closure;
 use DigitalCreative\Dashboard\AbstractResource;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Http\Requests\CreateResourceRequest;
+use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
@@ -17,13 +18,18 @@ class BelongsToField extends AbstractField
 {
 
     private ?Closure $extraRelationDataCallback = null;
+    private ?Closure $optionsCallback = null;
     private ?string $relationAttribute;
-    private ?string $resourceClass;
+    private ?string $relatedResource = null;
 
-    public function __construct(string $label, string $relation = null, ?string $resource = null)
+    /**
+     * @var callable|bool
+     */
+    private $searchableCallback = false;
+
+    public function __construct(string $label, string $relation = null)
     {
         $this->relationAttribute = $relation ?? Str::snake($label);
-        $this->resourceClass = $resource;
 
         parent::__construct($label, $this->relationAttribute . '_id');
     }
@@ -59,48 +65,43 @@ class BelongsToField extends AbstractField
 
     }
 
-    public function withExtraRelationData(callable $callback): self
+    public function withExtraRelatedResourceData(callable $callback): self
     {
         $this->extraRelationDataCallback = $callback;
 
         return $this;
     }
 
-    protected function resolveValue(): array
+    protected function resolveOptions(): ?array
     {
+        if (is_callable($this->optionsCallback)) {
 
-        if ($resource = $this->resolveRelatedResource()) {
-
-            return [
-                'belongsToId' => $this->value,
-                'blueprint' => $resource->resolveFields()
-            ];
-
-        }
-
-        return [
-            'belongsToId' => $this->value,
-        ];
-
-    }
-
-    private function resolveRelatedResource(): ?AbstractResource
-    {
-
-        if ($this->resourceClass) {
-
-            if (is_subclass_of($this->resourceClass, AbstractResource::class) === false) {
-
-                throw new RuntimeException('Please provide a valid resource class.');
-
-            }
-
-            return new $this->resourceClass(app(CreateResourceRequest::class));
+            return call_user_func($this->optionsCallback, $this->request);
 
         }
 
         return null;
+    }
 
+    private function resolveRelatedResource(): ?AbstractResource
+    {
+        return once(function () {
+
+            if ($this->relatedResource) {
+
+                if (is_subclass_of($this->relatedResource, AbstractResource::class) === false) {
+
+                    throw new RuntimeException('Please provide a valid resource class.');
+
+                }
+
+                return new $this->relatedResource($this->request);
+
+            }
+
+            return null;
+
+        });
     }
 
     public function getRelationAttribute(): string
@@ -140,9 +141,69 @@ class BelongsToField extends AbstractField
 
     }
 
+    public function options(callable $options): self
+    {
+        $this->optionsCallback = $options;
+
+        return $this;
+    }
+
+    public function setRelatedResource(string $relatedResource): self
+    {
+        $this->relatedResource = $relatedResource;
+
+        return $this;
+    }
+
+    public function resolveSearchCallback(): callable
+    {
+
+        if (is_callable($this->searchableCallback)) {
+
+            return $this->searchableCallback;
+
+        }
+
+        return static function (Builder $builder, BaseRequest $request): Builder {
+            return $builder->when($request->query('id'), fn(Builder $builder, string $search) => $builder->whereKey($search))
+                           ->limit(10);
+        };
+
+    }
+
+    /**
+     * @param callable|bool $callback
+     *
+     * @return $this
+     */
+    public function searchable($callback = true): self
+    {
+        $this->searchableCallback = $callback;
+
+        return $this;
+    }
+
+    public function isSearchable(): bool
+    {
+        return is_callable($this->searchableCallback) ? true : $this->searchableCallback;
+    }
+
     public function jsonSerialize(): array
     {
-        return array_merge(parent::jsonSerialize(), [ 'value' => $this->resolveValue(), ]);
+        $data = [
+            'settings' => [
+                'searchable' => $this->isSearchable(),
+                'options' => $this->resolveOptions()
+            ]
+        ];
+
+        if ($resource = $this->resolveRelatedResource()) {
+
+            $data[ 'settings' ][ 'fields' ] = $resource->resolveFields()->toArray();
+
+        }
+
+        return array_merge(parent::jsonSerialize(), $data);
     }
 
 }
