@@ -11,6 +11,7 @@ use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 /**
  * Trait ResolveFieldsTrait
@@ -26,6 +27,13 @@ trait ResolveFieldsTrait
     public array $resourceCreateFields = [ '*' ];
     public array $fields = [];
 
+    public function fieldsFor(string $name, callable $callable): self
+    {
+        $this->fields[Str::camel($name)] = $callable;
+
+        return $this;
+    }
+
     public function fields(): array
     {
         return [];
@@ -38,14 +46,38 @@ trait ResolveFieldsTrait
      */
     public function resolveFields(): Collection
     {
-        return once(function () {
+        return once(function() {
 
             $request = $this->getRequest();
+            $for = Str::camel($request->input('fieldsFor', 'fields'));
 
-            return collect($this->fields())
-                ->merge($this->fields)
-                ->each->setRequest($request)
-                ->filter(function (AbstractField $field) use ($request) {
+            /**
+             * If fields has been set through ->fieldsFor()
+             */
+            if (array_key_exists($for, $this->fields)) {
+
+                $fields = value($this->fields[$for]);
+
+            } else {
+
+                $method = "fieldsFor$for";
+
+                if (method_exists($this, $method)) {
+
+                    $fields = $this->$method();
+
+                } else {
+
+                    $fields = $this->fields();
+
+                }
+
+            }
+
+            return collect($fields)
+                ->each
+                ->setRequest($request)
+                ->filter(function(AbstractField $field) use ($request) {
 
                     $fields = [ '*' ];
 
@@ -93,7 +125,7 @@ trait ResolveFieldsTrait
 
         $rules = $fields
             ->mapWithKeys(fn(AbstractField $field) => [
-                $field->attribute => $field->resolveRules($request)
+                $field->attribute => $field->resolveRules($request),
             ])
             ->filter()
             ->toArray();
@@ -125,9 +157,9 @@ trait ResolveFieldsTrait
         return $this->request ?? app(BaseRequest::class);
     }
 
-    public function addFields(AbstractField ...$fields): self
+    public function addDefaultFields(AbstractField ...$fields): self
     {
-        $this->fields = array_merge($this->fields, $fields);
+        $this->fields['fields'] = array_merge($this->fields, $fields);
 
         return $this;
     }
@@ -135,7 +167,7 @@ trait ResolveFieldsTrait
     public function findFieldByAttribute(string $attribute): ?AbstractField
     {
         return $this->resolveFields()
-                    ->first(static function (AbstractField $field) use ($attribute) {
+                    ->first(static function(AbstractField $field) use ($attribute) {
 
                         if ($field instanceof BelongsToField) {
 

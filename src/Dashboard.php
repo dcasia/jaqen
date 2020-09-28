@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard;
 
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use Illuminate\Support\Collection;
 
 class Dashboard
 {
@@ -23,9 +24,19 @@ class Dashboard
         return app(__CLASS__);
     }
 
+    public function allAuthorizedResources(BaseRequest $request): Collection
+    {
+        return collect($this->resources)
+            ->map(fn($class, $key) => new $class($request))
+            /**
+             * @todo implement authorized to see
+             */
+            ->filter(fn(AbstractResource $resource) => $resource);
+    }
+
     public function resourceForRequest(BaseRequest $request): AbstractResource
     {
-        return once(function () use ($request) {
+        return once(function() use ($request) {
 
             /**
              * @todo Create a cache system to dont have to loop through every single resource every time

@@ -63,4 +63,32 @@ class ResourceIndexTest extends TestCase
 
     }
 
+    public function test_fields_for_works_correctly_on_resource(): void
+    {
+
+        $user = factory(UserModel::class)->create();
+
+        $response = $this->getJson('/dashboard-api/users?fieldsFor=index')
+                         ->assertStatus(200);
+
+        $response->assertJsonFragment([
+            'total' => 1,
+            'resources' => [
+                [
+                    'key' => 1,
+                    'fields' => [
+                        [
+                            'label' => 'id',
+                            'attribute' => 'id',
+                            'value' => $user->id,
+                            'component' => 'read-only-field',
+                            'additionalInformation' => null
+                        ]
+                    ]
+                ]
+            ],
+        ]);
+
+    }
+
 }

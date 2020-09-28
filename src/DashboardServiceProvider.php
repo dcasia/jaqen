@@ -24,8 +24,7 @@ abstract class DashboardServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(Dashboard::class, function () {
-            return (new Dashboard())
-                ->setResources($this->resources());
+            return (new Dashboard())->setResources($this->resources());
         });
 
     }

@@ -69,7 +69,7 @@ class ResourceRepository
         return true;
     }
 
-    private function applyFilterToQuery(FilterCollection $filters)
+    private function applyFilterToQuery(FilterCollection $filters): Builder
     {
         return $filters->applyOnQuery($this->newQuery());
     }

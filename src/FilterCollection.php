@@ -64,7 +64,7 @@ class FilterCollection extends Collection
         });
     }
 
-    public function applyOnQuery(Builder $builder)
+    public function applyOnQuery(Builder $builder): Builder
     {
         return $builder->where(function (Builder $query) {
 

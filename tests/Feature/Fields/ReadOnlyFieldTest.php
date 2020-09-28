@@ -28,7 +28,7 @@ class ReadOnlyFieldTest extends TestCase
         $request = $this->updateRequest(UserResource::uriKey(), $user->id, [ 'name' => 'updated' ]);
 
         $this->makeResource($request)
-             ->addFields(
+             ->addDefaultFields(
                  ReadOnlyField::make('Name')->rulesForUpdate('required'),
                  ReadOnlyField::make('Email')->rules('required'),
                  ReadOnlyField::make('Gender'),

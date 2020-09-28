@@ -28,10 +28,17 @@ class User extends AbstractResource
         ];
     }
 
+    public function fieldsForIndex(): array
+    {
+        return [
+            ReadOnlyField::make('id'),
+        ];
+    }
+
     public function filters(): array
     {
         return [
-            new GenderFilter()
+            new GenderFilter(),
         ];
     }
 

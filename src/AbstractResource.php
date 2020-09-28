@@ -13,6 +13,7 @@ use DigitalCreative\Dashboard\Traits\ResolveFiltersTrait;
 use DigitalCreative\Dashboard\Traits\ResolveUriKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 abstract class AbstractResource
 {
@@ -29,6 +30,25 @@ abstract class AbstractResource
         $this->request = $request;
     }
 
+    public function getDescriptor(): array
+    {
+        return [
+            'name' => $this->label(),
+            'label' => Str::plural($this->label()),
+            'uriKey' => self::uriKey(),
+        ];
+    }
+
+    public static function humanize(string $value): string
+    {
+        return Str::title(Str::snake($value, ' '));
+    }
+
+    public function label(): string
+    {
+        return static::humanize(class_basename(static::class));
+    }
+
     public function getModel(): Model
     {
         return new static::$model;
@@ -40,7 +60,7 @@ abstract class AbstractResource
 
         return [
             'key' => $model->getKey(),
-            'fields' => $this->resolveFieldsUsingModel($model)->jsonSerialize()
+            'fields' => $this->resolveFieldsUsingModel($model)->jsonSerialize(),
         ];
     }
 
@@ -73,7 +93,7 @@ abstract class AbstractResource
     {
         $fields = $this->filterNonUpdatableFields(
             $this->resolveFieldsUsingRequest($this->request)
-                 ->filter(function (AbstractField $field) {
+                 ->filter(function(AbstractField $field) {
                      return $field->isRequired($this->getRequest()) || $field->isDirty();
                  })
         );
@@ -87,7 +107,7 @@ abstract class AbstractResource
 
     private function findResource(): ?Model
     {
-        return once(function () {
+        return once(function() {
             return $this->repository()->findByKey(
                 $this->request->route('key')
             );
@@ -107,7 +127,8 @@ abstract class AbstractResource
     public function index(): array
     {
 
-        $fields = $this->resolveFields();
+        $fields = $this->resolveFields($this->request->input('for', 'fields'));
+
         $request = $this->getRequest();
 
         $filters = new FilterCollection($this->resolveFilters(), $request->query('filters'));
@@ -116,18 +137,18 @@ abstract class AbstractResource
 
         $resources = $this->repository()
                           ->findCollection($filters, (int) $this->request->query('page', 1))
-                          ->map(static function (Model $model) use ($request, $fields) {
+                          ->map(static function(Model $model) use ($request, $fields) {
 
                               return [
                                   'key' => $model->getKey(),
-                                  'fields' => $fields->map(fn(AbstractField $field) => $field->resolveUsingModel($request, $model)->jsonSerialize())
+                                  'fields' => $fields->map(fn(AbstractField $field) => $field->resolveUsingModel($request, $model)->jsonSerialize()),
                               ];
 
                           });
 
         return [
             'total' => $total,
-            'resources' => $resources
+            'resources' => $resources,
         ];
 
     }
@@ -148,7 +169,7 @@ abstract class AbstractResource
                 $field->resolveSearchCallback(), $request
             );
 
-            return $models->map(static function (Model $model) use ($resource) {
+            return $models->map(static function(Model $model) use ($resource) {
                 return collect($resource->resolveFieldsUsingModel($model)->jsonSerialize())->pluck('value', 'attribute');
             });
 

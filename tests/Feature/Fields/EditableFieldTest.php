@@ -31,7 +31,7 @@ class EditableFieldTest extends TestCase
         $request = $this->storeRequest(UserResource::uriKey(), $data);
 
         $this->makeResource($request)
-             ->addFields(
+             ->addDefaultFields(
                  (new EditableField('Name'))->rulesForCreate('required'),
                  (new EditableField('Email'))->rulesForCreate('required'),
                  (new EditableField('Gender'))->rulesForCreate('required'),
@@ -54,7 +54,7 @@ class EditableFieldTest extends TestCase
         $request = $this->updateRequest(UserResource::uriKey(), $user->id, [ 'name' => 'updated' ]);
 
         $this->makeResource($request, UserModel::class)
-             ->addFields(
+             ->addDefaultFields(
                  new EditableField('Name'),
                  new EditableField('Email'),
                  new EditableField('Gender'),

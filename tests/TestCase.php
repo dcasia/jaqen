@@ -18,7 +18,7 @@ class TestCase extends BaseTestCase
 
     }
 
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [
             CoreDashboardServiceProvider::class,
@@ -26,7 +26,7 @@ class TestCase extends BaseTestCase
         ];
     }
 
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($app): void
     {
         $app[ 'config' ]->set('database.default', 'sqlite');
         $app[ 'config' ]->set('database.connections.sqlite', [
@@ -41,7 +41,7 @@ class TestCase extends BaseTestCase
      *
      * @return void
      */
-    protected function loadMigrations()
+    protected function loadMigrations(): void
     {
         $this->loadMigrationsFrom([
             '--database' => 'sqlite',

@@ -33,7 +33,7 @@ class FieldTest extends TestCase
         $this->expectException(ValidationException::class);
 
         $this->getResource($request)
-             ->addFields(
+             ->addDefaultFields(
                  (new EditableField('name'))->rulesForCreate('required')
              )
              ->store();
@@ -48,7 +48,7 @@ class FieldTest extends TestCase
         $this->expectException(ValidationException::class);
 
         $this->getResource($request)
-             ->addFields(
+             ->addDefaultFields(
                  (new EditableField('name'))->rulesForUpdate('required')
              )
              ->update();
@@ -63,7 +63,7 @@ class FieldTest extends TestCase
         $this->expectException(ValidationException::class);
 
         $this->getResource($request)
-             ->addFields(
+             ->addDefaultFields(
                  (new EditableField('name'))->rulesForCreate('required')
              )
              ->store();
@@ -78,11 +78,65 @@ class FieldTest extends TestCase
         $this->expectException(ValidationException::class);
 
         $this->getResource($request)
-             ->addFields(
+             ->addDefaultFields(
                  (new EditableField('name'))->rulesForUpdate('required'),
                  (new EditableField('email'))->rulesForUpdate('required')
              )
              ->update();
+
+    }
+
+    public function test_custom_fields_name_gets_resolved_correctly(): void
+    {
+
+        $request = $this->createRequest(UserResource::uriKey(), [ 'fieldsFor' => 'index-listing' ]);
+
+        $response = $this->getResource($request)
+                         ->fieldsFor('index-listing', function() {
+                             return [
+                                 new EditableField('name'),
+                             ];
+                         })
+                         ->create();
+
+        $this->assertEquals([
+            [
+                'label' => 'name',
+                'attribute' => 'name',
+                'value' => null,
+                'component' => 'editable-field',
+                'additionalInformation' => null,
+            ],
+        ], $response->toArray());
+
+    }
+
+    public function test_fields_is_resolved_from_method_if_exists(): void
+    {
+
+        $request = $this->createRequest(UserResource::uriKey(), [ 'fieldsFor' => 'demo' ]);
+
+        $resource = new class($request) extends AbstractResource {
+            public function fieldsForDemo(): array
+            {
+                return [
+                    new EditableField('name'),
+                ];
+            }
+        };
+
+        $response = $resource->create();
+
+        $this->assertEquals([
+            [
+                'label' => 'name',
+                'attribute' => 'name',
+                'value' => null,
+                'component' => 'editable-field',
+                'additionalInformation' => null,
+            ],
+        ], $response->toArray());
+
 
     }
 
@@ -92,7 +146,7 @@ class FieldTest extends TestCase
         $request = $this->createRequest(UserResource::uriKey());
 
         $response = $this->makeResource($request, UserModel::class)
-                         ->addFields(
+                         ->addDefaultFields(
                              EditableField::make('Name')->default('Demo'),
                              EditableField::make('Email')->default(fn() => 'demo@email.com'),
                          )
