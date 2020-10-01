@@ -41,6 +41,11 @@ class ResourceRepository
         return $this->newModel()->forceFill($data->toArray())->save();
     }
 
+    public function deleteResource(Model $model): bool
+    {
+        return $model->delete();
+    }
+
     public function count(FilterCollection $filters): int
     {
         return $this->applyFilterToQuery($filters)->count();

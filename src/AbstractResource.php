@@ -89,6 +89,11 @@ abstract class AbstractResource
 
     }
 
+    public function delete(): bool
+    {
+        return $this->repository()->deleteResource($this->findResource());
+    }
+
     public function update(): bool
     {
         $fields = $this->filterNonUpdatableFields(

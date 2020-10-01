@@ -23,8 +23,13 @@ use Illuminate\Support\Str;
 trait ResolveFieldsTrait
 {
 
+    /**
+     * @todo Delete this makes no sense more after fieldsFor functionality
+     * @var array|string[]
+     */
     public array $resourceListingFields = [ '*' ];
     public array $resourceCreateFields = [ '*' ];
+
     public array $fields = [];
 
     public function fieldsFor(string $name, callable $callable): self

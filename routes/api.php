@@ -9,6 +9,7 @@ Route::post('/create/{resource}', [ ResourceController::class, 'store' ]);
 Route::get('/{resource}/create', [ ResourceController::class, 'create' ]);
 Route::post('/{resource}/{key}', [ ResourceController::class, 'update' ]);
 Route::get('/{resource}/{key}', [ ResourceController::class, 'fetch' ]);
+Route::delete('/{resource}/{key}', [ ResourceController::class, 'delete' ]);
 Route::get('/{resource}', [ ResourceController::class, 'index' ]);
 
 Route::get('/belongs-to/{resource}/{key}/{field}', [ ResourceController::class, 'searchBelongsTo' ]);

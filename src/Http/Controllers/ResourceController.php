@@ -7,6 +7,7 @@ namespace DigitalCreative\Dashboard\Http\Controllers;
 use DigitalCreative\Dashboard\AbstractResource;
 use DigitalCreative\Dashboard\Dashboard;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Http\Requests\DeleteResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
@@ -50,6 +51,11 @@ class ResourceController extends Controller
     public function update(UpdateResourceRequest $request): bool
     {
         return $request->resourceInstance()->update();
+    }
+
+    public function delete(DeleteResourceRequest $request): bool
+    {
+        return $request->resourceInstance()->delete();
     }
 
     public function store(StoreResourceRequest $request): void
