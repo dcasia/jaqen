@@ -20,7 +20,7 @@ class ResourceUpdateTest extends TestCase
             'email' => 'email@email.com'
         ];
 
-        $this->postJson('/dashboard-api/users/1', $data)
+        $this->patchJson('/dashboard-api/users/1', $data)
              ->assertStatus(200);
 
         $this->assertDatabaseHas('users', $data);
@@ -35,7 +35,7 @@ class ResourceUpdateTest extends TestCase
          */
         $user = factory(UserModel::class)->create();
 
-        $this->postJson('/dashboard-api/users/1', [ 'id' => 2 ])
+        $this->patchJson('/dashboard-api/users/1', [ 'id' => 2 ])
              ->assertStatus(200);
 
         $this->assertDatabaseHas('users', [

@@ -25,11 +25,11 @@ class ResourceFiltersTest extends TestCase
                              'component',
                              'additionalInformation' => [
                                  'male',
-                                 'female'
+                                 'female',
                              ],
-                         ]
-                     ]
-                 ]
+                         ],
+                     ],
+                 ],
              ]);
 
     }

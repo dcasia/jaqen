@@ -19,7 +19,7 @@ class ResourceCreationTest extends TestCase
             'password' => 123456
         ];
 
-        $this->postJson('/dashboard-api/create/users', $data)
+        $this->postJson('/dashboard-api/users', $data)
              ->assertStatus(200);
 
         $this->assertDatabaseHas('users', $data);

@@ -137,7 +137,6 @@ class FieldTest extends TestCase
             ],
         ], $response->toArray());
 
-
     }
 
     public function test_field_can_resolve_default_value(): void
@@ -152,14 +151,77 @@ class FieldTest extends TestCase
                          )
                          ->create();
 
-        $this->assertEquals([
-            'name' => 'Demo',
-            'email' => 'demo@email.com',
-        ], Arr::pluck($response->toArray(), 'value', 'attribute'));
+        $this->assertEquals(
+            [ 'name' => 'Demo', 'email' => 'demo@email.com' ],
+            $response->pluck('value', 'attribute')->toArray()
+        );
 
     }
 
-    public function getResource(BaseRequest $request): AbstractResource
+    public function test_it_returns_only_the_specified_fields(): void
+    {
+
+        $request = $this->createRequest(UserResource::uriKey(), [ 'only' => 'first_name,last_name' ]);
+
+        $response = $this->makeResource($request, UserModel::class)
+                         ->addDefaultFields(
+                             EditableField::make('First Name')->default('Hello'),
+                             EditableField::make('Last Name')->default('World'),
+                             EditableField::make('Email')->default('demo@email.com'),
+                         )
+                         ->create();
+
+        $this->assertEquals(
+            [ 'first_name' => 'Hello', 'last_name' => 'World' ],
+            $response->pluck('value', 'attribute')->toArray()
+        );
+
+    }
+
+    public function test_only_fields_remove_empty_spaces_correctly(): void
+    {
+
+        /**
+         * Space between , will be trimmed
+         */
+        $request = $this->createRequest(UserResource::uriKey(), [ 'only' => 'first_name , email' ]);
+
+        $response = $this->makeResource($request, UserModel::class)
+                         ->addDefaultFields(
+                             EditableField::make('First Name')->default('Hello'),
+                             EditableField::make('Last Name')->default('World'),
+                             EditableField::make('Email')->default('demo@email.com'),
+                         )
+                         ->create();
+
+        $this->assertEquals(
+            [ 'first_name' => 'Hello', 'email' => 'demo@email.com' ],
+            $response->pluck('value', 'attribute')->toArray()
+        );
+
+    }
+
+    public function test_expect_fields_filter_works_correctly(): void
+    {
+
+        $request = $this->createRequest(UserResource::uriKey(), [ 'except' => 'first_name , last_name' ]);
+
+        $response = $this->makeResource($request, UserModel::class)
+                         ->addDefaultFields(
+                             EditableField::make('First Name')->default('Hello'),
+                             EditableField::make('Last Name')->default('World'),
+                             EditableField::make('Email')->default('demo@email.com'),
+                         )
+                         ->create();
+
+        $this->assertEquals(
+            [ 'email' => 'demo@email.com' ],
+            $response->pluck('value', 'attribute')->toArray()
+        );
+
+    }
+
+    private function getResource(BaseRequest $request): AbstractResource
     {
         return new class($request) extends AbstractResource {
             public static string $model = UserModel::class;

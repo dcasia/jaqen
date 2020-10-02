@@ -129,9 +129,6 @@ class FilterTest extends TestCase
 
         $filter = new class($this) extends AbstractFilter {
 
-            /**
-             * @var FilterTest
-             */
             private FilterTest $runner;
 
             public function __construct(FilterTest $runner)

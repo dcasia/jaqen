@@ -49,6 +49,9 @@ trait ResolveFieldsTrait
             $request = $this->getRequest();
             $for = Str::camel($request->input('fieldsFor', 'fields'));
 
+            $only = $request->input('only', null);
+            $except = $request->input('except', null);
+
             /**
              * If fields has been set through ->fieldsFor()
              */
@@ -72,9 +75,29 @@ trait ResolveFieldsTrait
 
             }
 
-            return collect($fields)->each->setRequest($request)->values();
+            return collect($fields)
+                ->when($only, function(Collection $fields, string $only) {
+                    return $fields->filter(
+                        fn(AbstractField $field) => $this->stringContains($only, $field->attribute)
+                    );
+                })
+                ->when($except, function(Collection $fields, string $except) {
+                    return $fields->filter(
+                        fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
+                    );
+                })
+                ->map(fn(AbstractField $field) => $field->setRequest($request)->resolve())
+                ->values();
 
         });
+    }
+
+    private function stringContains(string $items, string $attribute): bool
+    {
+        return Str::of($items)
+                  ->explode(',')
+                  ->map(fn(string $item) => trim($item))
+                  ->contains($attribute);
     }
 
     private function resolveFieldsUsingModel(Model $model): Collection

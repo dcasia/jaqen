@@ -38,7 +38,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable
     public function __construct(string $label, string $attribute = null)
     {
         $this->label = $label;
-        $this->attribute = $attribute ?? Str::slug($label);
+        $this->attribute = $attribute ?? Str::snake($label);
     }
 
     /**
@@ -70,9 +70,11 @@ abstract class AbstractField implements JsonSerializable, Arrayable
         return $this;
     }
 
-    public function setRequest(BaseRequest $request): void
+    public function setRequest(BaseRequest $request): self
     {
         $this->request = $request;
+
+        return $this;
     }
 
     public function isDirty(): bool
@@ -125,6 +127,13 @@ abstract class AbstractField implements JsonSerializable, Arrayable
     public function default($value): self
     {
         $this->defaultCallback = $value;
+
+        return $this;
+    }
+
+    public function resolve(): self
+    {
+        $this->value = $this->resolveValue();
 
         return $this;
     }
