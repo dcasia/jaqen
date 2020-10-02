@@ -23,13 +23,6 @@ use Illuminate\Support\Str;
 trait ResolveFieldsTrait
 {
 
-    /**
-     * @todo Delete this makes no sense more after fieldsFor functionality
-     * @var array|string[]
-     */
-    public array $resourceListingFields = [ '*' ];
-    public array $resourceCreateFields = [ '*' ];
-
     public array $fields = [];
 
     public function fieldsFor(string $name, callable $callable): self
@@ -79,33 +72,8 @@ trait ResolveFieldsTrait
 
             }
 
-            return collect($fields)
-                ->each
-                ->setRequest($request)
-                ->filter(function(AbstractField $field) use ($request) {
+            return collect($fields)->each->setRequest($request)->values();
 
-                    $fields = [ '*' ];
-
-                    if ($request->isCreate()) {
-
-                        $fields = $this->resourceCreateFields;
-
-                    } else if ($request->isListing()) {
-
-                        $fields = $this->resourceListingFields;
-
-                    }
-
-                    if (in_array('*', $fields, true)) {
-
-                        return true;
-
-                    }
-
-                    return in_array($field->attribute, $fields, true);
-
-                })
-                ->values();
         });
     }
 
