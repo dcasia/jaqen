@@ -220,6 +220,19 @@ class FieldTest extends TestCase
 
     }
 
+    public function test_field_attribute_is_correctly_casted_to_lowercase(): void
+    {
+        $this->assertEquals('id', EditableField::make('ID')->attribute);
+        $this->assertEquals('test_id', EditableField::make('Test Id')->attribute);
+        $this->assertEquals('test_id', EditableField::make('TEST Id')->attribute);
+        $this->assertEquals('test_id', EditableField::make(' test   Id ')->attribute);
+        $this->assertEquals('test_1', EditableField::make('Test 1')->attribute);
+        $this->assertEquals('1_test_1', EditableField::make('1 Test 1')->attribute);
+        $this->assertEquals('2_hello_world_2', EditableField::make(' 2 Hello  worlD 2 ')->attribute);
+        $this->assertEquals('helloworld', EditableField::make('HelloWorld')->attribute);
+        $this->assertEquals('hello_world', EditableField::make('HelloWorld', 'hello_world')->attribute);
+    }
+
     private function getResource(BaseRequest $request): AbstractResource
     {
         return new class($request) extends AbstractResource {

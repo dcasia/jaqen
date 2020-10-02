@@ -38,7 +38,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable
     public function __construct(string $label, string $attribute = null)
     {
         $this->label = $label;
-        $this->attribute = $attribute ?? Str::snake($label);
+        $this->attribute = $attribute ?? $this->generateAttribute($label);
     }
 
     /**
@@ -148,6 +148,11 @@ abstract class AbstractField implements JsonSerializable, Arrayable
         }
 
         return $this->value;
+    }
+
+    private function generateAttribute(string $label): string
+    {
+        return Str::of($label)->trim()->replaceMatches('~\s+~', '_')->lower()->snake()->__toString();
     }
 
     public function toArray(): array
