@@ -64,11 +64,6 @@ abstract class AbstractResource
         ];
     }
 
-    public function create(): Collection
-    {
-        return $this->resolveFields();
-    }
-
     public function store(): void
     {
 

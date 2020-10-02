@@ -63,9 +63,9 @@ class ResourceController extends Controller
         $request->resourceInstance()->store();
     }
 
-    public function create(StoreResourceRequest $request): Collection
+    public function fields(StoreResourceRequest $request): Collection
     {
-        return $request->resourceInstance()->create();
+        return $request->resourceInstance()->resolveFields();
     }
 
     public function fetch(DetailResourceRequest $request): array

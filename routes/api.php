@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
  * Filters
  */
 Route::get('/{resource}/filters', [ ResourceController::class, 'filters' ]);
+Route::get('/{resource}/fields', [ ResourceController::class, 'fields' ]);
 
 /**
  * CRUD
@@ -17,7 +18,6 @@ Route::delete('/{resource}/{key}', [ ResourceController::class, 'delete' ]);
 Route::post('/{resource}', [ ResourceController::class, 'store' ]);
 
 Route::get('/resources', [ ResourceController::class, 'list' ]);
-Route::get('/{resource}/create', [ ResourceController::class, 'create' ]);
 Route::get('/{resource}', [ ResourceController::class, 'index' ]);
 
 Route::get('/belongs-to/{resource}/{key}/{field}', [ ResourceController::class, 'searchBelongsTo' ]);
