@@ -107,12 +107,13 @@ trait ResolveFieldsTrait
 
     private function resolveFieldsUsingRequest(BaseRequest $request): Collection
     {
-        return $this->resolveFields()->each(fn(AbstractField $field) => $field->resolveUsingRequest($request));
+        return $this->resolveFields()
+                    ->each(fn(AbstractField $field) => $field->resolveUsingRequest($request));
     }
 
     private function filterNonUpdatableFields(Collection $fields): Collection
     {
-        return $fields->filter(fn(AbstractField $field) => !$field instanceof ReadOnlyField);
+        return $fields->filter(fn(AbstractField $field) => $field->isReadOnly() === false);
     }
 
     private function validateFields(Collection $fields): array
