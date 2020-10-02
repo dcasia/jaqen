@@ -127,7 +127,7 @@ abstract class AbstractResource
     public function index(): array
     {
 
-        $fields = $this->resolveFields($this->request->input('for', 'fields'));
+        $fields = $this->resolveFields();
 
         $request = $this->getRequest();
 
