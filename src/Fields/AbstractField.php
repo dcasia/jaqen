@@ -35,7 +35,11 @@ abstract class AbstractField implements JsonSerializable, Arrayable
      * @var callable|mixed
      */
     private $defaultCallback;
-    private bool $readOnly = false;
+
+    /**
+     * @var callable|mixed
+     */
+    private $readOnly = false;
 
     public function __construct(string $label, string $attribute = null)
     {
@@ -48,7 +52,11 @@ abstract class AbstractField implements JsonSerializable, Arrayable
         return $this->setValue($model->getAttribute($this->attribute));
     }
 
-    public function readOnly(bool $state = true): self
+    /**
+     * @param bool|callable $state
+     * @return $this
+     */
+    public function readOnly($state = true): self
     {
         $this->readOnly = $state;
 
@@ -57,7 +65,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable
 
     public function isReadOnly(): bool
     {
-        return $this->readOnly;
+        return (bool) value($this->readOnly);
     }
 
     public function resolveUsingRequest(BaseRequest $request): self
