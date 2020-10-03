@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Http\Controllers\ResourceController;
+use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
@@ -39,7 +39,7 @@ class EditableFieldTest extends TestCase
                  (new EditableField('Password'))->rulesForCreate('required'),
              );
 
-        (new ResourceController())->store($request);
+        (new StoreController())->store($request);
 
         $this->assertDatabaseHas('users', $data);
 

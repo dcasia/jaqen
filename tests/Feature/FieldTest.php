@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
 use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Http\Controllers\ResourceController;
+use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
@@ -37,7 +37,7 @@ class FieldTest extends TestCase
                  (new EditableField('name'))->rulesForCreate('required')
              );
 
-        (new ResourceController)->store($request);
+        (new StoreController)->store($request);
 
     }
 
@@ -68,7 +68,7 @@ class FieldTest extends TestCase
                  (new EditableField('name'))->rulesForCreate('required')
              );
 
-        (new ResourceController)->store($request);
+        (new StoreController)->store($request);
 
     }
 

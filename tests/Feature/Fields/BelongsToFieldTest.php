@@ -6,7 +6,7 @@ namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\BelongsToField;
 use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Http\Controllers\ResourceController;
+use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article as ArticleModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
@@ -127,7 +127,7 @@ class BelongsToFieldTest extends TestCase
                  BelongsToField::make('User'),
              );
 
-        (new ResourceController())->store($request);
+        (new StoreController())->store($request);
 
         $this->assertDatabaseHas('articles', $data);
 
