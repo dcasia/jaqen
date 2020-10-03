@@ -49,7 +49,7 @@ class FilterCollection extends Collection
 
         }
 
-        return once(static function () use ($filters) {
+        return once(static function() use ($filters) {
 
             try {
 
@@ -66,10 +66,10 @@ class FilterCollection extends Collection
 
     public function applyOnQuery(Builder $builder): Builder
     {
-        return $builder->where(function (Builder $query) {
+        return $builder->where(function(Builder $query) {
 
             $this
-                ->filter(function (AbstractFilter $filter) {
+                ->filter(function(AbstractFilter $filter) {
 
                     if ($this->rawEncodedString) {
                         return in_array($filter::uriKey(), $this->rawEncodedString, true);

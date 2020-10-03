@@ -32,10 +32,10 @@ class ResourceIndexTest extends TestCase
                             'attribute',
                             'value',
                             'component',
-                            'additionalInformation'
-                        ]
-                    ]
-                ]
+                            'additionalInformation',
+                        ],
+                    ],
+                ],
             ],
         ]);
 
@@ -49,8 +49,8 @@ class ResourceIndexTest extends TestCase
 
         $filters = FilterCollection::test([
             GenderFilter::uriKey() => [
-                'gender' => 'male'
-            ]
+                'gender' => 'male',
+            ],
         ]);
 
         $this->withExceptionHandling()
@@ -58,7 +58,7 @@ class ResourceIndexTest extends TestCase
              ->assertStatus(200)
              ->assertJsonCount(5, 'resources')
              ->assertJsonFragment([
-                 'total' => 5
+                 'total' => 5,
              ]);
 
     }
@@ -82,12 +82,24 @@ class ResourceIndexTest extends TestCase
                             'attribute' => 'id',
                             'value' => $user->id,
                             'component' => 'read-only-field',
-                            'additionalInformation' => null
-                        ]
-                    ]
-                ]
+                            'additionalInformation' => null,
+                        ],
+                    ],
+                ],
             ],
         ]);
+
+    }
+
+    public function test_ensure_the_results_are_distinct(): void
+    {
+
+        $users = factory(UserModel::class, 2)->create();
+
+        $this->getJson('/dashboard-api/users?fieldsFor=index')
+             ->assertStatus(200)
+             ->assertJsonPath('resources.0.fields.0.value', $users->first()->id)
+             ->assertJsonPath('resources.1.fields.0.value', $users->last()->id);
 
     }
 

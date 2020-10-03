@@ -11,16 +11,13 @@ use DigitalCreative\Dashboard\Traits\ResolveUriKey;
 use Illuminate\Database\Eloquent\Builder;
 use JsonSerializable;
 
-class AbstractFilter implements JsonSerializable
+abstract class AbstractFilter implements JsonSerializable
 {
 
     use ResolveFieldsTrait;
     use ResolveUriKey;
 
-    public function apply(Builder $builder, FieldsData $value): Builder
-    {
-        return $builder;
-    }
+    abstract public function apply(Builder $builder, FieldsData $value): Builder;
 
     protected function getRequest(): BaseRequest
     {
@@ -32,8 +29,8 @@ class AbstractFilter implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'uriKey' => $this::uriKey(),
-            'fields' => $this->resolveFields()
+            'uriKey' => static::uriKey(),
+            'fields' => $this->resolveFields(),
         ];
     }
 }

@@ -35,7 +35,7 @@ abstract class AbstractResource
         return [
             'name' => $this->label(),
             'label' => Str::plural($this->label()),
-            'uriKey' => self::uriKey(),
+            'uriKey' => static::uriKey(),
         ];
     }
 
@@ -141,7 +141,7 @@ abstract class AbstractResource
 
                               return [
                                   'key' => $model->getKey(),
-                                  'fields' => $fields->map(fn(AbstractField $field) => $field->resolveUsingModel($request, $model)->jsonSerialize()),
+                                  'fields' => $fields->map(fn(AbstractField $field) => (clone $field)->resolveUsingModel($request, $model)),
                               ];
 
                           });

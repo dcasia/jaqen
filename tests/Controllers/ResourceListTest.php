@@ -7,7 +7,7 @@ namespace DigitalCreative\Dashboard\Tests\Controller;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 
-class ResourceList extends TestCase
+class ResourceListTest extends TestCase
 {
 
     public function test_resource_list_api(): void

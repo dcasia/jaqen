@@ -4,12 +4,12 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
-use DigitalCreative\Dashboard\AbstractFilter;
 use DigitalCreative\Dashboard\AbstractResource;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\FilterCollection;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Tests\Fixtures\Filters\SampleFilter;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
@@ -32,7 +32,7 @@ class FilterTest extends TestCase
 
         factory(UserModel::class, 10)->create();
 
-        $filter = new class extends AbstractFilter {
+        $filter = new class extends SampleFilter {
 
             public function apply(Builder $builder, FieldsData $value): Builder
             {
@@ -49,7 +49,7 @@ class FilterTest extends TestCase
 
         $result = $resource->index();
 
-        $this->assertSame($result[ 'total' ], 1);
+        $this->assertSame($result['total'], 1);
         $this->assertEquals($user->id, data_get($result, 'resources.0.key'));
         $this->assertEquals($user->name, data_get($result, 'resources.0.fields.0.value'));
 
@@ -58,12 +58,17 @@ class FilterTest extends TestCase
     public function test_filter_validation_works(): void
     {
 
-        $filter = new class extends AbstractFilter {
+        $filter = new class extends SampleFilter {
+
+            public function apply(Builder $builder, FieldsData $value): Builder
+            {
+                return $builder;
+            }
 
             public function fields(): array
             {
                 return [
-                    (new EditableField('Name'))->rules('required', 'min:3')
+                    (new EditableField('Name'))->rules('required', 'min:3'),
                 ];
             }
 
@@ -84,23 +89,23 @@ class FilterTest extends TestCase
     public function test_multiple_filter_validation_works(): void
     {
 
-        $filter1 = new class extends AbstractFilter {
+        $filter1 = new class extends SampleFilter {
 
             public function fields(): array
             {
                 return [
-                    (new EditableField('Name'))->rules('required')
+                    (new EditableField('Name'))->rules('required'),
                 ];
             }
 
         };
 
-        $filter2 = new class extends AbstractFilter {
+        $filter2 = new class extends SampleFilter {
 
             public function fields(): array
             {
                 return [
-                    (new EditableField('Gender'))->rules('required')
+                    (new EditableField('Gender'))->rules('required'),
                 ];
             }
 
@@ -127,7 +132,7 @@ class FilterTest extends TestCase
     public function test_value_from_the_fields_are_passed_correctly_to_the_apply_method(): void
     {
 
-        $filter = new class($this) extends AbstractFilter {
+        $filter = new class($this) extends SampleFilter {
 
             private FilterTest $runner;
 
@@ -185,7 +190,7 @@ class FilterTest extends TestCase
             public function fields(): array
             {
                 return [
-                    new EditableField('name')
+                    new EditableField('name'),
                 ];
             }
 
