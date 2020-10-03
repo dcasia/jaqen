@@ -115,10 +115,8 @@ trait ResolveFieldsTrait
                   ->contains($attribute);
     }
 
-    private function resolveFieldsUsingModel(Model $model): Collection
+    public function resolveFieldsUsingModel(Model $model, BaseRequest $request): Collection
     {
-        $request = $this->getRequest();
-
         return $this->resolveFields($request)
                     ->each(fn(AbstractField $field) => $field->resolveUsingModel($request, $model));
     }

@@ -6,6 +6,7 @@ namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\BelongsToField;
 use DigitalCreative\Dashboard\Fields\EditableField;
+use DigitalCreative\Dashboard\Http\Controllers\DetailController;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
@@ -141,19 +142,20 @@ class BelongsToFieldTest extends TestCase
          */
         $article = factory(ArticleModel::class)->create();
 
-        $request = $this->detailRequest(ArticleResource::uriKey(), $article->id);
-
-        $response = $this->makeResource(ArticleModel::class)
+        $resource = $this->makeResource(ArticleModel::class)
                          ->addDefaultFields(
-                             BelongsToField::make('User')->options(static function(BaseRequest $request) {
+                             BelongsToField::make('User')->options(function(BaseRequest $request) {
                                  return [
                                      [ 'id' => 1 ],
                                  ];
                              }),
-                         )
-                         ->detail();
+                         );
 
-        $this->assertSame($this->deepSerialize($response), [
+        $request = $this->detailRequest($resource::uriKey(), $article->id);
+
+        $response = (new DetailController())->detail($request);
+
+        $this->assertSame($response, [
             'key' => $article->id,
             'fields' => [
                 [

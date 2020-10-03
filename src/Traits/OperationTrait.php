@@ -14,35 +14,6 @@ use Illuminate\Support\Collection;
 
 trait OperationTrait
 {
-    public function detail(): array
-    {
-        $model = $this->findResource();
-
-        return [
-            'key' => $model->getKey(),
-            'fields' => $this->resolveFieldsUsingModel($model)->jsonSerialize(),
-        ];
-    }
-
-//    public function store(): void
-//    {
-//
-//        $bag = new FieldsData();
-//
-//        $request = $this->getRequest();
-//
-//        $fields = $this->resolveFields($request);
-//
-//        $this->validateFields($fields, $request);
-//
-//        $callbacks = $this->filterNonUpdatableFields($fields)
-//                          ->map(fn(AbstractField $field) => $field->fillUsingRequest($bag, $request));
-//
-//        $this->repository()->create($bag);
-//
-//        $callbacks->filter()->each(fn(callable $function) => $function());
-//
-//    }
 
     public function delete(): bool
     {
@@ -92,8 +63,8 @@ trait OperationTrait
                 $field->resolveSearchCallback(), $request
             );
 
-            return $models->map(static function(Model $model) use ($resource) {
-                return collect($resource->resolveFieldsUsingModel($model)->jsonSerialize())->pluck('value', 'attribute');
+            return $models->map(static function(Model $model) use ($resource, $request) {
+                return collect($resource->resolveFieldsUsingModel($model, $request)->jsonSerialize())->pluck('value', 'attribute');
             });
 
         }
