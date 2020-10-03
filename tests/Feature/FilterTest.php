@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
 use DigitalCreative\Dashboard\AbstractResource;
+use DigitalCreative\Dashboard\Exceptions\FilterValidationException;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\FilterCollection;
@@ -14,8 +15,6 @@ use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Validation\ValidationException;
-
 
 class FilterTest extends TestCase
 {
@@ -80,7 +79,7 @@ class FilterTest extends TestCase
 
         $resource->addFilters($filter);
 
-        $this->expectException(ValidationException::class);
+        $this->expectException(FilterValidationException::class);
 
         $resource->index();
 
@@ -123,7 +122,7 @@ class FilterTest extends TestCase
         $resource->addFilters($filter1);
         $resource->addFilters($filter2);
 
-        $this->expectException(ValidationException::class);
+        $this->expectException(FilterValidationException::class);
 
         $resource->index();
 

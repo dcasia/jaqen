@@ -5,10 +5,11 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Controller;
 
 use DigitalCreative\Dashboard\FilterCollection;
+use DigitalCreative\Dashboard\Tests\Fixtures\Filters\FilterWithRequiredFields;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\GenderFilter;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Dashboard\Tests\Fixtures\Resources\ResourceWithRequiredFilters;
 use DigitalCreative\Dashboard\Tests\TestCase;
-
 
 class ResourceIndexTest extends TestCase
 {
@@ -53,12 +54,37 @@ class ResourceIndexTest extends TestCase
             ],
         ]);
 
-        $this->withExceptionHandling()
-             ->getJson('/dashboard-api/users?filters=' . $filters)
+        $this->getJson('/dashboard-api/users?filters=' . $filters)
              ->assertStatus(200)
              ->assertJsonCount(5, 'resources')
              ->assertJsonFragment([
                  'total' => 5,
+             ]);
+
+    }
+
+    public function test_filters_validation_works(): void
+    {
+
+        $resourceUriKey = ResourceWithRequiredFilters::uriKey();
+        $filterUriKey = FilterWithRequiredFields::uriKey();
+
+        $filters = FilterCollection::test([
+            $filterUriKey => [
+                'name' => '',
+            ],
+        ]);
+
+        $this->getJson("/dashboard-api/$resourceUriKey?filters=$filters")
+             ->assertStatus(422)
+             ->assertJsonFragment([
+                 'errors' => [
+                     $filterUriKey => [
+                         'name' => [
+                             'The name field is required.',
+                         ],
+                     ],
+                 ],
              ]);
 
     }

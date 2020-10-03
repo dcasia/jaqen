@@ -6,6 +6,7 @@ namespace DigitalCreative\Dashboard\Tests;
 
 use DigitalCreative\Dashboard\DashboardServiceProvider;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\Article;
+use DigitalCreative\Dashboard\Tests\Fixtures\Resources\ResourceWithRequiredFilters;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User;
 use JohnDoe\BlogPackage\BlogPackageServiceProvider;
 
@@ -15,7 +16,8 @@ class TestServiceProvider extends DashboardServiceProvider
     {
         return [
             User::class,
-            Article::class
+            Article::class,
+            ResourceWithRequiredFilters::class,
         ];
     }
 }

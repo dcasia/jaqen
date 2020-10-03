@@ -4,8 +4,10 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard;
 
+use DigitalCreative\Dashboard\Exceptions\FilterValidationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use JsonException;
 use Throwable;
 
@@ -64,6 +66,11 @@ class FilterCollection extends Collection
         });
     }
 
+    /**
+     * @param Builder $builder
+     * @return Builder
+     * @throws FilterValidationException
+     */
     public function applyOnQuery(Builder $builder): Builder
     {
         return $builder->where(function(Builder $query) {
@@ -78,7 +85,27 @@ class FilterCollection extends Collection
                     return false;
 
                 })
-                ->each(fn(AbstractFilter $filter) => $filter->apply($query, $filter->getFieldsDataFromRequest()));
+                ->each(function(AbstractFilter $filter) use ($query) {
+
+                    $exceptions = [];
+
+                    try {
+
+                        $filter->apply($query, $filter->getFieldsDataFromRequest());
+
+                    } catch (ValidationException $exception) {
+
+                        $exceptions[$filter::uriKey()] = $exception;
+
+                    }
+
+                    if (count($exceptions)) {
+
+                        throw FilterValidationException::fromValidationExceptions($exceptions);
+
+                    }
+
+                });
 
         });
     }
