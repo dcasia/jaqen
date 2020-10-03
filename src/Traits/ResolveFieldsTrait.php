@@ -36,6 +36,14 @@ trait ResolveFieldsTrait
         return [];
     }
 
+    public function resolveNonUpdatableValidatedFields(BaseRequest $request): array
+    {
+        return [
+            $fields = $this->filterNonUpdatableFields($this->resolveFields($request)),
+            $this->validateFields($fields, $request),
+        ];
+    }
+
     public function resolveValidatedFields(BaseRequest $request): array
     {
         return [

@@ -6,6 +6,7 @@ namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
+use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
@@ -29,15 +30,15 @@ class EditableFieldTest extends TestCase
             'password' => 123456,
         ];
 
-        $request = $this->storeRequest(UserResource::uriKey(), $data);
+        $resource = $this->makeResource()
+                         ->addDefaultFields(
+                             (new EditableField('Name'))->rulesForCreate('required'),
+                             (new EditableField('Email'))->rulesForCreate('required'),
+                             (new EditableField('Gender'))->rulesForCreate('required'),
+                             (new EditableField('Password'))->rulesForCreate('required'),
+                         );
 
-        $this->makeResource($request)
-             ->addDefaultFields(
-                 (new EditableField('Name'))->rulesForCreate('required'),
-                 (new EditableField('Email'))->rulesForCreate('required'),
-                 (new EditableField('Gender'))->rulesForCreate('required'),
-                 (new EditableField('Password'))->rulesForCreate('required'),
-             );
+        $request = $this->storeRequest($resource::uriKey(), $data);
 
         (new StoreController())->store($request);
 
@@ -53,15 +54,16 @@ class EditableFieldTest extends TestCase
          */
         $user = factory(UserModel::class)->create();
 
-        $request = $this->updateRequest(UserResource::uriKey(), $user->id, [ 'name' => 'updated' ]);
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields(
+                             new EditableField('Name'),
+                             new EditableField('Email'),
+                             new EditableField('Gender'),
+                         );
 
-        $this->makeResource($request, UserModel::class)
-             ->addDefaultFields(
-                 new EditableField('Name'),
-                 new EditableField('Email'),
-                 new EditableField('Gender'),
-             )
-             ->update();
+        $request = $this->updateRequest($resource::uriKey(), $user->id, [ 'name' => 'updated' ]);
+
+        (new UpdateController())->update($request);
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,

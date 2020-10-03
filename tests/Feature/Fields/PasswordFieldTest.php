@@ -27,7 +27,7 @@ class PasswordFieldTest extends TestCase
 
         $request = $this->detailRequest(UserResource::uriKey(), $user->id);
 
-        $response = $this->makeResource($request)
+        $response = $this->makeResource()
                          ->addDefaultFields(PasswordField::make('Password'))
                          ->detail();
 

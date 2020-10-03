@@ -6,8 +6,8 @@ namespace DigitalCreative\Dashboard\Traits;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\BelongsToField;
-use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\FilterCollection;
+use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
 use DigitalCreative\Dashboard\Repository\Repository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -49,26 +49,8 @@ trait OperationTrait
         return $this->repository()->deleteResource($this->findResource());
     }
 
-    public function update(): bool
+    public function index(IndexResourceRequest $request): array
     {
-        $fields = $this->filterNonUpdatableFields(
-            $this->resolveFieldsUsingRequest($this->request)
-                 ->filter(function(AbstractField $field) {
-                     return $field->isRequired($this->getRequest()) || $field->isDirty();
-                 })
-        );
-
-        $this->validateFields($fields, $this->request);
-
-        return $this->repository()->updateResource(
-            $this->findResource(), $fields->pluck('value', 'attribute')->toArray()
-        );
-    }
-
-    public function index(): array
-    {
-
-        $request = $this->getRequest();
 
         $fields = $this->resolveFields($request);
 

@@ -34,7 +34,7 @@ trait ResolveFiltersTrait
 
     public function addFilters(AbstractFilter ...$filters): self
     {
-        $this->filters = array_merge($this->fields, $filters);
+        $this->filters = array_merge($this->filters, $filters);
 
         return $this;
     }

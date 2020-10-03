@@ -52,6 +52,11 @@ abstract class AbstractField implements JsonSerializable, Arrayable
         return $this->setValue($model->getAttribute($this->attribute));
     }
 
+    public function resolveUsingData(array $data): self
+    {
+        return $this->setValue(data_get($data, $this->attribute));
+    }
+
     /**
      * @param bool|callable $state
      * @return $this

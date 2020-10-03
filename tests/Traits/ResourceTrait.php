@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Traits;
 
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Dashboard;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Model;
@@ -12,16 +12,15 @@ use Illuminate\Database\Eloquent\Model;
 trait ResourceTrait
 {
 
-    protected function makeResource(BaseRequest $request, string $model = UserModel::class): AbstractResource
+    protected function makeResource(string $model = UserModel::class): AbstractResource
     {
-        return new class($request, $model) extends AbstractResource {
+        $resource = new class($model) extends AbstractResource {
 
             public string $model;
 
-            public function __construct(BaseRequest $request, string $model)
+            public function __construct(string $model)
             {
-                parent::__construct($request);
-
+                parent::__construct();
                 $this->model = $model;
             }
 
@@ -31,6 +30,11 @@ trait ResourceTrait
             }
 
         };
+
+        Dashboard::getInstance()->setResources([ $resource ]);
+
+        return $resource;
+
     }
 
 }

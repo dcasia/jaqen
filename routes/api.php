@@ -2,6 +2,7 @@
 
 use DigitalCreative\Dashboard\Http\Controllers\ResourceController;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
+use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -20,7 +21,7 @@ Route::get('/belongs-to/{resource}/{key}/{field}', [ ResourceController::class, 
  * CRUD
  */
 Route::get('/{resource}/{key}', [ ResourceController::class, 'fetch' ]);
-Route::patch('/{resource}/{key}', [ ResourceController::class, 'update' ]);
+Route::patch('/{resource}/{key}', [ UpdateController::class, 'update' ]);
 Route::delete('/{resource}/{key}', [ ResourceController::class, 'delete' ]);
 Route::post('/{resource}', [ StoreController::class, 'store' ]);
 Route::get('/{resource}', [ ResourceController::class, 'index' ]);

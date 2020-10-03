@@ -10,7 +10,6 @@ use DigitalCreative\Dashboard\Http\Requests\DeleteResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
-use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
@@ -45,12 +44,7 @@ class ResourceController extends Controller
 
     public function index(IndexResourceRequest $request): array
     {
-        return $request->resourceInstance()->index();
-    }
-
-    public function update(UpdateResourceRequest $request): bool
-    {
-        return $request->resourceInstance()->update();
+        return $request->resourceInstance()->index($request);
     }
 
     public function delete(DeleteResourceRequest $request): bool

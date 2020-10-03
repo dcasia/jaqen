@@ -16,7 +16,7 @@ trait ResolveUriKey
      */
     public static function uriKey(): string
     {
-        return Str::plural(Str::kebab(class_basename(static::class)));
+        return Str::of(class_basename(static::class))->slug()->kebab()->plural()->__toString();
     }
 
 }

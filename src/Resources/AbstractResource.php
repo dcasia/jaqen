@@ -26,9 +26,9 @@ abstract class AbstractResource
 
     private BaseRequest $request;
 
-    public function __construct(BaseRequest $request)
+    public function __construct()
     {
-        $this->request = $request;
+        $this->request = resolve(BaseRequest::class);
     }
 
     abstract public function getModel(): Model;

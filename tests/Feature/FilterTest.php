@@ -4,16 +4,17 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
-use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Exceptions\FilterValidationException;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\FilterCollection;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\SampleFilter;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
+use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,6 +22,7 @@ class FilterTest extends TestCase
 {
 
     use RequestTrait;
+    use ResourceTrait;
 
     public function test_filter_works(): void
     {
@@ -41,13 +43,15 @@ class FilterTest extends TestCase
 
         };
 
-        $resource = $this->getResource(
-            BaseRequest::create('/', 'GET', [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ])
-        );
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields(
+                             new EditableField('name')
+                         )
+                         ->addFilters($filter);
 
-        $resource->addFilters($filter);
+        $request = $this->indexRequest($resource::uriKey(), [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]);
 
-        $result = $resource->index();
+        $result = $resource->index($request);
 
         $this->assertSame($result['total'], 1);
         $this->assertEquals($user->id, data_get($result, 'resources.0.key'));
@@ -74,15 +78,15 @@ class FilterTest extends TestCase
 
         };
 
-        $resource = $this->getResource(
-            BaseRequest::create('/', 'GET', [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ])
-        );
+        $resource = $this->makeResource()->addFilters($filter);
 
-        $resource->addFilters($filter);
+        $request = $this->indexRequest(
+            $resource::uriKey(), [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]
+        );
 
         $this->expectException(FilterValidationException::class);
 
-        $resource->index();
+        $resource->index($request);
 
     }
 
@@ -116,16 +120,13 @@ class FilterTest extends TestCase
             $filter2::uriKey() => [ 'gender' => null ],
         ]);
 
-        $request = $this->makeRequest('/', 'GET', [ 'filters' => $filters ]);
+        $resource = $this->makeResource(UserModel::class)->addFilters($filter1, $filter2);
 
-        $resource = $this->getResource($request);
-
-        $resource->addFilters($filter1);
-        $resource->addFilters($filter2);
+        $request = $this->indexRequest($resource::uriKey(), [], [ 'filters' => $filters ]);
 
         $this->expectException(FilterValidationException::class);
 
-        $resource->index();
+        $resource->index($request);
 
     }
 
@@ -172,32 +173,11 @@ class FilterTest extends TestCase
             ],
         ]);
 
-        $request = $this->makeRequest('/', 'GET', [ 'filters' => $filters ]);
+        $resource = $this->makeResource()->addFilters($filter);
 
-        $this->getResource($request)
-             ->addFilters($filter)
-             ->index();
+        $request = $this->indexRequest($resource::uriKey(), [ 'filters' => $filters ]);
 
-    }
-
-    private function getResource(BaseRequest $request): AbstractResource
-    {
-
-        return new class($request) extends AbstractResource {
-
-            public function getModel(): Model
-            {
-                return new UserModel();
-            }
-
-            public function fields(): array
-            {
-                return [
-                    new EditableField('name'),
-                ];
-            }
-
-        };
+        $resource->index($request);
 
     }
 

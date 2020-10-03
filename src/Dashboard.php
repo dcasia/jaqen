@@ -16,7 +16,7 @@ class Dashboard
     public function setResources(array $resources): self
     {
         $this->resources = collect($resources)
-            ->mapWithKeys(fn(string $resource) => [ $resource::uriKey() => $resource ]);
+            ->mapWithKeys(fn($resource) => [ $resource::uriKey() => $resource ]);
 
         return $this;
     }
@@ -42,7 +42,13 @@ class Dashboard
 
             if ($resource = $this->resources->get($request->route('resource'))) {
 
-                return new $resource($request);
+                if ($resource instanceof AbstractResource) {
+
+                    return $resource;
+
+                }
+
+                return new $resource();
 
             }
 

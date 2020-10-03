@@ -6,8 +6,8 @@ namespace DigitalCreative\Dashboard\Tests\Feature;
 
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
+use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
@@ -44,15 +44,21 @@ class FieldTest extends TestCase
     public function test_field_validation_on_update_works(): void
     {
 
-        $request = $this->makeRequest('/', 'POST', [ 'name' => null ], UpdateResourceRequest::class);
+        /**
+         * @var UserModel $user
+         */
+        $user = resolve(UserModel::class)->create();
+
+        $request = $this->updateRequest(UserResource::uriKey(), $user->id, [ 'name' => null ]);
 
         $this->expectException(ValidationException::class);
 
         $this->getResource($request)
              ->addDefaultFields(
                  (new EditableField('name'))->rulesForUpdate('required')
-             )
-             ->update();
+             );
+
+        (new UpdateController())->update($request);
 
     }
 
@@ -75,7 +81,12 @@ class FieldTest extends TestCase
     public function test_rules_for_update_works_when_value_is_not_sent(): void
     {
 
-        $request = $this->makeRequest('/', 'POST', [ 'name' => 'Test' ], UpdateResourceRequest::class);
+        /**
+         * @var UserModel $user
+         */
+        $user = resolve(UserModel::class)->create();
+
+        $request = $this->updateRequest(UserResource::uriKey(), $user->id, [ 'name' => 'Test' ]);
 
         $this->expectException(ValidationException::class);
 
@@ -83,8 +94,9 @@ class FieldTest extends TestCase
              ->addDefaultFields(
                  (new EditableField('name'))->rulesForUpdate('required'),
                  (new EditableField('email'))->rulesForUpdate('required')
-             )
-             ->update();
+             );
+
+        (new UpdateController())->update($request);
 
     }
 
@@ -152,7 +164,7 @@ class FieldTest extends TestCase
 
         $request = $this->createRequest(UserResource::uriKey());
 
-        $response = $this->makeResource($request, UserModel::class)
+        $response = $this->makeResource(UserModel::class)
                          ->addDefaultFields(
                              EditableField::make('Name')->default('Demo'),
                              EditableField::make('Email')->default(fn() => 'demo@email.com'),
@@ -171,7 +183,7 @@ class FieldTest extends TestCase
 
         $request = $this->createRequest(UserResource::uriKey(), [ 'only' => 'first_name,last_name' ]);
 
-        $response = $this->makeResource($request, UserModel::class)
+        $response = $this->makeResource(UserModel::class)
                          ->addDefaultFields(
                              EditableField::make('First Name')->default('Hello'),
                              EditableField::make('Last Name')->default('World'),
@@ -194,7 +206,7 @@ class FieldTest extends TestCase
          */
         $request = $this->createRequest(UserResource::uriKey(), [ 'only' => 'first_name , email' ]);
 
-        $response = $this->makeResource($request, UserModel::class)
+        $response = $this->makeResource(UserModel::class)
                          ->addDefaultFields(
                              EditableField::make('First Name')->default('Hello'),
                              EditableField::make('Last Name')->default('World'),
@@ -214,7 +226,7 @@ class FieldTest extends TestCase
 
         $request = $this->createRequest(UserResource::uriKey(), [ 'except' => 'first_name , last_name' ]);
 
-        $response = $this->makeResource($request, UserModel::class)
+        $response = $this->makeResource(UserModel::class)
                          ->addDefaultFields(
                              EditableField::make('First Name')->default('Hello'),
                              EditableField::make('Last Name')->default('World'),
