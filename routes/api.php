@@ -1,6 +1,7 @@
 <?php
 
 use DigitalCreative\Dashboard\Http\Controllers\DetailController;
+use DigitalCreative\Dashboard\Http\Controllers\IndexController;
 use DigitalCreative\Dashboard\Http\Controllers\ResourceController;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
@@ -25,4 +26,4 @@ Route::get('/{resource}/{key}', [ DetailController::class, 'detail' ]);
 Route::patch('/{resource}/{key}', [ UpdateController::class, 'update' ]);
 Route::delete('/{resource}/{key}', [ ResourceController::class, 'delete' ]);
 Route::post('/{resource}', [ StoreController::class, 'store' ]);
-Route::get('/{resource}', [ ResourceController::class, 'index' ]);
+Route::get('/{resource}', [ IndexController::class, 'index' ]);

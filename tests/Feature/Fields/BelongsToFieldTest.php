@@ -7,6 +7,7 @@ namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 use DigitalCreative\Dashboard\Fields\BelongsToField;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Controllers\DetailController;
+use DigitalCreative\Dashboard\Http\Controllers\IndexController;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
@@ -36,15 +37,16 @@ class BelongsToFieldTest extends TestCase
          */
         $article = factory(ArticleModel::class)->create();
 
-        $request = $this->indexRequest(ArticleResource::uriKey());
-
-        $response = $this->makeResource(ArticleModel::class)
+        $resource = $this->makeResource(ArticleModel::class)
                          ->addDefaultFields(
                              BelongsToField::make('User')
                                            ->setRelatedResource(MinimalUserResource::class)
                                            ->withExtraRelatedResourceData(fn(BaseRequest $request, UserModel $user) => [ 'name' => $user->name ]),
-                         )
-                         ->index($request);
+                         );
+
+        $request = $this->indexRequest($resource::uriKey());
+
+        $response = (new IndexController())->index($request);
 
         $this->assertSame($this->deepSerialize($response), [
             'total' => 1,

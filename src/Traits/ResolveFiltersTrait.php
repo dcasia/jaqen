@@ -25,7 +25,7 @@ trait ResolveFiltersTrait
         return [];
     }
 
-    private function resolveFilters(): Collection
+    public function resolveFilters(): Collection
     {
         return once(function () {
             return collect($this->filters())->merge($this->filters);

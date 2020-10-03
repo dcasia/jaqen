@@ -88,7 +88,9 @@ trait RequestTrait
 
     protected function indexRequest(string $resourceKey, array $data = [], array $query = []): BaseRequest
     {
-        return $this->makeRequest($resourceKey, 'GET', $data, $query, IndexResourceRequest::class);
+        return $this->makeRequest(
+            [ '/{resource}' => $resourceKey ], 'GET', $data, $query, IndexResourceRequest::class
+        );
     }
 
     protected function detailRequest(string $resourceKey, int $key, array $data = [], array $query = []): BaseRequest

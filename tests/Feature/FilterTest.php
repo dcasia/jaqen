@@ -8,15 +8,13 @@ use DigitalCreative\Dashboard\Exceptions\FilterValidationException;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\FilterCollection;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
+use DigitalCreative\Dashboard\Http\Controllers\IndexController;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\SampleFilter;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class FilterTest extends TestCase
 {
@@ -44,14 +42,12 @@ class FilterTest extends TestCase
         };
 
         $resource = $this->makeResource(UserModel::class)
-                         ->addDefaultFields(
-                             new EditableField('name')
-                         )
+                         ->addDefaultFields(new EditableField('name'))
                          ->addFilters($filter);
 
         $request = $this->indexRequest($resource::uriKey(), [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]);
 
-        $result = $resource->index($request);
+        $result = (new IndexController())->index($request);
 
         $this->assertSame($result['total'], 1);
         $this->assertEquals($user->id, data_get($result, 'resources.0.key'));
@@ -86,7 +82,7 @@ class FilterTest extends TestCase
 
         $this->expectException(FilterValidationException::class);
 
-        $resource->index($request);
+        (new IndexController())->index($request);
 
     }
 
@@ -126,7 +122,7 @@ class FilterTest extends TestCase
 
         $this->expectException(FilterValidationException::class);
 
-        $resource->index($request);
+        (new IndexController())->index($request);
 
     }
 
@@ -177,7 +173,7 @@ class FilterTest extends TestCase
 
         $request = $this->indexRequest($resource::uriKey(), [ 'filters' => $filters ]);
 
-        $resource->index($request);
+        (new IndexController())->index($request);
 
     }
 
