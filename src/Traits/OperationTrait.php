@@ -12,11 +12,6 @@ use Illuminate\Support\Collection;
 trait OperationTrait
 {
 
-    public function delete(): bool
-    {
-        return $this->repository()->deleteResource($this->findResource());
-    }
-
     public function searchBelongsToRelation(): Collection
     {
 
@@ -41,15 +36,6 @@ trait OperationTrait
 
         return abort(404);
 
-    }
-
-    private function findResource(): ?Model
-    {
-        return once(function() {
-            return $this->repository()->findByKey(
-                $this->request->route('key')
-            );
-        });
     }
 
 }
