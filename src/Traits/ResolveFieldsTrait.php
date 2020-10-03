@@ -36,16 +36,24 @@ trait ResolveFieldsTrait
         return [];
     }
 
+    public function resolveValidatedFields(BaseRequest $request): array
+    {
+        return [
+            $fields = $this->resolveFields($request),
+            $this->validateFields($fields, $request),
+        ];
+    }
+
     /**
      * Resolve fields and remove every field that is not necessary for this given request
      *
+     * @param BaseRequest $request
      * @return Collection
      */
-    public function resolveFields(): Collection
+    public function resolveFields(BaseRequest $request): Collection
     {
-        return once(function() {
+        return once(function() use ($request) {
 
-            $request = $this->getRequest();
             $for = Str::camel($request->input('fieldsFor', 'fields'));
 
             $only = $request->input('only', null);
@@ -101,30 +109,30 @@ trait ResolveFieldsTrait
 
     private function resolveFieldsUsingModel(Model $model): Collection
     {
-        return $this->resolveFields()
-                    ->each(fn(AbstractField $field) => $field->resolveUsingModel($this->getRequest(), $model));
+        $request = $this->getRequest();
+
+        return $this->resolveFields($request)
+                    ->each(fn(AbstractField $field) => $field->resolveUsingModel($request, $model));
     }
 
     private function resolveFieldsUsingRequest(BaseRequest $request): Collection
     {
-        return $this->resolveFields()
+        return $this->resolveFields($request)
                     ->each(fn(AbstractField $field) => $field->resolveUsingRequest($request));
     }
 
-    private function filterNonUpdatableFields(Collection $fields): Collection
+    public function filterNonUpdatableFields(Collection $fields): Collection
     {
         return $fields->filter(fn(AbstractField $field) => $field->isReadOnly() === false);
     }
 
-    private function validateFields(Collection $fields): array
+    private function validateFields(Collection $fields, BaseRequest $request): array
     {
-        $request = $this->getRequest();
 
         $rules = $fields
             ->mapWithKeys(fn(AbstractField $field) => [
                 $field->attribute => $field->resolveRules($request),
             ])
-            ->filter()
             ->toArray();
 
         return $request->validate($rules);
@@ -136,11 +144,11 @@ trait ResolveFieldsTrait
 
         $data = new FieldsData();
 
-        $fields = $this->resolveFields();
-
-        $this->validateFields($fields);
-
         $request = $this->getRequest();
+
+        $fields = $this->resolveFields($request);
+
+        $this->validateFields($fields, $request);
 
         $this->filterNonUpdatableFields($fields)
              ->map(fn(AbstractField $field) => $field->fillUsingRequest($data, $request));
@@ -163,7 +171,7 @@ trait ResolveFieldsTrait
 
     public function findFieldByAttribute(string $attribute): ?AbstractField
     {
-        return $this->resolveFields()
+        return $this->resolveFields($this->request)
                     ->first(static function(AbstractField $field) use ($attribute) {
 
                         if ($field instanceof BelongsToField) {

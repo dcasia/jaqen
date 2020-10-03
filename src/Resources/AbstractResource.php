@@ -15,7 +15,7 @@ use DigitalCreative\Dashboard\Traits\ResolveUriKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-abstract class Resource
+abstract class AbstractResource
 {
 
     use ResolveFieldsTrait;

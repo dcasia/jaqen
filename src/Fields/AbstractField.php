@@ -108,7 +108,14 @@ abstract class AbstractField implements JsonSerializable, Arrayable
      */
     public function fillUsingRequest(FieldsData $dataBag, BaseRequest $request): ?callable
     {
-        $dataBag->setAttribute($this->attribute, $request->input([ $this->attribute ], null));
+        $dataBag->setAttribute($this->attribute, $request->input($this->attribute, null));
+
+        return null;
+    }
+
+    public function fill(FieldsData $dataBag, array $data, BaseRequest $request): ?callable
+    {
+        $dataBag->setAttribute($this->attribute, data_get($data, $this->attribute));
 
         return null;
     }

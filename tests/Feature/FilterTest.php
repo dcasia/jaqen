@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
-use DigitalCreative\Dashboard\Resources\Resource;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Exceptions\FilterValidationException;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\FieldsData;
@@ -180,10 +180,10 @@ class FilterTest extends TestCase
 
     }
 
-    private function getResource(BaseRequest $request): Resource
+    private function getResource(BaseRequest $request): AbstractResource
     {
 
-        return new class($request) extends Resource {
+        return new class($request) extends AbstractResource {
 
             public function getModel(): Model
             {

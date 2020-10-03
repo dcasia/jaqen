@@ -8,12 +8,12 @@ use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Fields\PasswordField;
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
 use DigitalCreative\Dashboard\Fields\SelectField;
-use DigitalCreative\Dashboard\Resources\Resource;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\GenderFilter;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Resource
+class User extends AbstractResource
 {
 
     public function getModel(): Model

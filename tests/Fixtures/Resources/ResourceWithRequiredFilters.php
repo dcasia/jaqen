@@ -5,12 +5,12 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Fixtures\Resources;
 
 use DigitalCreative\Dashboard\Fields\PasswordField;
-use DigitalCreative\Dashboard\Resources\Resource;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\FilterWithRequiredFields;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Model;
 
-class ResourceWithRequiredFilters extends Resource
+class ResourceWithRequiredFilters extends AbstractResource
 {
 
     public function getModel(): Model

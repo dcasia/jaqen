@@ -9,7 +9,6 @@ use DigitalCreative\Dashboard\FilterCollection;
 class FilterRequest extends BaseRequest
 {
 
-
     public static function createFromFilter(BaseRequest $from, string $uriKey): self
     {
 

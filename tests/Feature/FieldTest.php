@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
-use DigitalCreative\Dashboard\Resources\Resource;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
@@ -97,7 +97,7 @@ class FieldTest extends TestCase
                                  new EditableField('name'),
                              ];
                          })
-                         ->resolveFields();
+                         ->resolveFields($request);
 
         $this->assertEquals([
             [
@@ -116,7 +116,7 @@ class FieldTest extends TestCase
 
         $request = $this->createRequest(UserResource::uriKey(), [ 'fieldsFor' => 'demo' ]);
 
-        $resource = new class($request) extends Resource {
+        $resource = new class($request) extends AbstractResource {
 
             public function getModel(): Model
             {
@@ -131,7 +131,7 @@ class FieldTest extends TestCase
             }
         };
 
-        $response = $resource->resolveFields();
+        $response = $resource->resolveFields($request);
 
         $this->assertEquals([
             [
@@ -155,7 +155,7 @@ class FieldTest extends TestCase
                              EditableField::make('Name')->default('Demo'),
                              EditableField::make('Email')->default(fn() => 'demo@email.com'),
                          )
-                         ->resolveFields();
+                         ->resolveFields($request);
 
         $this->assertEquals(
             [ 'name' => 'Demo', 'email' => 'demo@email.com' ],
@@ -175,7 +175,7 @@ class FieldTest extends TestCase
                              EditableField::make('Last Name')->default('World'),
                              EditableField::make('Email')->default('demo@email.com'),
                          )
-                         ->resolveFields();
+                         ->resolveFields($request);
 
         $this->assertEquals(
             [ 'first_name' => 'Hello', 'last_name' => 'World' ],
@@ -198,7 +198,7 @@ class FieldTest extends TestCase
                              EditableField::make('Last Name')->default('World'),
                              EditableField::make('Email')->default('demo@email.com'),
                          )
-                         ->resolveFields();
+                         ->resolveFields($request);
 
         $this->assertEquals(
             [ 'first_name' => 'Hello', 'email' => 'demo@email.com' ],
@@ -218,7 +218,7 @@ class FieldTest extends TestCase
                              EditableField::make('Last Name')->default('World'),
                              EditableField::make('Email')->default('demo@email.com'),
                          )
-                         ->resolveFields();
+                         ->resolveFields($request);
 
         $this->assertEquals(
             [ 'email' => 'demo@email.com' ],
@@ -240,9 +240,9 @@ class FieldTest extends TestCase
         $this->assertEquals('hello_world', EditableField::make('HelloWorld', 'hello_world')->attribute);
     }
 
-    private function getResource(BaseRequest $request): Resource
+    private function getResource(BaseRequest $request): AbstractResource
     {
-        return new class($request) extends Resource {
+        return new class($request) extends AbstractResource {
 
             public function getModel(): Model
             {

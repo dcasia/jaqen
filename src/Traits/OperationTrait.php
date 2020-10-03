@@ -29,11 +29,11 @@ trait OperationTrait
 
         $bag = new FieldsData();
 
-        $fields = $this->resolveFields();
-
-        $this->validateFields($fields);
-
         $request = $this->getRequest();
+
+        $fields = $this->resolveFields($request);
+
+        $this->validateFields($fields, $request);
 
         $callbacks = $this->filterNonUpdatableFields($fields)
                           ->map(fn(AbstractField $field) => $field->fillUsingRequest($bag, $request));
@@ -58,7 +58,7 @@ trait OperationTrait
                  })
         );
 
-        $this->validateFields($fields);
+        $this->validateFields($fields, $this->request);
 
         return $this->repository()->updateResource(
             $this->findResource(), $fields->pluck('value', 'attribute')->toArray()
@@ -68,9 +68,9 @@ trait OperationTrait
     public function index(): array
     {
 
-        $fields = $this->resolveFields();
-
         $request = $this->getRequest();
+
+        $fields = $this->resolveFields($request);
 
         $filters = new FilterCollection($this->resolveFilters(), $request->query('filters'));
 

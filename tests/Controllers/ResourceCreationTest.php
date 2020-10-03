@@ -16,7 +16,7 @@ class ResourceCreationTest extends TestCase
             'name' => 'demo',
             'email' => 'demo@email.com',
             'gender' => 'male',
-            'password' => 123456
+            'password' => 123456,
         ];
 
         $this->postJson('/dashboard-api/users', $data)

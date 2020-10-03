@@ -6,7 +6,7 @@ namespace DigitalCreative\Dashboard\Fields;
 
 use Closure;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Resources\Resource;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -82,13 +82,13 @@ class BelongsToField extends AbstractField
         return null;
     }
 
-    private function resolveRelatedResource(): ?Resource
+    private function resolveRelatedResource(): ?AbstractResource
     {
         return once(function() {
 
             if ($this->relatedResource) {
 
-                if (is_subclass_of($this->relatedResource, Resource::class) === false) {
+                if (is_subclass_of($this->relatedResource, AbstractResource::class) === false) {
 
                     throw new RuntimeException('Please provide a valid resource class.');
 
@@ -108,12 +108,12 @@ class BelongsToField extends AbstractField
         return $this->relationAttribute;
     }
 
-    public function getRelatedResource(): Resource
+    public function getRelatedResource(): AbstractResource
     {
         return $this->resolveRelatedResource();
     }
 
-    public function getRelatedModel(Resource $parentResource): Model
+    public function getRelatedModel(AbstractResource $parentResource): Model
     {
 
         if ($resource = $this->resolveRelatedResource()) {
@@ -198,7 +198,7 @@ class BelongsToField extends AbstractField
 
         if ($resource = $this->resolveRelatedResource()) {
 
-            $data['settings']['fields'] = $resource->resolveFields()->toArray();
+            $data['settings']['fields'] = $resource->resolveFields(app(BaseRequest::class))->toArray();
 
         }
 
