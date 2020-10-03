@@ -10,11 +10,12 @@ use Illuminate\Support\Collection;
 class Dashboard
 {
 
-    private array $resources;
+    private Collection $resources;
 
     public function setResources(array $resources): self
     {
-        $this->resources = $resources;
+        $this->resources = collect($resources)
+            ->mapWithKeys(fn(string $resource) => [ $resource::uriKey() => $resource ]);
 
         return $this;
     }
@@ -26,30 +27,20 @@ class Dashboard
 
     public function allAuthorizedResources(BaseRequest $request): Collection
     {
-        return collect($this->resources)
-            ->map(fn($class, $key) => new $class($request))
-            /**
-             * @todo implement authorized to see
-             */
-            ->filter(fn(AbstractResource $resource) => $resource);
+        /**
+         * @todo implement authorized to see
+         */
+        return $this->resources->map(fn($class, $key) => new $class($request))
+                               ->filter(fn(AbstractResource $resource) => $resource);
     }
 
     public function resourceForRequest(BaseRequest $request): AbstractResource
     {
         return once(function() use ($request) {
 
-            /**
-             * @todo Create a cache system to dont have to loop through every single resource every time
-             *
-             * @var AbstractResource $resource
-             */
-            foreach ($this->resources as $resource) {
+            if ($resource = $this->resources->get($request->route('resource'))) {
 
-                if ($resource::uriKey() === $request->route('resource')) {
-
-                    return new $resource($request);
-
-                }
+                return new $resource($request);
 
             }
 
