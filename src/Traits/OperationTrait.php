@@ -2,58 +2,18 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard;
+namespace DigitalCreative\Dashboard\Traits;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\BelongsToField;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Traits\MakeableTrait;
-use DigitalCreative\Dashboard\Traits\ResolveFieldsTrait;
-use DigitalCreative\Dashboard\Traits\ResolveFiltersTrait;
-use DigitalCreative\Dashboard\Traits\ResolveUriKey;
+use DigitalCreative\Dashboard\FieldsData;
+use DigitalCreative\Dashboard\FilterCollection;
+use DigitalCreative\Dashboard\Repository\Repository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
-abstract class AbstractResource
+trait OperationTrait
 {
-
-    use ResolveFieldsTrait;
-    use ResolveFiltersTrait;
-    use ResolveUriKey;
-    use MakeableTrait;
-
-    private BaseRequest $request;
-
-    public function __construct(BaseRequest $request)
-    {
-        $this->request = $request;
-    }
-
-    public function getDescriptor(): array
-    {
-        return [
-            'name' => $this->label(),
-            'label' => Str::plural($this->label()),
-            'uriKey' => static::uriKey(),
-        ];
-    }
-
-    public static function humanize(string $value): string
-    {
-        return Str::title(Str::snake($value, ' '));
-    }
-
-    public function label(): string
-    {
-        return static::humanize(class_basename(static::class));
-    }
-
-    public function getModel(): Model
-    {
-        return new static::$model;
-    }
-
     public function detail(): array
     {
         $model = $this->findResource();
@@ -105,25 +65,6 @@ abstract class AbstractResource
         );
     }
 
-    private function findResource(): ?Model
-    {
-        return once(function() {
-            return $this->repository()->findByKey(
-                $this->request->route('key')
-            );
-        });
-    }
-
-    public function repository(): ResourceRepository
-    {
-        return new ResourceRepository($this->getModel());
-    }
-
-    public function getFiltersListing(): array
-    {
-        return $this->resolveFilters()->toArray();
-    }
-
     public function index(): array
     {
 
@@ -163,7 +104,7 @@ abstract class AbstractResource
         if ($field instanceof BelongsToField && $field->isSearchable()) {
 
             $resource = $field->getRelatedResource();
-            $repository = new ResourceRepository($resource->getModel());
+            $repository = new Repository($resource->getModel());
 
             $models = $repository->searchForRelatedEntries(
                 $field->resolveSearchCallback(), $request
@@ -177,6 +118,15 @@ abstract class AbstractResource
 
         return abort(404);
 
+    }
+
+    private function findResource(): ?Model
+    {
+        return once(function() {
+            return $this->repository()->findByKey(
+                $this->request->route('key')
+            );
+        });
     }
 
 }

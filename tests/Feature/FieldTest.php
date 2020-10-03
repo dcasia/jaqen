@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
-use DigitalCreative\Dashboard\AbstractResource;
+use DigitalCreative\Dashboard\Resources\Resource;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
@@ -15,6 +15,7 @@ use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\InteractionWithResponseTrait;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
 
 class FieldTest extends TestCase
@@ -115,7 +116,13 @@ class FieldTest extends TestCase
 
         $request = $this->createRequest(UserResource::uriKey(), [ 'fieldsFor' => 'demo' ]);
 
-        $resource = new class($request) extends AbstractResource {
+        $resource = new class($request) extends Resource {
+
+            public function getModel(): Model
+            {
+                return new UserModel();
+            }
+
             public function fieldsForDemo(): array
             {
                 return [
@@ -233,10 +240,15 @@ class FieldTest extends TestCase
         $this->assertEquals('hello_world', EditableField::make('HelloWorld', 'hello_world')->attribute);
     }
 
-    private function getResource(BaseRequest $request): AbstractResource
+    private function getResource(BaseRequest $request): Resource
     {
-        return new class($request) extends AbstractResource {
-            public static string $model = UserModel::class;
+        return new class($request) extends Resource {
+
+            public function getModel(): Model
+            {
+                return new UserModel();
+            }
+
         };
     }
 

@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Requests;
 
-use DigitalCreative\Dashboard\AbstractResource;
+use DigitalCreative\Dashboard\Resources\Resource;
 use DigitalCreative\Dashboard\Dashboard;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -21,7 +21,7 @@ class BaseRequest extends FormRequest
         return [];
     }
 
-    public function resourceInstance(): AbstractResource
+    public function resourceInstance(): Resource
     {
         return Dashboard::getInstance()->resourceForRequest($this);
     }

@@ -5,9 +5,8 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Fields;
 
 use Closure;
-use DigitalCreative\Dashboard\AbstractResource;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
+use DigitalCreative\Dashboard\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -83,13 +82,13 @@ class BelongsToField extends AbstractField
         return null;
     }
 
-    private function resolveRelatedResource(): ?AbstractResource
+    private function resolveRelatedResource(): ?Resource
     {
-        return once(function () {
+        return once(function() {
 
             if ($this->relatedResource) {
 
-                if (is_subclass_of($this->relatedResource, AbstractResource::class) === false) {
+                if (is_subclass_of($this->relatedResource, Resource::class) === false) {
 
                     throw new RuntimeException('Please provide a valid resource class.');
 
@@ -109,12 +108,12 @@ class BelongsToField extends AbstractField
         return $this->relationAttribute;
     }
 
-    public function getRelatedResource(): AbstractResource
+    public function getRelatedResource(): Resource
     {
         return $this->resolveRelatedResource();
     }
 
-    public function getRelatedModel(AbstractResource $parentResource): Model
+    public function getRelatedModel(Resource $parentResource): Model
     {
 
         if ($resource = $this->resolveRelatedResource()) {
@@ -164,7 +163,7 @@ class BelongsToField extends AbstractField
 
         }
 
-        return static function (Builder $builder, BaseRequest $request): Builder {
+        return static function(Builder $builder, BaseRequest $request): Builder {
             return $builder->when($request->query('id'), fn(Builder $builder, string $search) => $builder->whereKey($search))
                            ->limit(10);
         };
@@ -193,13 +192,13 @@ class BelongsToField extends AbstractField
         $data = [
             'settings' => [
                 'searchable' => $this->isSearchable(),
-                'options' => $this->resolveOptions()
-            ]
+                'options' => $this->resolveOptions(),
+            ],
         ];
 
         if ($resource = $this->resolveRelatedResource()) {
 
-            $data[ 'settings' ][ 'fields' ] = $resource->resolveFields()->toArray();
+            $data['settings']['fields'] = $resource->resolveFields()->toArray();
 
         }
 

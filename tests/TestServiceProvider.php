@@ -8,7 +8,6 @@ use DigitalCreative\Dashboard\DashboardServiceProvider;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\Article;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\ResourceWithRequiredFilters;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User;
-use JohnDoe\BlogPackage\BlogPackageServiceProvider;
 
 class TestServiceProvider extends DashboardServiceProvider
 {

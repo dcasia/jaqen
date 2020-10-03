@@ -6,7 +6,6 @@ namespace DigitalCreative\Dashboard\Traits;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\BelongsToField;
-use DigitalCreative\Dashboard\Fields\ReadOnlyField;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Model;
@@ -102,7 +101,8 @@ trait ResolveFieldsTrait
 
     private function resolveFieldsUsingModel(Model $model): Collection
     {
-        return $this->resolveFields()->each(fn(AbstractField $field) => $field->resolveUsingModel($this->getRequest(), $model));
+        return $this->resolveFields()
+                    ->each(fn(AbstractField $field) => $field->resolveUsingModel($this->getRequest(), $model));
     }
 
     private function resolveFieldsUsingRequest(BaseRequest $request): Collection

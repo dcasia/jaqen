@@ -2,14 +2,17 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard;
+namespace DigitalCreative\Dashboard\Repository;
 
+use DigitalCreative\Dashboard\FieldsData;
+use DigitalCreative\Dashboard\FilterCollection;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Resources\EloquentResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-class ResourceRepository
+class Repository implements RepositoryInterface
 {
     /**
      * @var Model

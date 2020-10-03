@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
-use DigitalCreative\Dashboard\AbstractResource;
+use DigitalCreative\Dashboard\Resources\Resource;
 use DigitalCreative\Dashboard\Exceptions\FilterValidationException;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\FieldsData;
@@ -15,6 +15,7 @@ use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class FilterTest extends TestCase
 {
@@ -179,12 +180,15 @@ class FilterTest extends TestCase
 
     }
 
-    private function getResource(BaseRequest $request): AbstractResource
+    private function getResource(BaseRequest $request): Resource
     {
 
-        return new class($request) extends AbstractResource {
+        return new class($request) extends Resource {
 
-            public static string $model = UserModel::class;
+            public function getModel(): Model
+            {
+                return new UserModel();
+            }
 
             public function fields(): array
             {

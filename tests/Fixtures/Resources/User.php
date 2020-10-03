@@ -4,18 +4,22 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Fixtures\Resources;
 
-use DigitalCreative\Dashboard\AbstractResource;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Fields\PasswordField;
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
 use DigitalCreative\Dashboard\Fields\SelectField;
+use DigitalCreative\Dashboard\Resources\Resource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\GenderFilter;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends AbstractResource
+class User extends Resource
 {
 
-    public static $model = UserModel::class;
+    public function getModel(): Model
+    {
+        return new UserModel();
+    }
 
     public function fields(): array
     {

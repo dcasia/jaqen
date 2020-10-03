@@ -4,14 +4,14 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Controllers;
 
-use DigitalCreative\Dashboard\AbstractResource;
 use DigitalCreative\Dashboard\Dashboard;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Http\Requests\DeleteResourceRequest;
-use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
+use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
+use DigitalCreative\Dashboard\Resources\Resource;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 
@@ -28,7 +28,7 @@ class ResourceController extends Controller
     {
         return Dashboard::getInstance()
                         ->allAuthorizedResources($request)
-                        ->map(function(AbstractResource $resource) {
+                        ->map(function(Resource $resource) {
                             return $resource->getDescriptor();
                         });
     }

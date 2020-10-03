@@ -4,14 +4,18 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Fixtures\Resources;
 
-use DigitalCreative\Dashboard\AbstractResource;
 use DigitalCreative\Dashboard\Fields\EditableField;
+use DigitalCreative\Dashboard\Resources\Resource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
+use Illuminate\Database\Eloquent\Model;
 
-class MinimalUserResource extends AbstractResource
+class MinimalUserResource extends Resource
 {
 
-    public static $model = UserModel::class;
+    public function getModel(): Model
+    {
+        return new UserModel();
+    }
 
     public function fields(): array
     {

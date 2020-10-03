@@ -4,16 +4,20 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Fixtures\Resources;
 
-use DigitalCreative\Dashboard\AbstractResource;
 use DigitalCreative\Dashboard\Fields\BelongsToField;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
+use DigitalCreative\Dashboard\Resources\Resource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article as ArticleModel;
+use Illuminate\Database\Eloquent\Model;
 
-class Article extends AbstractResource
+class Article extends Resource
 {
 
-    public static $model = ArticleModel::class;
+    public function getModel(): Model
+    {
+        return new ArticleModel();
+    }
 
     public function fields(): array
     {
@@ -21,7 +25,7 @@ class Article extends AbstractResource
             ReadOnlyField::make('id'),
             EditableField::make('Title'),
             EditableField::make('Content'),
-            BelongsToField::make('User', 'user', User::class)
+            BelongsToField::make('User', 'user', User::class),
         ];
     }
 

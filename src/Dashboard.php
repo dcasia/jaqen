@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard;
 
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Resources\Resource;
 use Illuminate\Support\Collection;
 
 class Dashboard
@@ -31,11 +32,11 @@ class Dashboard
          * @todo implement authorized to see
          */
         return $this->resources->map(fn($class, $key) => new $class($request))
-                               ->filter(fn(AbstractResource $resource) => $resource)
+                               ->filter(fn(Resource $resource) => $resource)
                                ->values();
     }
 
-    public function resourceForRequest(BaseRequest $request): AbstractResource
+    public function resourceForRequest(BaseRequest $request): Resource
     {
         return once(function() use ($request) {
 
