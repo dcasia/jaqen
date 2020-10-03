@@ -4,11 +4,11 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
-use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Fields\EditableField;
+use DigitalCreative\Dashboard\Http\Controllers\ResourceController;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
 use DigitalCreative\Dashboard\Tests\TestCase;
@@ -28,15 +28,16 @@ class FieldTest extends TestCase
     public function test_field_validation_on_create_works(): void
     {
 
-        $request = $this->makeRequest('/', 'POST', [ 'name' => null ], StoreResourceRequest::class);
+        $request = $this->storeRequest(UserResource::uriKey(), [ 'name' => null ]);
 
         $this->expectException(ValidationException::class);
 
         $this->getResource($request)
              ->addDefaultFields(
                  (new EditableField('name'))->rulesForCreate('required')
-             )
-             ->store();
+             );
+
+        (new ResourceController)->store($request);
 
     }
 
@@ -58,15 +59,16 @@ class FieldTest extends TestCase
     public function test_fields_are_validate_even_if_they_are_not_sent_on_the_request(): void
     {
 
-        $request = $this->makeRequest('/', 'POST', [], StoreResourceRequest::class);
+        $request = $this->storeRequest(UserResource::uriKey());
 
         $this->expectException(ValidationException::class);
 
         $this->getResource($request)
              ->addDefaultFields(
                  (new EditableField('name'))->rulesForCreate('required')
-             )
-             ->store();
+             );
+
+        (new ResourceController)->store($request);
 
     }
 

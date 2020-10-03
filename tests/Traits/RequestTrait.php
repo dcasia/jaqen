@@ -58,7 +58,7 @@ trait RequestTrait
 
     protected function storeRequest(string $resourceKey, array $data = []): BaseRequest
     {
-        return $this->makeRequest([ '/create/{resource}' => "/create/$resourceKey" ], 'POST', $data, StoreResourceRequest::class);
+        return $this->makeRequest([ '/{resource}' => "/$resourceKey" ], 'POST', $data, StoreResourceRequest::class);
     }
 
     protected function createRequest(string $resourceKey, array $data = []): BaseRequest

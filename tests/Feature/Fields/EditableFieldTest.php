@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\EditableField;
+use DigitalCreative\Dashboard\Http\Controllers\ResourceController;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
@@ -25,7 +26,7 @@ class EditableFieldTest extends TestCase
             'name' => 'test',
             'email' => 'email@email.com',
             'gender' => 'male',
-            'password' => 123456
+            'password' => 123456,
         ];
 
         $request = $this->storeRequest(UserResource::uriKey(), $data);
@@ -36,8 +37,9 @@ class EditableFieldTest extends TestCase
                  (new EditableField('Email'))->rulesForCreate('required'),
                  (new EditableField('Gender'))->rulesForCreate('required'),
                  (new EditableField('Password'))->rulesForCreate('required'),
-             )
-             ->store();
+             );
+
+        (new ResourceController())->store($request);
 
         $this->assertDatabaseHas('users', $data);
 
@@ -64,7 +66,7 @@ class EditableFieldTest extends TestCase
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
             'email' => $user->email,
-            'name' => 'updated'
+            'name' => 'updated',
         ]);
 
     }

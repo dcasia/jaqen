@@ -24,25 +24,25 @@ trait OperationTrait
         ];
     }
 
-    public function store(): void
-    {
-
-        $bag = new FieldsData();
-
-        $request = $this->getRequest();
-
-        $fields = $this->resolveFields($request);
-
-        $this->validateFields($fields, $request);
-
-        $callbacks = $this->filterNonUpdatableFields($fields)
-                          ->map(fn(AbstractField $field) => $field->fillUsingRequest($bag, $request));
-
-        $this->repository()->create($bag);
-
-        $callbacks->filter()->each(fn(callable $function) => $function());
-
-    }
+//    public function store(): void
+//    {
+//
+//        $bag = new FieldsData();
+//
+//        $request = $this->getRequest();
+//
+//        $fields = $this->resolveFields($request);
+//
+//        $this->validateFields($fields, $request);
+//
+//        $callbacks = $this->filterNonUpdatableFields($fields)
+//                          ->map(fn(AbstractField $field) => $field->fillUsingRequest($bag, $request));
+//
+//        $this->repository()->create($bag);
+//
+//        $callbacks->filter()->each(fn(callable $function) => $function());
+//
+//    }
 
     public function delete(): bool
     {

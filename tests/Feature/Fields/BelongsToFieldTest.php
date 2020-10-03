@@ -6,6 +6,7 @@ namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\BelongsToField;
 use DigitalCreative\Dashboard\Fields\EditableField;
+use DigitalCreative\Dashboard\Http\Controllers\ResourceController;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article as ArticleModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
@@ -55,7 +56,7 @@ class BelongsToFieldTest extends TestCase
                             'value' => $article->user->id,
                             'component' => 'belongs-to-field',
                             'additionalInformation' => [
-                                'name' => $article->user->name
+                                'name' => $article->user->name,
                             ],
                             'settings' => [
                                 'searchable' => false,
@@ -67,13 +68,13 @@ class BelongsToFieldTest extends TestCase
                                         'value' => null,
                                         'component' => 'editable-field',
                                         'additionalInformation' => null,
-                                    ]
+                                    ],
                                 ],
                             ],
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ]);
 
     }
@@ -114,7 +115,7 @@ class BelongsToFieldTest extends TestCase
         $data = [
             'title' => 'Hello',
             'content' => 'world',
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ];
 
         $request = $this->storeRequest(ArticleResource::uriKey(), $data);
@@ -124,8 +125,9 @@ class BelongsToFieldTest extends TestCase
                  EditableField::make('Title'),
                  EditableField::make('Content'),
                  BelongsToField::make('User'),
-             )
-             ->store();
+             );
+
+        (new ResourceController())->store($request);
 
         $this->assertDatabaseHas('articles', $data);
 
@@ -143,7 +145,7 @@ class BelongsToFieldTest extends TestCase
 
         $response = $this->makeResource($request, ArticleModel::class)
                          ->addDefaultFields(
-                             BelongsToField::make('User')->options(static function (BaseRequest $request) {
+                             BelongsToField::make('User')->options(static function(BaseRequest $request) {
                                  return [
                                      [ 'id' => 1 ],
                                  ];
@@ -164,10 +166,10 @@ class BelongsToFieldTest extends TestCase
                         'searchable' => false,
                         'options' => [
                             [ 'id' => 1 ],
-                        ]
+                        ],
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
 
     }
@@ -191,7 +193,7 @@ class BelongsToFieldTest extends TestCase
                          ->addDefaultFields(
                              BelongsToField::make('User')
                                            ->setRelatedResource(MinimalUserResource::class)
-                                           ->searchable(function (Builder $builder, BaseRequest $request) {
+                                           ->searchable(function(Builder $builder, BaseRequest $request) {
 
                                                $search = $request->query('search');
 
