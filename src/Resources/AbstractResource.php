@@ -25,6 +25,7 @@ abstract class AbstractResource
     use OperationTrait;
 
     private BaseRequest $request;
+    private RepositoryInterface $repository;
 
     public function __construct()
     {
@@ -52,9 +53,16 @@ abstract class AbstractResource
         return static::humanize(class_basename(static::class));
     }
 
+    public function useRepository(RepositoryInterface $repository): self
+    {
+        $this->repository = $repository;
+
+        return $this;
+    }
+
     public function repository(): RepositoryInterface
     {
-        return new Repository($this->getModel());
+        return $this->repository ?? new Repository($this->getModel());
     }
 
     public function getFiltersListing(): array

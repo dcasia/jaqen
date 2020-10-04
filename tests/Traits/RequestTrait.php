@@ -11,7 +11,9 @@ use DigitalCreative\Dashboard\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
 use Illuminate\Routing\Route;
+use Illuminate\Testing\TestResponse;
 
 trait RequestTrait
 {
@@ -111,5 +113,18 @@ trait RequestTrait
     {
         return $this->makeRequest('/', 'GET', [], [], BaseRequest::class);
     }
+
+    protected function callStore(AbstractResource $resource, array $data = [], array $query = []): TestResponse
+    {
+        $query = http_build_query($query);
+        $resourceUriKey = $resource::uriKey();
+
+        if (filled($query)) {
+            $query = "?$query";
+        }
+
+        return $this->postJson("/dashboard-api/{$resourceUriKey}{$query}", $data);
+    }
+
 
 }

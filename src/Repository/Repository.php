@@ -39,7 +39,14 @@ class Repository implements RepositoryInterface
         return $this->searchForRelatedEntries($userDefinedCallback, $request);
     }
 
-    public function create(FieldsData $data): bool
+    /**
+     * Whatever is returned from this method is sent back to the client after the creation
+     *
+     * @param FieldsData $data
+     *
+     * @return mixed
+     */
+    public function create(FieldsData $data)
     {
         return $this->newModel()->forceFill($data->toArray())->save();
     }

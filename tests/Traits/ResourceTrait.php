@@ -31,10 +31,15 @@ trait ResourceTrait
 
         };
 
-        Dashboard::getInstance()->setResources([ $resource ]);
+        $this->registerResource($resource);
 
         return $resource;
 
+    }
+
+    private function registerResource(AbstractResource $resource): void
+    {
+        Dashboard::getInstance()->setResources([ $resource ]);
     }
 
 }

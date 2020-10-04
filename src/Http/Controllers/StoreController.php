@@ -8,13 +8,14 @@ use DigitalCreative\Dashboard\Concerns\WithCustomStore;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 
 class StoreController extends Controller
 {
 
-    public function store(StoreResourceRequest $request): void
+    public function store(StoreResourceRequest $request): JsonResponse
     {
 
         $resource = $request->resourceInstance();
@@ -41,15 +42,17 @@ class StoreController extends Controller
 
         if ($resource instanceof WithCustomStore) {
 
-            $resource->storeResource($request, $data);
+            $data = $resource->storeResource($request, $data);
 
         } else {
 
-            $resource->repository()->create($data);
+            $data = $resource->repository()->create($data);
 
         }
 
         $callbacks->filter()->each(fn(callable $function) => $function());
+
+        return response()->json($data, 201);
 
     }
 
