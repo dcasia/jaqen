@@ -69,7 +69,7 @@ class BelongsToField extends AbstractField
     {
         if (is_callable($this->optionsCallback)) {
 
-            return call_user_func($this->optionsCallback, $this->request);
+            return call_user_func($this->optionsCallback, app(BaseRequest::class));
 
         }
 
@@ -88,7 +88,7 @@ class BelongsToField extends AbstractField
 
                 }
 
-                return new $this->relatedResource($this->request);
+                return new $this->relatedResource;
 
             }
 

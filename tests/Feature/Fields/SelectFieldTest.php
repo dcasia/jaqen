@@ -40,7 +40,7 @@ class SelectFieldTest extends TestCase
         $this->assertEquals($field->toArray(), array_merge($response, [ 'value' => 'male' ]));
 
         /**
-         * On Update,
+         * On Update
          */
         $field->resolveValueFromRequest($this->updateRequest(UserResource::uriKey(), 1));
         $this->assertEquals($field->toArray(), array_merge($response, [ 'value' => null ]));

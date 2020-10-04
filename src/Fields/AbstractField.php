@@ -24,13 +24,6 @@ abstract class AbstractField implements JsonSerializable, Arrayable
     public string $attribute;
     public ?array $additionalInformation = null;
 
-    protected BaseRequest $request;
-
-    /**
-     * @var callable|mixed
-     */
-    private $defaultCallback;
-
     /**
      * @var callable|mixed
      */
@@ -56,18 +49,6 @@ abstract class AbstractField implements JsonSerializable, Arrayable
     public function isReadOnly(): bool
     {
         return (bool) value($this->readOnly);
-    }
-
-    public function setRequest(BaseRequest $request): self
-    {
-        $this->request = $request;
-
-        return $this;
-    }
-
-    public function isDirty(): bool
-    {
-        return $this->dirty;
     }
 
     public function isRequired(BaseRequest $request): bool
@@ -105,18 +86,6 @@ abstract class AbstractField implements JsonSerializable, Arrayable
     public function component(): string
     {
         return Str::kebab(class_basename(static::class));
-    }
-
-    /**
-     * @param mixed $value
-     *
-     * @return AbstractField
-     */
-    public function default($value): self
-    {
-        $this->defaultCallback = $value;
-
-        return $this;
     }
 
     private function generateAttribute(string $label): string

@@ -101,7 +101,6 @@ trait ResolveFieldsTrait
                         fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
                     );
                 })
-                ->map(fn(AbstractField $field) => $field->setRequest($request))
                 ->values();
 
         });
