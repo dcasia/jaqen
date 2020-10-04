@@ -5,18 +5,26 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Http\Controllers;
 
 use DigitalCreative\Dashboard\Http\Requests\DeleteResourceRequest;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use RuntimeException;
 
 class DeleteController extends Controller
 {
 
-    public function delete(DeleteResourceRequest $request): bool
+    public function delete(DeleteResourceRequest $request): Response
     {
-        $resource = $request->resourceInstance();
 
-        $model = $resource->repository()->findByKey($request->route('key'));
+        $ids = $request->input('ids');
 
-        return $resource->repository()->deleteResource($model);
+        if ($request->resourceInstance()->repository()->batchDelete($ids)) {
+
+            return response()->noContent();
+
+        }
+
+        throw new RuntimeException('Failed to delete resources.');
+
     }
 
 }

@@ -56,6 +56,11 @@ class Repository implements RepositoryInterface
         return $model->delete();
     }
 
+    public function batchDelete(array $ids): bool
+    {
+        return (bool) $this->newQuery()->whereIn('id', $ids)->delete();
+    }
+
     public function count(FilterCollection $filters): int
     {
         return $this->applyFilterToQuery($filters)->count();

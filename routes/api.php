@@ -25,6 +25,6 @@ Route::get('/belongs-to/{resource}/{key}/{field}', [ ResourceController::class, 
  */
 Route::get('/{resource}/{key}', [ DetailController::class, 'detail' ]);
 Route::patch('/{resource}/{key}', [ UpdateController::class, 'update' ]);
-Route::delete('/{resource}/{key}', [ DeleteController::class, 'delete' ]);
+Route::delete('/{resource}', [ DeleteController::class, 'delete' ]);
 Route::post('/{resource}', [ StoreController::class, 'store' ]);
 Route::get('/{resource}', [ IndexController::class, 'index' ]);

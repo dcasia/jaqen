@@ -6,5 +6,10 @@ namespace DigitalCreative\Dashboard\Http\Requests;
 
 class DeleteResourceRequest extends BaseRequest
 {
-
+    public function rules(): array
+    {
+        return [
+            'ids' => 'required|array',
+        ];
+    }
 }
