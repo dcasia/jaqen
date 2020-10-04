@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Traits;
 
 use DigitalCreative\Dashboard\Fields\BelongsToField;
+use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Repository\Repository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -12,10 +13,8 @@ use Illuminate\Support\Collection;
 trait OperationTrait
 {
 
-    public function searchBelongsToRelation(): Collection
+    public function searchBelongsToRelation(BaseRequest $request): Collection
     {
-
-        $request = $this->getRequest();
 
         $field = $this->findFieldByAttribute($request->route('field'));
 

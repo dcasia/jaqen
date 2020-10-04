@@ -207,7 +207,7 @@ class BelongsToFieldTest extends TestCase
 
                                            }),
                          )
-                         ->searchBelongsToRelation();
+                         ->searchBelongsToRelation($request);
 
         $this->assertSame($this->deepSerialize($response), [ [ 'name' => 'random' ] ]);
 
@@ -231,7 +231,7 @@ class BelongsToFieldTest extends TestCase
                                            ->searchable()
                                            ->setRelatedResource(MinimalUserResource::class),
                          )
-                         ->searchBelongsToRelation();
+                         ->searchBelongsToRelation($request);
 
         $this->assertSame($this->deepSerialize($response), [ [ 'name' => $user->name ] ]);
 
@@ -253,7 +253,7 @@ class BelongsToFieldTest extends TestCase
 
         $this->makeResource(ArticleModel::class)
              ->addDefaultFields(BelongsToField::make('User'),)
-             ->searchBelongsToRelation();
+             ->searchBelongsToRelation($request);
 
     }
 
