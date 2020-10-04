@@ -109,9 +109,9 @@ trait RequestTrait
         );
     }
 
-    protected function blankRequest(): BaseRequest
+    protected function blankRequest(array $data = [], array $query = []): BaseRequest
     {
-        return $this->makeRequest('/', 'GET', [], [], BaseRequest::class);
+        return $this->makeRequest('/', 'GET', $data, $query, BaseRequest::class);
     }
 
     protected function callStore(AbstractResource $resource, array $data = [], array $query = []): TestResponse

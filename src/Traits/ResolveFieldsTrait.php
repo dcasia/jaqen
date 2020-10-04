@@ -11,6 +11,8 @@ use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use LogicException;
+use RuntimeException;
 
 /**
  * Trait ResolveFieldsTrait
@@ -72,7 +74,33 @@ trait ResolveFieldsTrait
              */
             if (array_key_exists($for, $this->fields)) {
 
-                $fields = value($this->fields[$for]);
+                $value = value($this->fields[$for]);
+
+                if (is_string($value) && class_exists($value)) {
+
+                    $instance = resolve($value);
+
+                    if (is_callable($instance)) {
+
+                        $fields = $instance();
+
+                        if (!is_array($fields)) {
+
+                            throw new RuntimeException('Invokable class should return an array.');
+
+                        }
+
+                    } else {
+
+                        throw new RuntimeException('Invalid invokable class.');
+
+                    }
+
+                } else {
+
+                    $fields = $value;
+
+                }
 
             } else {
 
@@ -168,10 +196,10 @@ trait ResolveFieldsTrait
         return $this;
     }
 
-    public function findFieldByAttribute(string $attribute): ?AbstractField
+    public function findFieldByAttribute(BaseRequest $request, string $attribute): ?AbstractField
     {
-        return $this->resolveFields($this->request)
-                    ->first(static function(AbstractField $field) use ($attribute) {
+        return $this->resolveFields($request)
+                    ->first(function(AbstractField $field) use ($attribute) {
 
                         if ($field instanceof BelongsToField) {
 

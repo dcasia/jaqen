@@ -20,7 +20,6 @@ trait ResourceTrait
 
             public function __construct(string $model)
             {
-                parent::__construct();
                 $this->model = $model;
             }
 

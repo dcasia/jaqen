@@ -27,11 +27,6 @@ abstract class AbstractResource
     private BaseRequest $request;
     private RepositoryInterface $repository;
 
-    public function __construct()
-    {
-        $this->request = resolve(BaseRequest::class);
-    }
-
     abstract public function getModel(): Model;
 
     public function getDescriptor(): array

@@ -16,7 +16,7 @@ trait OperationTrait
     public function searchBelongsToRelation(BaseRequest $request): Collection
     {
 
-        $field = $this->findFieldByAttribute($request->route('field'));
+        $field = $this->findFieldByAttribute($request, $request->route('field'));
 
         if ($field instanceof BelongsToField && $field->isSearchable()) {
 
