@@ -42,7 +42,7 @@ class StoreController extends Controller
 
         if ($resource instanceof WithCustomStore) {
 
-            $data = $resource->storeResource($request, $data);
+            $data = $resource->storeResource($data, $request);
 
         } else {
 

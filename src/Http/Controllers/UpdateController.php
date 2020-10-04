@@ -4,7 +4,9 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Controllers;
 
+use DigitalCreative\Dashboard\Concerns\WithCustomUpdate;
 use DigitalCreative\Dashboard\Fields\AbstractField;
+use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
@@ -14,6 +16,7 @@ class UpdateController extends Controller
 
     public function update(UpdateResourceRequest $request): bool
     {
+
         $resource = $request->resourceInstance();
 
         /**
@@ -33,16 +36,22 @@ class UpdateController extends Controller
         $updateData = $model->only(array_keys($validatedData));
 
         $fields = $fields
-            ->each(function(AbstractField $field) use ($updateData, $request) {
-                $field->hydrateFromArray($updateData)->resolveValueFromRequest($request);
+            ->map(function(AbstractField $field) use ($updateData, $request) {
+                return $field->hydrateFromArray($updateData)->resolveValueFromRequest($request);
             })
             ->filter(function(AbstractField $field) use ($request) {
                 return $field->isRequired($request) || $field->isDirty();
             });
 
-        $fieldsData = $fields->pluck('value', 'attribute')->toArray();
+        $data = $fields->pluck('value', 'attribute')->toArray();
 
-        return $resource->repository()->updateResource($model, $fieldsData);
+        if ($resource instanceof WithCustomUpdate) {
+
+            return $resource->updateResource($model, new FieldsData($data), $request);
+
+        }
+
+        return $resource->repository()->updateResource($model, $data);
 
     }
 

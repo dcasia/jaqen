@@ -13,9 +13,9 @@ interface WithCustomStore
      * The return of this function is sent back to the client after the creation
      * Avoid returning sensitive information, like raw user passwords
      *
-     * @param StoreResourceRequest $request
      * @param FieldsData $data
+     * @param StoreResourceRequest $request
      * @return mixed
      */
-    public function storeResource(StoreResourceRequest $request, FieldsData $data);
+    public function storeResource(FieldsData $data, StoreResourceRequest $request);
 }
