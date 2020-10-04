@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Requests;
 
-use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Dashboard;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BaseRequest extends FormRequest
@@ -35,6 +35,12 @@ class BaseRequest extends FormRequest
     {
         return $this instanceof StoreResourceRequest
             || $this instanceof CreateResourceRequest;
+    }
+
+    public function isStoringResourceToDatabase(): bool
+    {
+        return $this instanceof StoreResourceRequest
+            || $this instanceof UpdateResourceRequest;
     }
 
     public function isUpdate(): bool

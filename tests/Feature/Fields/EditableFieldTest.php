@@ -32,10 +32,10 @@ class EditableFieldTest extends TestCase
 
         $resource = $this->makeResource()
                          ->addDefaultFields(
-                             (new EditableField('Name'))->rulesForCreate('required'),
-                             (new EditableField('Email'))->rulesForCreate('required'),
-                             (new EditableField('Gender'))->rulesForCreate('required'),
-                             (new EditableField('Password'))->rulesForCreate('required'),
+                             EditableField::make('Name')->rulesForCreate('required'),
+                             EditableField::make('Email')->rulesForCreate('required'),
+                             EditableField::make('Gender')->rulesForCreate('required'),
+                             EditableField::make('Password')->rulesForCreate('required'),
                          );
 
         $request = $this->storeRequest($resource::uriKey(), $data);

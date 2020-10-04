@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Traits;
 
+use DigitalCreative\Dashboard\Concerns\BehaveAsPanel;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\BelongsToField;
 use DigitalCreative\Dashboard\FieldsData;
@@ -11,7 +12,6 @@ use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use LogicException;
 use RuntimeException;
 
 /**
@@ -119,6 +119,21 @@ trait ResolveFieldsTrait
             }
 
             return collect($fields)
+                ->when($request->isStoringResourceToDatabase(), function(Collection $fields) {
+
+                    return $fields->flatMap(function(AbstractField $field) {
+
+                        if ($field instanceof BehaveAsPanel) {
+
+                            return $field->getFields();
+
+                        }
+
+                        return [ $field ];
+
+                    });
+
+                })
                 ->when($only, function(Collection $fields, string $only) {
                     return $fields->filter(
                         fn(AbstractField $field) => $this->stringContains($only, $field->attribute)
