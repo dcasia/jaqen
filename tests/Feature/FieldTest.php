@@ -110,7 +110,7 @@ class FieldTest extends TestCase
                              ];
                          });
 
-        $request = $this->createRequest($resource::uriKey(), [ 'fieldsFor' => 'index-listing' ]);
+        $request = $this->fieldsRequest($resource::uriKey(), [ 'fieldsFor' => 'index-listing' ]);
 
         $this->assertEquals([
             [
@@ -127,7 +127,7 @@ class FieldTest extends TestCase
     public function test_fields_is_resolved_from_method_if_exists(): void
     {
 
-        $request = $this->createRequest(UserResource::uriKey(), [ 'fieldsFor' => 'demo' ]);
+        $request = $this->fieldsRequest(UserResource::uriKey(), [ 'fieldsFor' => 'demo' ]);
 
         $resource = new class($request) extends AbstractResource {
 
@@ -161,7 +161,7 @@ class FieldTest extends TestCase
     public function test_field_can_resolve_default_value(): void
     {
 
-        $request = $this->createRequest(UserResource::uriKey());
+        $request = $this->fieldsRequest(UserResource::uriKey());
 
         $response = $this->makeResource(UserModel::class)
                          ->addDefaultFields(
@@ -181,7 +181,7 @@ class FieldTest extends TestCase
     public function test_it_returns_only_the_specified_fields(): void
     {
 
-        $request = $this->createRequest(UserResource::uriKey(), [ 'only' => 'first_name,last_name' ]);
+        $request = $this->fieldsRequest(UserResource::uriKey(), [ 'only' => 'first_name,last_name' ]);
 
         $response = $this->makeResource(UserModel::class)
                          ->addDefaultFields(
@@ -205,7 +205,7 @@ class FieldTest extends TestCase
         /**
          * Space between , will be trimmed
          */
-        $request = $this->createRequest(UserResource::uriKey(), [ 'only' => 'first_name , email' ]);
+        $request = $this->fieldsRequest(UserResource::uriKey(), [ 'only' => 'first_name , email' ]);
 
         $response = $this->makeResource(UserModel::class)
                          ->addDefaultFields(
@@ -226,7 +226,7 @@ class FieldTest extends TestCase
     public function test_expect_fields_filter_works_correctly(): void
     {
 
-        $request = $this->createRequest(UserResource::uriKey(), [ 'except' => 'first_name , last_name' ]);
+        $request = $this->fieldsRequest(UserResource::uriKey(), [ 'except' => 'first_name , last_name' ]);
 
         $response = $this->makeResource(UserModel::class)
                          ->addDefaultFields(

@@ -51,11 +51,6 @@ class Repository implements RepositoryInterface
         return $this->newModel()->forceFill($data->toArray())->save();
     }
 
-    public function deleteResource(Model $model): bool
-    {
-        return $model->delete();
-    }
-
     public function batchDelete(array $ids): bool
     {
         return (bool) $this->newQuery()->whereIn('id', $ids)->delete();

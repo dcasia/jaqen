@@ -42,7 +42,7 @@ trait ResolveValueTrait
 
     public function setValue($value, BaseRequest $request): self
     {
-        if ($request->isCreate()) {
+        if ($request->isSchemaFetching()) {
             $value = value($this->defaultCallback);
         }
 

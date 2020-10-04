@@ -36,7 +36,7 @@ class SelectFieldTest extends TestCase
         /**
          * On Create it should always use defaults if no date was sent
          */
-        $field->resolveValueFromRequest($this->createRequest(UserResource::uriKey()));
+        $field->resolveValueFromRequest($this->fieldsRequest(UserResource::uriKey()));
         $this->assertEquals($field->toArray(), array_merge($response, [ 'value' => 'male' ]));
 
         /**

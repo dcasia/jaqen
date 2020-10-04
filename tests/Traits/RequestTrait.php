@@ -6,7 +6,7 @@ namespace DigitalCreative\Dashboard\Tests\Traits;
 
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Http\Requests\BelongsToResourceRequest;
-use DigitalCreative\Dashboard\Http\Requests\CreateResourceRequest;
+use DigitalCreative\Dashboard\Http\Requests\FieldsResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
@@ -74,10 +74,10 @@ trait RequestTrait
         );
     }
 
-    protected function createRequest(string $resourceKey, array $data = [], array $query = []): BaseRequest
+    protected function fieldsRequest(string $resourceKey, array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest(
-            [ '/{resource}/create' => "/$resourceKey/create" ], 'GET', $data, $query, CreateResourceRequest::class
+            [ '/{resource}/fields' => "/$resourceKey/fields" ], 'GET', $data, $query, FieldsResourceRequest::class
         );
     }
 

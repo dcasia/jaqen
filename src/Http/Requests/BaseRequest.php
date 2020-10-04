@@ -34,7 +34,12 @@ class BaseRequest extends FormRequest
     public function isCreate(): bool
     {
         return $this instanceof StoreResourceRequest
-            || $this instanceof CreateResourceRequest;
+            || $this instanceof FieldsResourceRequest;
+    }
+
+    public function isSchemaFetching(): bool
+    {
+        return $this instanceof FieldsResourceRequest;
     }
 
     public function isStoringResourceToDatabase(): bool

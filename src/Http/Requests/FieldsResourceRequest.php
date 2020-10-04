@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Requests;
 
-class CreateResourceRequest extends BaseRequest
+class FieldsResourceRequest extends BaseRequest
 {
 
 }

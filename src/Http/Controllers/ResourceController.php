@@ -6,8 +6,8 @@ namespace DigitalCreative\Dashboard\Http\Controllers;
 
 use DigitalCreative\Dashboard\Dashboard;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Http\Requests\FieldsResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
-use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
@@ -40,7 +40,7 @@ class ResourceController extends Controller
         return $request->resourceInstance()->getFiltersListing();
     }
 
-    public function fields(StoreResourceRequest $request): Collection
+    public function fields(FieldsResourceRequest $request): Collection
     {
         return $request->resourceInstance()->resolveFields($request);
     }
