@@ -33,13 +33,7 @@ class BelongsToField extends AbstractField
         parent::__construct($label, $this->relationAttribute . '_id');
     }
 
-    /**
-     * @param BaseRequest $request
-     * @param Model $model
-     *
-     * @return BelongsToField
-     */
-    public function resolveUsingModel(BaseRequest $request, Model $model): BelongsToField
+    public function resolveValueFromModel(Model $model, BaseRequest $request): BelongsToField
     {
 
         if ($this->extraRelationDataCallback) {
@@ -60,7 +54,7 @@ class BelongsToField extends AbstractField
 
         }
 
-        return $this->setValue($model->getAttributeValue($this->attribute));
+        return $this->setValue($model->getAttributeValue($this->attribute), $request);
 
     }
 

@@ -101,7 +101,7 @@ trait ResolveFieldsTrait
                         fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
                     );
                 })
-                ->map(fn(AbstractField $field) => $field->setRequest($request)->resolve())
+                ->map(fn(AbstractField $field) => $field->setRequest($request))
                 ->values();
 
         });
@@ -118,13 +118,7 @@ trait ResolveFieldsTrait
     public function resolveFieldsUsingModel(Model $model, BaseRequest $request): Collection
     {
         return $this->resolveFields($request)
-                    ->each(fn(AbstractField $field) => $field->resolveUsingModel($request, $model));
-    }
-
-    private function resolveFieldsUsingRequest(BaseRequest $request): Collection
-    {
-        return $this->resolveFields($request)
-                    ->each(fn(AbstractField $field) => $field->resolveUsingRequest($request));
+                    ->each(fn(AbstractField $field) => $field->resolveValueFromModel($model, $request));
     }
 
     public function filterNonUpdatableFields(Collection $fields): Collection
@@ -154,10 +148,10 @@ trait ResolveFieldsTrait
 
         $fields = $this->resolveFields($request);
 
-        $this->validateFields($fields, $request);
+        $validated = $this->validateFields($fields, $request);
 
         $this->filterNonUpdatableFields($fields)
-             ->map(fn(AbstractField $field) => $field->fillUsingRequest($data, $request));
+             ->map(fn(AbstractField $field) => $field->fill($data, $validated, $request));
 
         return $data;
 

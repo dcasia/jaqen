@@ -26,11 +26,13 @@ class IndexController extends Controller
 
         $resources = $resource->repository()
                               ->findCollection($filters, (int) $request->query('page', 1))
-                              ->map(static function(Model $model) use ($request, $fields) {
+                              ->map(function(Model $model) use ($request, $fields) {
 
                                   return [
                                       'key' => $model->getKey(),
-                                      'fields' => $fields->map(fn(AbstractField $field) => (clone $field)->resolveUsingModel($request, $model)),
+                                      'fields' => $fields->map(function(AbstractField $field) use ($model, $request) {
+                                          return (clone $field)->resolveValueFromModel($model, $request);
+                                      }),
                                   ];
 
                               });

@@ -4,10 +4,10 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
+use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
@@ -168,7 +168,8 @@ class FieldTest extends TestCase
                              EditableField::make('Name')->default('Demo'),
                              EditableField::make('Email')->default(fn() => 'demo@email.com'),
                          )
-                         ->resolveFields($request);
+                         ->resolveFields($request)
+                         ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
 
         $this->assertEquals(
             [ 'name' => 'Demo', 'email' => 'demo@email.com' ],
@@ -188,7 +189,8 @@ class FieldTest extends TestCase
                              EditableField::make('Last Name')->default('World'),
                              EditableField::make('Email')->default('demo@email.com'),
                          )
-                         ->resolveFields($request);
+                         ->resolveFields($request)
+                         ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
 
         $this->assertEquals(
             [ 'first_name' => 'Hello', 'last_name' => 'World' ],
@@ -211,7 +213,8 @@ class FieldTest extends TestCase
                              EditableField::make('Last Name')->default('World'),
                              EditableField::make('Email')->default('demo@email.com'),
                          )
-                         ->resolveFields($request);
+                         ->resolveFields($request)
+                         ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
 
         $this->assertEquals(
             [ 'first_name' => 'Hello', 'email' => 'demo@email.com' ],
@@ -231,7 +234,8 @@ class FieldTest extends TestCase
                              EditableField::make('Last Name')->default('World'),
                              EditableField::make('Email')->default('demo@email.com'),
                          )
-                         ->resolveFields($request);
+                         ->resolveFields($request)
+                         ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
 
         $this->assertEquals(
             [ 'email' => 'demo@email.com' ],

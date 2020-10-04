@@ -26,15 +26,19 @@ class UpdateController extends Controller
 
         /**
          * Remove all non updatable fields (readonly)
-         * Resolve all fields using the validated data
          * Remove fields that wasn't modified, and ensure required fields is always present
          */
-        $fields = $fields->map(fn(AbstractField $field) => $field->resolveUsingData($validatedData))
-                         ->filter(function(AbstractField $field) use ($request) {
-                             return $field->isRequired($request) || $field->isDirty();
-                         });
-
         $model = $resource->repository()->findByKey($request->route('key'));
+
+        $updateData = $model->only(array_keys($validatedData));
+
+        $fields = $fields
+            ->each(function(AbstractField $field) use ($updateData, $request) {
+                $field->hydrateFromArray($updateData)->resolveValueFromRequest($request);
+            })
+            ->filter(function(AbstractField $field) use ($request) {
+                return $field->isRequired($request) || $field->isDirty();
+            });
 
         $fieldsData = $fields->pluck('value', 'attribute')->toArray();
 
