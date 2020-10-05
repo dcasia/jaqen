@@ -6,8 +6,7 @@ namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
 use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
-use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
@@ -21,10 +20,7 @@ class ReadOnlyFieldTest extends TestCase
     public function test_read_only_field_works(): void
     {
 
-        /**
-         * @var User $user
-         */
-        $user = factory(User::class)->create([ 'name' => 'original' ]);
+        $user = UserFactory::new()->create([ 'name' => 'original' ]);
 
         $resource = $this->makeResource()
                          ->addDefaultFields(

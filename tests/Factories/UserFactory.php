@@ -2,27 +2,32 @@
 
 declare(strict_types = 1);
 
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article;
+namespace DigitalCreative\Dashboard\Tests\Factories;
+
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory as EloquentFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
- * @var EloquentFactory $factory
+ * Class UserFactory
+ *
+ * @method User|Collection create($attributes = [], ?Model $parent = null)
+ *
+ * @package DigitalCreative\Dashboard\Tests\Factories
  */
-$factory->define(User::class, static function (Faker $faker) {
-    return [
-        'name' => $faker->name,
-        'email' => $faker->email,
-        'gender' => $faker->randomElement([ 'male', 'female' ]),
-        'password' => $faker->password
-    ];
-});
+class UserFactory extends Factory
+{
 
-$factory->afterCreatingState(User::class, 'with-articles', static function (User $user, Faker $faker) {
-    factory(Article::class, 5)->create([ 'user_id' => $user->id ]);
-});
+    protected $model = User::class;
 
-$factory->afterCreatingState(User::class, 'with-article', static function (User $user, Faker $faker) {
-    factory(Article::class)->create([ 'user_id' => $user->id ]);
-});
+    public function definition(): array
+    {
+        return [
+            'name' => $this->faker->name,
+            'email' => $this->faker->email,
+            'gender' => $this->faker->randomElement([ 'male', 'female' ]),
+            'password' => $this->faker->password,
+        ];
+    }
+}

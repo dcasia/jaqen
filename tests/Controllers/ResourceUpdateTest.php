@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Controller;
 
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\TestCase;
 
 class ResourceUpdateTest extends TestCase
@@ -13,11 +13,11 @@ class ResourceUpdateTest extends TestCase
     public function test_resource_update(): void
     {
 
-        factory(UserModel::class)->create();
+        UserFactory::new()->create();
 
         $data = [
             'name' => 'Demo',
-            'email' => 'email@email.com'
+            'email' => 'email@email.com',
         ];
 
         $this->patchJson('/dashboard-api/users/1', $data)
@@ -30,10 +30,7 @@ class ResourceUpdateTest extends TestCase
     public function test_read_only_fields_does_not_get_update(): void
     {
 
-        /**
-         * @var UserModel $user
-         */
-        $user = factory(UserModel::class)->create();
+        $user = UserFactory::new()->create();
 
         $this->patchJson('/dashboard-api/users/1', [ 'id' => 2 ])
              ->assertStatus(200);

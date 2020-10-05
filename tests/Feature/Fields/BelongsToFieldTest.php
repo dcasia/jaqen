@@ -11,6 +11,8 @@ use DigitalCreative\Dashboard\Http\Controllers\IndexController;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Tests\Factories\ArticleFactory;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article as ArticleModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\Article as ArticleResource;
@@ -32,10 +34,7 @@ class BelongsToFieldTest extends TestCase
     public function test_index_listing_works(): void
     {
 
-        /**
-         * @var ArticleModel $article
-         */
-        $article = factory(ArticleModel::class)->create();
+        $article = ArticleFactory::new()->create();
 
         $resource = $this->makeResource(ArticleModel::class)
                          ->addDefaultFields(
@@ -86,12 +85,8 @@ class BelongsToFieldTest extends TestCase
     public function test_edit_works(): void
     {
 
-        /**
-         * @var ArticleModel $article
-         * @var UserModel $user
-         */
-        $article = factory(ArticleModel::class)->create();
-        $user = factory(UserModel::class)->create();
+        $article = ArticleFactory::new()->create();
+        $user = UserFactory::new()->create();
 
         $resource = $this->makeResource(ArticleModel::class)
                          ->addDefaultFields(BelongsToField::make('User'));
@@ -110,10 +105,7 @@ class BelongsToFieldTest extends TestCase
     public function test_create_works(): void
     {
 
-        /**
-         * @var UserModel $user
-         */
-        $user = factory(UserModel::class)->create();
+        $user = UserFactory::new()->create();
 
         $data = [
             'title' => 'Hello',
@@ -139,10 +131,7 @@ class BelongsToFieldTest extends TestCase
     public function test_user_is_able_to_pass_options(): void
     {
 
-        /**
-         * @var ArticleModel $article
-         */
-        $article = factory(ArticleModel::class)->create();
+        $article = ArticleFactory::new()->create();
 
         $resource = $this->makeResource(ArticleModel::class)
                          ->addDefaultFields(
@@ -184,12 +173,9 @@ class BelongsToFieldTest extends TestCase
     public function test_searchable_belongs_to_field_works(): void
     {
 
-        /**
-         * @var ArticleModel $article
-         */
-        $article = factory(ArticleModel::class)->create();
+        $article = ArticleFactory::new()->create();
 
-        factory(UserModel::class)->create([ 'name' => 'random' ]);
+        UserFactory::new()->create([ 'name' => 'random' ]);
 
         $request = $this->belongsToRequest(ArticleResource::uriKey(), $article->id, 'user', [ 'search' => 'random' ]);
 
@@ -216,12 +202,8 @@ class BelongsToFieldTest extends TestCase
     public function test_it_returns_result_using_the_default_search_logic(): void
     {
 
-        /**
-         * @var ArticleModel $article
-         * @var UserModel $user
-         */
-        $article = factory(ArticleModel::class)->create();
-        $user = factory(UserModel::class)->create();
+        $article = ArticleFactory::new()->create();
+        $user = UserFactory::new()->create();
 
         $request = $this->belongsToRequest(ArticleResource::uriKey(), $article->id, 'user', [ 'id' => $user->id ]);
 
@@ -240,12 +222,8 @@ class BelongsToFieldTest extends TestCase
     public function test_non_searchable_field_cannot_be_searched(): void
     {
 
-        /**
-         * @var ArticleModel $article
-         * @var UserModel $user
-         */
-        $article = factory(ArticleModel::class)->create();
-        $user = factory(UserModel::class)->create();
+        $article = ArticleFactory::new()->create();
+        $user = UserFactory::new()->create();
 
         $request = $this->belongsToRequest(ArticleResource::uriKey(), $article->id, 'user', [ 'id' => $user->id ]);
 

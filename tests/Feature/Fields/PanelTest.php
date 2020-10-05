@@ -10,6 +10,7 @@ use DigitalCreative\Dashboard\Http\Controllers\DetailController;
 use DigitalCreative\Dashboard\Http\Controllers\IndexController;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
@@ -42,7 +43,7 @@ class PanelTest extends TestCase
         /**
          * @var UserModel $user
          */
-        $user = factory(UserModel::class)->create([ 'name' => 'hello world' ]);
+        $user = UserFactory::new()->create([ 'name' => 'hello world' ]);
 
         $resource = $this->makeResource()
                          ->addDefaultFields(
@@ -102,7 +103,7 @@ class PanelTest extends TestCase
     public function test_on_store_the_value_if_inner_fields_are_proxied_correctly_on_update(): void
     {
 
-        $user = factory(UserModel::class)->create();
+        $user = UserFactory::new()->create();
 
         $data = [
             'name' => 'Hello World',

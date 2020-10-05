@@ -13,6 +13,7 @@ use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
@@ -113,9 +114,9 @@ class ResourceTest extends TestCase
 
         $this->registerResource($resource);
 
-        factory(UserModel::class, 5)->create();
+        UserFactory::new()->count(5)->create();
 
-        $user = factory(UserModel::class)->create();
+        $user = UserFactory::new()->create();
 
         $request = $this->updateRequest($resource::uriKey(), $user->getKey(), [ 'name' => 'test' ]);
 

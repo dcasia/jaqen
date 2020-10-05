@@ -14,8 +14,6 @@ class TestCase extends BaseTestCase
 
         $this->loadMigrations();
 
-        $this->withFactories(__DIR__ . '/Factories');
-
     }
 
     protected function getPackageProviders($app): array

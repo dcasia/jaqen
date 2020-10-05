@@ -9,6 +9,7 @@ use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\FilterCollection;
 use DigitalCreative\Dashboard\Http\Controllers\IndexController;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\SampleFilter;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
@@ -25,12 +26,9 @@ class FilterTest extends TestCase
     public function test_filter_works(): void
     {
 
-        /**
-         * @var UserModel $user
-         */
-        $user = factory(UserModel::class)->create([ 'name' => 'Demo' ]);
+        $user = UserFactory::new()->create([ 'name' => 'Demo' ]);
 
-        factory(UserModel::class, 10)->create();
+        UserFactory::new()->count(10)->create();
 
         $filter = new class extends SampleFilter {
 

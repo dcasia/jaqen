@@ -5,8 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\SelectField;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
@@ -50,10 +49,7 @@ class SelectFieldTest extends TestCase
     public function test_field_is_hydrated_correctly_from_model(): void
     {
 
-        /**
-         * @var UserModel $user
-         */
-        $user = factory(UserModel::class)->create();
+        $user = UserFactory::new()->create();
 
         $field = SelectField::make('Gender')
                             ->options([ 'male' => 'Male', 'female' => 'Female' ])

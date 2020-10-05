@@ -7,9 +7,8 @@ namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
-use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User;
-use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
@@ -49,10 +48,7 @@ class EditableFieldTest extends TestCase
     public function test_editable_field_on_update_works(): void
     {
 
-        /**
-         * @var UserModel $user
-         */
-        $user = factory(UserModel::class)->create();
+        $user = UserFactory::new()->create();
 
         $resource = $this->makeResource(UserModel::class)
                          ->addDefaultFields(

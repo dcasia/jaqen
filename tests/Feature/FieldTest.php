@@ -9,6 +9,7 @@ use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
 use DigitalCreative\Dashboard\Tests\TestCase;
@@ -44,10 +45,7 @@ class FieldTest extends TestCase
     public function test_field_validation_on_update_works(): void
     {
 
-        /**
-         * @var UserModel $user
-         */
-        $user = factory(UserModel::class)->create();
+        $user = UserFactory::new()->create();
 
         $this->expectException(ValidationException::class);
 
@@ -81,10 +79,7 @@ class FieldTest extends TestCase
     public function test_rules_for_update_works_when_value_is_not_sent(): void
     {
 
-        /**
-         * @var UserModel $user
-         */
-        $user = factory(UserModel::class)->create();
+        $user = UserFactory::new()->create();
 
         $this->expectException(ValidationException::class);
 

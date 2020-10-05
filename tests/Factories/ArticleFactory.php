@@ -2,20 +2,32 @@
 
 declare(strict_types = 1);
 
+namespace DigitalCreative\Dashboard\Tests\Factories;
+
+use App\Models\User;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory as EloquentFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
- * @var EloquentFactory $factory
+ * Class ArticleFactory
+ *
+ * @method Article|Collection create($attributes = [], ?Model $parent = null)
+ *
+ * @package DigitalCreative\Dashboard\Tests\Factories
  */
-$factory->define(Article::class, static function (Faker $faker) {
-    return [
-        'title' => $faker->sentence,
-        'content' => $faker->text,
-        'user_id' => static function () {
-            return factory(User::class)->create()->getKey();
-        },
-    ];
-});
+class ArticleFactory extends Factory
+{
+
+    protected $model = Article::class;
+
+    public function definition(): array
+    {
+        return [
+            'title' => $this->faker->sentence,
+            'content' => $this->faker->text,
+            'user_id' => UserFactory::new(),
+        ];
+    }
+}

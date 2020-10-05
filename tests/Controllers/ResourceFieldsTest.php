@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Controller;
 
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\TestCase;
 
 class ResourceFieldsTest extends TestCase
@@ -13,7 +13,7 @@ class ResourceFieldsTest extends TestCase
     public function test_fields_api_returns_correct_data(): void
     {
 
-        factory(UserModel::class)->create();
+        UserFactory::new()->create();
 
         $this->get('/dashboard-api/users/fields?fieldsFor=index')
              ->assertStatus(200)

@@ -5,9 +5,9 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Controller;
 
 use DigitalCreative\Dashboard\FilterCollection;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\FilterWithRequiredFields;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\GenderFilter;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\ResourceWithRequiredFilters;
 use DigitalCreative\Dashboard\Tests\TestCase;
 
@@ -17,7 +17,7 @@ class ResourceIndexTest extends TestCase
     public function test_resource_listing(): void
     {
 
-        factory(UserModel::class)->create();
+        UserFactory::new()->create();
 
         $response = $this->getJson('/dashboard-api/users')
                          ->assertStatus(200);
@@ -45,8 +45,8 @@ class ResourceIndexTest extends TestCase
     public function test_resource_listing_filters(): void
     {
 
-        factory(UserModel::class, 5)->create([ 'gender' => 'male' ]);
-        factory(UserModel::class, 5)->create([ 'gender' => 'female' ]);
+        UserFactory::new()->count(5)->create([ 'gender' => 'male' ]);
+        UserFactory::new()->count(5)->create([ 'gender' => 'female' ]);
 
         $filters = FilterCollection::test([
             GenderFilter::uriKey() => [
@@ -92,7 +92,7 @@ class ResourceIndexTest extends TestCase
     public function test_fields_for_works_correctly_on_resource(): void
     {
 
-        $user = factory(UserModel::class)->create();
+        $user = UserFactory::new()->create();
 
         $response = $this->getJson('/dashboard-api/users?fieldsFor=index')
                          ->assertStatus(200);
@@ -120,7 +120,7 @@ class ResourceIndexTest extends TestCase
     public function test_ensure_the_results_are_distinct(): void
     {
 
-        $users = factory(UserModel::class, 2)->create();
+        $users = UserFactory::new()->count(2)->create();
 
         $this->getJson('/dashboard-api/users?fieldsFor=index')
              ->assertStatus(200)

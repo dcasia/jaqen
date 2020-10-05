@@ -4,9 +4,8 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Controller;
 
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\TestCase;
-use Illuminate\Support\Collection;
 
 class DeleteControllerTest extends TestCase
 {
@@ -18,7 +17,7 @@ class DeleteControllerTest extends TestCase
             'email' => 'email@email.com',
         ];
 
-        factory(UserModel::class)->create($data);
+        UserFactory::new()->create($data);
 
         $this->deleteJson('/dashboard-api/users', [ 'ids' => [ 1 ] ])
              ->assertStatus(204);
@@ -28,12 +27,9 @@ class DeleteControllerTest extends TestCase
 
     public function test_deleting_multiple_items_works(): void
     {
-        /**
-         * @var Collection $users
-         */
-        $users = factory(UserModel::class, 3)->create();
+        $users = UserFactory::new()->count(3)->create();
 
-        factory(UserModel::class)->create();
+        UserFactory::new()->create();
 
         $this->deleteJson('/dashboard-api/users', [ 'ids' => $users->pluck('id') ])
              ->assertStatus(204);
