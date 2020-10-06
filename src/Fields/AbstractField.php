@@ -56,21 +56,6 @@ abstract class AbstractField implements JsonSerializable, Arrayable
         return in_array('required', $this->resolveRules($request), true);
     }
 
-    /**
-     * Return a callback to perform any operation after the resource has been saved to the database
-     *
-     * @param FieldsData $dataBag
-     * @param array $data
-     * @param BaseRequest $request
-     * @return callable|null
-     */
-    public function fill(FieldsData $dataBag, array $data, BaseRequest $request): ?callable
-    {
-        $dataBag->setAttribute($this->attribute, data_get($data, $this->attribute));
-
-        return null;
-    }
-
     public function getAdditionalInformation(): ?array
     {
         return $this->additionalInformation;

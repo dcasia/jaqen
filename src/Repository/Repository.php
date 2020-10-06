@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Repository;
 
-use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\FilterCollection;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Resources\EloquentResource;
@@ -42,13 +41,13 @@ class Repository implements RepositoryInterface
     /**
      * Whatever is returned from this method is sent back to the client after the creation
      *
-     * @param FieldsData $data
+     * @param array $data
      *
      * @return mixed
      */
-    public function create(FieldsData $data)
+    public function create(array $data)
     {
-        return $this->newModel()->forceFill($data->toArray())->save();
+        return $this->newModel()->forceFill($data)->save();
     }
 
     public function delete(array $ids): bool

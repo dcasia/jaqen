@@ -7,7 +7,6 @@ namespace DigitalCreative\Dashboard\Tests\Feature;
 use DigitalCreative\Dashboard\Concerns\WithCustomStore;
 use DigitalCreative\Dashboard\Concerns\WithCustomUpdate;
 use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
@@ -64,9 +63,9 @@ class ResourceTest extends TestCase
                 return new UserModel();
             }
 
-            public function storeResource(FieldsData $data, StoreResourceRequest $request): array
+            public function storeResource(array $data, StoreResourceRequest $request): array
             {
-                $this->runner->assertEquals([ 'name' => 'test' ], $data->toArray());
+                $this->runner->assertEquals([ 'name' => 'test' ], $data);
 
                 return [ 'test' => 123 ];
             }
@@ -100,9 +99,9 @@ class ResourceTest extends TestCase
                 return new UserModel();
             }
 
-            public function updateResource(Model $model, FieldsData $data, UpdateResourceRequest $request): bool
+            public function updateResource(Model $model, array $data, UpdateResourceRequest $request): bool
             {
-                $this->runner->assertEquals([ 'name' => 'test' ], $data->toArray());
+                $this->runner->assertEquals([ 'name' => 'test' ], $data);
                 $this->runner->assertEquals($model->getKey(), 6);
 
                 return true;

@@ -6,7 +6,6 @@ namespace DigitalCreative\Dashboard\Http\Controllers;
 
 use DigitalCreative\Dashboard\Concerns\WithCustomUpdate;
 use DigitalCreative\Dashboard\Fields\AbstractField;
-use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
@@ -47,7 +46,7 @@ class UpdateController extends Controller
 
         if ($resource instanceof WithCustomUpdate) {
 
-            return $resource->updateResource($model, new FieldsData($data), $request);
+            return $resource->updateResource($model, $data, $request);
 
         }
 

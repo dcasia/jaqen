@@ -28,17 +28,15 @@ class StoreController extends Controller
          */
         [ $fields, $validatedData ] = $resource->resolveValidatedFields($request);
 
-        $data = new FieldsData();
-
         /**
          * Remove all non updatable fields (readonly)
          * Call fill on all fields to populate the FieldsData object with it's final value
          * Return an array of functions to be called after the model has been persisted to the database
          */
-        $callbacks = $resource->filterNonUpdatableFields($fields)
-                              ->map(function(AbstractField $field) use ($data, $validatedData, $request) {
-                                  return $field->fill($data, $validatedData, $request);
-                              });
+        $fields = $resource->filterNonUpdatableFields($fields)
+                           ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
+
+        $data = $fields->pluck('value', 'attribute')->toArray();
 
         if ($resource instanceof WithCustomStore) {
 
@@ -50,7 +48,7 @@ class StoreController extends Controller
 
         }
 
-        $callbacks->filter()->each(fn(callable $function) => $function());
+//        $callbacks->filter()->each(fn(callable $function) => $function());
 
         return response()->json($data, 201);
 

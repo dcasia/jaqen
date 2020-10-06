@@ -184,18 +184,17 @@ trait ResolveFieldsTrait
     public function getFieldsDataFromRequest(): FieldsData
     {
 
-        $data = new FieldsData();
-
         $request = $this->getRequest();
 
         $fields = $this->resolveFields($request);
 
         $validated = $this->validateFields($fields, $request);
 
-        $this->filterNonUpdatableFields($fields)
-             ->map(fn(AbstractField $field) => $field->fill($data, $validated, $request));
+        $data = $this->filterNonUpdatableFields($fields)
+                     ->map(fn(AbstractField $field) => $field->resolveValueFromArray($validated, $request))
+                     ->pluck('value', 'attribute');
 
-        return $data;
+        return new FieldsData($data);
 
     }
 

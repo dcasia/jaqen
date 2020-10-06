@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Repository;
 
-use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\FilterCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -15,11 +14,11 @@ interface RepositoryInterface
     /**
      * Whatever is returned from this method is sent back to the client after the creation
      *
-     * @param FieldsData $data
+     * @param array $data
      *
      * @return mixed
      */
-    public function create(FieldsData $data);
+    public function create(array $data);
 
     public function findByKey(string $key): ?Model;
 
