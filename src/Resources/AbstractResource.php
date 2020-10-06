@@ -29,6 +29,11 @@ abstract class AbstractResource
 
     abstract public function getModel(): Model;
 
+    public function perPage(BaseRequest $request): int
+    {
+        return $this->getModel()->getPerPage();
+    }
+
     public function getDescriptor(): array
     {
         return [

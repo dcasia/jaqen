@@ -129,4 +129,21 @@ class ResourceIndexTest extends TestCase
 
     }
 
+    public function test_pagination(): void
+    {
+
+        UserFactory::new()->count(30)->create();
+
+        $this->getJson('/dashboard-api/users?page=2')
+             ->assertStatus(200)
+             ->assertJsonFragment([
+                 'total' => 30,
+                 'from' => 16,
+                 'to' => 30,
+                 'currentPage' => 2,
+                 'lastPage' => 2,
+             ]);
+
+    }
+
 }

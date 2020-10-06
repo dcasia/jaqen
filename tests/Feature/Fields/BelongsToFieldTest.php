@@ -47,8 +47,12 @@ class BelongsToFieldTest extends TestCase
 
         $response = (new IndexController())->index($request);
 
-        $this->assertSame($this->deepSerialize($response), [
+        $this->assertEquals($this->deepSerialize($response), [
             'total' => 1,
+            'from' => 1,
+            'to' => 1,
+            'currentPage' => 1,
+            'lastPage' => 1,
             'resources' => [
                 [
                     'key' => $article->id,

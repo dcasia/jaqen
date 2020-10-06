@@ -61,9 +61,9 @@ class Repository implements RepositoryInterface
         return $this->applyFilterToQuery($filters)->count();
     }
 
-    public function findCollection(FilterCollection $filters, int $page): Collection
+    public function findCollection(FilterCollection $filters, int $page, int $perPage = 15): Collection
     {
-        return $this->applyFilterToQuery($filters)->forPage($page)->get();
+        return $this->applyFilterToQuery($filters)->forPage($page, $perPage)->get();
     }
 
     public function findByKey(string $key): ?Model

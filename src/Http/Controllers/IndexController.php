@@ -9,9 +9,13 @@ use DigitalCreative\Dashboard\FilterCollection;
 use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
 
 class IndexController extends Controller
 {
+
+    private int $perPage;
+    private int $currentPage;
 
     public function index(IndexResourceRequest $request): array
     {
@@ -20,12 +24,15 @@ class IndexController extends Controller
 
         $fields = $resource->resolveFields($request);
 
+        $this->currentPage = (int) $request->query('page', 1);
+        $this->perPage = $resource->perPage($request);
+
         $filters = new FilterCollection($resource->resolveFilters(), $request->query('filters'));
 
         $total = $resource->repository()->count($filters);
 
         $resources = $resource->repository()
-                              ->findCollection($filters, (int) $request->query('page', 1))
+                              ->findCollection($filters, $this->currentPage, $this->perPage)
                               ->map(function(Model $model) use ($request, $fields) {
 
                                   return [
@@ -39,8 +46,22 @@ class IndexController extends Controller
 
         return [
             'total' => $total,
+            'from' => $this->firstItem($resources),
+            'to' => $this->lastItem($resources),
+            'currentPage' => $this->currentPage,
+            'lastPage' => max((int) ceil($total / $this->perPage), 1),
             'resources' => $resources,
         ];
+    }
+
+    public function firstItem(Collection $resources): ?int
+    {
+        return $resources->isNotEmpty() ? ($this->currentPage - 1) * $this->perPage + 1 : null;
+    }
+
+    public function lastItem(Collection $resources): ?int
+    {
+        return $resources->isNotEmpty() ? $this->firstItem($resources) + $resources->count() - 1 : null;
     }
 
 }
