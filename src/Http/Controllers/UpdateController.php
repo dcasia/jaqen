@@ -51,7 +51,7 @@ class UpdateController extends Controller
 
         }
 
-        return $resource->repository()->updateResource($model, $data);
+        return $resource->repository()->update($model, $data);
 
     }
 

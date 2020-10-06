@@ -51,7 +51,7 @@ class Repository implements RepositoryInterface
         return $this->newModel()->forceFill($data->toArray())->save();
     }
 
-    public function batchDelete(array $ids): bool
+    public function delete(array $ids): bool
     {
         return (bool) $this->newQuery()->whereIn('id', $ids)->delete();
     }
@@ -61,7 +61,7 @@ class Repository implements RepositoryInterface
         return $this->applyFilterToQuery($filters)->count();
     }
 
-    public function findCollection(FilterCollection $filters, int $page, int $perPage = 15): Collection
+    public function find(FilterCollection $filters, int $page, int $perPage = 15): Collection
     {
         return $this->applyFilterToQuery($filters)->forPage($page, $perPage)->get();
     }
@@ -71,7 +71,7 @@ class Repository implements RepositoryInterface
         return $this->newQuery()->whereKey($key)->firstOrFail();
     }
 
-    public function updateResource(Model $model, array $data): bool
+    public function update(Model $model, array $data): bool
     {
         $model->forceFill($data);
 

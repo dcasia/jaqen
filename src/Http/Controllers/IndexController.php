@@ -32,7 +32,7 @@ class IndexController extends Controller
         $total = $resource->repository()->count($filters);
 
         $resources = $resource->repository()
-                              ->findCollection($filters, $this->currentPage, $this->perPage)
+                              ->find($filters, $this->currentPage, $this->perPage)
                               ->map(function(Model $model) use ($request, $fields) {
 
                                   return [

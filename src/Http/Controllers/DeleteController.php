@@ -17,7 +17,7 @@ class DeleteController extends Controller
 
         $ids = $request->input('ids');
 
-        if ($request->resourceInstance()->repository()->batchDelete($ids)) {
+        if ($request->resourceInstance()->repository()->delete($ids)) {
 
             return response()->noContent();
 
