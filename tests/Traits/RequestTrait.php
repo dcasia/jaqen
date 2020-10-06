@@ -6,6 +6,7 @@ namespace DigitalCreative\Dashboard\Tests\Traits;
 
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Http\Requests\BelongsToResourceRequest;
+use DigitalCreative\Dashboard\Http\Requests\DeleteResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\FieldsResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
@@ -70,7 +71,7 @@ trait RequestTrait
     protected function storeRequest(string $resourceKey, array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest(
-            [ '/{resource}' => "/$resourceKey" ], 'POST', $data, $query, StoreResourceRequest::class
+            [ '/{resource}' => $resourceKey ], 'POST', $data, $query, StoreResourceRequest::class
         );
     }
 
@@ -85,6 +86,13 @@ trait RequestTrait
     {
         return $this->makeRequest(
             [ '/{resource}/{key}' => "$resourceKey/$key" ], 'POST', $data, $query, UpdateResourceRequest::class
+        );
+    }
+
+    protected function deleteRequest(string $resourceKey, array $keys, array $data = [], array $query = []): BaseRequest
+    {
+        return $this->makeRequest(
+            [ '/{resource}' => $resourceKey ], 'DELETE', array_merge($data, [ 'ids' => $keys ]), $query, DeleteResourceRequest::class
         );
     }
 

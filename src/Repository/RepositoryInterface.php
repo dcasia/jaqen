@@ -22,11 +22,13 @@ interface RepositoryInterface
 
     public function findByKey(string $key): ?Model;
 
+    public function findByKeys(array $keys): Collection;
+
     public function find(FilterCollection $filters, int $page, int $perPage = 15): Collection;
 
     public function update(Model $model, array $data): bool;
 
-    public function delete(array $ids): bool;
+    public function delete(Model $model): bool;
 
     public function count(FilterCollection $filters): int;
 

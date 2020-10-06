@@ -50,9 +50,9 @@ class Repository implements RepositoryInterface
         return $this->newModel()->forceFill($data)->save();
     }
 
-    public function delete(array $ids): bool
+    public function delete(Model $model): bool
     {
-        return (bool) $this->newQuery()->whereIn('id', $ids)->delete();
+        return (bool) $model->delete();
     }
 
     public function count(FilterCollection $filters): int
@@ -68,6 +68,11 @@ class Repository implements RepositoryInterface
     public function findByKey(string $key): ?Model
     {
         return $this->newQuery()->whereKey($key)->firstOrFail();
+    }
+
+    public function findByKeys(array $keys): Collection
+    {
+        return $this->newQuery()->findMany($keys);
     }
 
     public function update(Model $model, array $data): bool

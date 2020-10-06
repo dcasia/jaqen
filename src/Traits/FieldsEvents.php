@@ -6,7 +6,7 @@ namespace DigitalCreative\Dashboard\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 
-trait WithEvents
+trait FieldsEvents
 {
 
     private array $beforeCreateCallbacks = [];
@@ -14,6 +14,9 @@ trait WithEvents
 
     private array $beforeUpdateCallbacks = [];
     private array $afterUpdateCallbacks = [];
+
+    private array $beforeDeleteCallbacks = [];
+    private array $afterDeleteCallbacks = [];
 
     public function beforeCreate(callable $callback): self
     {
@@ -39,6 +42,20 @@ trait WithEvents
     public function afterUpdate(callable $callback): self
     {
         $this->afterUpdateCallbacks[] = $callback;
+
+        return $this;
+    }
+
+    public function beforeDelete(callable $callback): self
+    {
+        $this->beforeDeleteCallbacks[] = $callback;
+
+        return $this;
+    }
+
+    public function afterDelete(callable $callback): self
+    {
+        $this->afterDeleteCallbacks[] = $callback;
 
         return $this;
     }
@@ -92,6 +109,20 @@ trait WithEvents
     {
         foreach ($this->afterUpdateCallbacks as $callback) {
             $callback($model);
+        }
+    }
+
+    public function runBeforeDelete(Model $model): void
+    {
+        foreach ($this->beforeDeleteCallbacks as $callback) {
+            $callback($model);
+        }
+    }
+
+    public function runAfterDelete(): void
+    {
+        foreach ($this->afterDeleteCallbacks as $callback) {
+            $callback();
         }
     }
 

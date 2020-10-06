@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Controllers;
 
+use DigitalCreative\Dashboard\Concerns\WithFieldEvent;
+use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Http\Requests\DeleteResourceRequest;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -16,14 +18,33 @@ class DeleteController extends Controller
     {
 
         $ids = $request->input('ids');
+        $resource = $request->resourceInstance();
+        $repository = $resource->repository();
 
-        if ($request->resourceInstance()->repository()->delete($ids)) {
+        $items = $repository->findByKeys($ids);
+        $status = collect();
 
-            return response()->noContent();
+        foreach ($items as $model) {
+
+            $fields = $resource->resolveFields($request)
+                               ->whereInstanceOf(WithFieldEvent::class)
+                               ->map(fn(AbstractField $field) => $field->hydrateFromModel($model));
+
+            $fields->each(fn(WithFieldEvent $field) => $field->runBeforeDelete($model));
+
+            $status->push($repository->delete($model));
+
+            $fields->each(fn(WithFieldEvent $field) => $field->runAfterDelete($model));
 
         }
 
-        throw new RuntimeException('Failed to delete resources.');
+        if ($status->filter()->count() !== $items->count()) {
+
+            throw new RuntimeException('Failed to delete resources.');
+
+        }
+
+        return response()->noContent();
 
     }
 

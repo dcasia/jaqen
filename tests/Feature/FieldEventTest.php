@@ -4,8 +4,10 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
-use DigitalCreative\Dashboard\Concerns\WithCrudEvent;
+use DigitalCreative\Dashboard\Concerns\WithFieldEvent;
+use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\EditableField;
+use DigitalCreative\Dashboard\Http\Controllers\DeleteController;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
@@ -15,7 +17,7 @@ use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\InteractionWithResponseTrait;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
-use DigitalCreative\Dashboard\Traits\WithEvents;
+use DigitalCreative\Dashboard\Traits\FieldsEvents;
 
 class FieldEventTest extends TestCase
 {
@@ -29,7 +31,7 @@ class FieldEventTest extends TestCase
 
         /**
          * @var AbstractResource $resource
-         * @var WithCrudEvent $field
+         * @var WithFieldEvent $field
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
@@ -60,7 +62,7 @@ class FieldEventTest extends TestCase
 
         /**
          * @var AbstractResource $resource
-         * @var WithCrudEvent $field
+         * @var WithFieldEvent $field
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
@@ -79,7 +81,7 @@ class FieldEventTest extends TestCase
 
         /**
          * @var AbstractResource $resource
-         * @var WithCrudEvent $field
+         * @var WithFieldEvent $field
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
@@ -100,7 +102,7 @@ class FieldEventTest extends TestCase
 
         /**
          * @var AbstractResource $resource
-         * @var WithCrudEvent $field
+         * @var WithFieldEvent $field
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
@@ -128,7 +130,7 @@ class FieldEventTest extends TestCase
 
         /**
          * @var AbstractResource $resource
-         * @var WithCrudEvent $field
+         * @var WithFieldEvent $field
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
@@ -150,11 +152,45 @@ class FieldEventTest extends TestCase
 
     }
 
+    public function test_before_and_after_delete_event_works(): void
+    {
+
+        /**
+         * @var AbstractResource $resource
+         * @var WithFieldEvent & AbstractField $field
+         */
+        [ $resource, $field ] = $this->getPreConfiguredResource();
+
+        $users = UserFactory::new()->count(5)->create();
+
+        $beforeDelete = 0;
+        $afterDelete = 0;
+
+        $this->assertNull($field->value);
+
+        $field->beforeDelete(function(UserModel $model) use (&$beforeDelete, $field) {
+            $this->assertEquals($model->name, $field->value);
+            $beforeDelete++;
+        });
+
+        $field->afterDelete(function() use (&$afterDelete) {
+            $afterDelete++;
+        });
+
+        $request = $this->deleteRequest($resource::uriKey(), $users->pluck('id')->toArray());
+
+        (new DeleteController())->delete($request);
+
+        $this->assertEquals(5, $afterDelete);
+        $this->assertEquals(5, $beforeDelete);
+
+    }
+
     private function getPreConfiguredResource(): array
     {
 
-        $field = new class('Name') extends EditableField implements WithCrudEvent {
-            use WithEvents;
+        $field = new class('Name') extends EditableField implements WithFieldEvent {
+            use FieldsEvents;
         };
 
         $resource = $this->makeResource()->addDefaultFields($field);

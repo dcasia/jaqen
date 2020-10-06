@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Controllers;
 
-use DigitalCreative\Dashboard\Concerns\WithCrudEvent;
+use DigitalCreative\Dashboard\Concerns\WithFieldEvent;
 use DigitalCreative\Dashboard\Concerns\WithCustomUpdate;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
@@ -48,12 +48,12 @@ class UpdateController extends Controller
         /**
          * Events
          */
-        $fieldsWithEvents = $fields->whereInstanceOf(WithCrudEvent::class);
+        $fieldsWithEvents = $fields->whereInstanceOf(WithFieldEvent::class);
 
         /**
          * Before Update
          */
-        $fieldsWithEvents->each(function(WithCrudEvent $field) use ($model, &$data) {
+        $fieldsWithEvents->each(function(WithFieldEvent $field) use ($model, &$data) {
             $data = $field->runBeforeUpdate($model, $data);
         });
 
@@ -70,7 +70,7 @@ class UpdateController extends Controller
         /**
          * After Update
          */
-        $fieldsWithEvents->each(fn(WithCrudEvent $field) => $field->runAfterUpdate($model));
+        $fieldsWithEvents->each(fn(WithFieldEvent $field) => $field->runAfterUpdate($model));
 
         return $response;
 

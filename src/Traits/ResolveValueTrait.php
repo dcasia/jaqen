@@ -78,8 +78,15 @@ trait ResolveValueTrait
     public function hydrateFromArray(array $data): self
     {
         $this->value = data_get($data, $this->attribute);
-
+        /**
+         * @todo try to call setValue and reset dirty manually
+         */
         return $this;
+    }
+
+    public function hydrateFromModel(Model $model): self
+    {
+        return $this->hydrateFromArray($model->toArray());
     }
 
 }
