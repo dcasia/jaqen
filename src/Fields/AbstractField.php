@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Fields;
 
-use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Traits\MakeableTrait;
 use DigitalCreative\Dashboard\Traits\ResolveRulesTrait;

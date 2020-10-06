@@ -4,9 +4,9 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Controllers;
 
+use DigitalCreative\Dashboard\Concerns\WithCrudEvent;
 use DigitalCreative\Dashboard\Concerns\WithCustomStore;
 use DigitalCreative\Dashboard\Fields\AbstractField;
-use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
@@ -38,6 +38,15 @@ class StoreController extends Controller
 
         $data = $fields->pluck('value', 'attribute')->toArray();
 
+        $fieldsWithEvents = $fields->whereInstanceOf(WithCrudEvent::class);
+
+        /**
+         * Before Create
+         */
+        $fieldsWithEvents->each(function(WithCrudEvent $field) use (&$data) {
+            $data = $field->runBeforeCreate($data);
+        });
+
         if ($resource instanceof WithCustomStore) {
 
             $data = $resource->storeResource($data, $request);
@@ -48,7 +57,10 @@ class StoreController extends Controller
 
         }
 
-//        $callbacks->filter()->each(fn(callable $function) => $function());
+        /**
+         * After Create
+         */
+        $fieldsWithEvents->each(fn(WithCrudEvent $field) => $field->runAfterCreate($data));
 
         return response()->json($data, 201);
 
