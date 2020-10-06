@@ -37,7 +37,7 @@ class UpdateController extends Controller
 
         $fields = $fields
             ->map(function(AbstractField $field) use ($updateData, $request) {
-                return $field->hydrateFromArray($updateData)->resolveValueFromRequest($request);
+                return $field->hydrateFromArray($updateData, $request)->resolveValueFromRequest($request);
             })
             ->filter(function(AbstractField $field) use ($request) {
                 return $field->isRequired($request) || $field->isDirty();
@@ -59,6 +59,9 @@ class UpdateController extends Controller
 
         if ($resource instanceof WithCustomUpdate) {
 
+            /**
+             * @todo find a better method name for WithCustomUpdate methods
+             */
             $response = $resource->updateResource($model, $data, $request);
 
         } else {

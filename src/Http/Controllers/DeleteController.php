@@ -28,7 +28,7 @@ class DeleteController extends Controller
 
             $fields = $resource->resolveFields($request)
                                ->whereInstanceOf(WithFieldEvent::class)
-                               ->map(fn(AbstractField $field) => $field->hydrateFromModel($model));
+                               ->map(fn(AbstractField $field) => $field->hydrateFromModel($model, $request));
 
             $fields->each(fn(WithFieldEvent $field) => $field->runBeforeDelete($model));
 

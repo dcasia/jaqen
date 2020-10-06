@@ -71,22 +71,23 @@ trait ResolveValueTrait
     /**
      * The value set from this method is intended to represent
      * the real value that is persisted already on a database
+     * therefore it should never be considered as "dirty"
      *
      * @param array $data
+     * @param BaseRequest $request
      * @return $this
      */
-    public function hydrateFromArray(array $data): self
+    public function hydrateFromArray(array $data, BaseRequest $request): self
     {
-        $this->value = data_get($data, $this->attribute);
-        /**
-         * @todo try to call setValue and reset dirty manually
-         */
+        $this->setValue(data_get($data, $this->attribute), $request);
+        $this->dirty = false;
+
         return $this;
     }
 
-    public function hydrateFromModel(Model $model): self
+    public function hydrateFromModel(Model $model, BaseRequest $request): self
     {
-        return $this->hydrateFromArray($model->toArray());
+        return $this->hydrateFromArray($model->toArray(), $request);
     }
 
 }
