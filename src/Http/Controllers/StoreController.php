@@ -4,9 +4,8 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Controllers;
 
-use DigitalCreative\Dashboard\Concerns\WithFieldEvent;
 use DigitalCreative\Dashboard\Concerns\WithCustomStore;
-use DigitalCreative\Dashboard\Concerns\WithResourceEvent;
+use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use Illuminate\Http\JsonResponse;
@@ -39,18 +38,16 @@ class StoreController extends Controller
 
         $data = $fields->pluck('value', 'attribute')->toArray();
 
-        $fieldsWithEvents = $fields->whereInstanceOf(WithFieldEvent::class);
+        $fieldsWithEvents = $fields->whereInstanceOf(WithEvents::class);
 
         /**
          * Before Create
          */
-        $fieldsWithEvents->each(function(WithFieldEvent $field) use (&$data) {
+        $fieldsWithEvents->each(function(WithEvents $field) use (&$data) {
             $data = $field->runBeforeCreate($data);
         });
 
-        if ($resource instanceof WithResourceEvent) {
-            $data = $resource->runBeforeCreate($data, $request);
-        }
+        $data = $resource->runBeforeCreate($data);
 
         if ($resource instanceof WithCustomStore) {
             $data = $resource->storeResource($data, $request);
@@ -61,11 +58,9 @@ class StoreController extends Controller
         /**
          * After Create
          */
-        $fieldsWithEvents->each(fn(WithFieldEvent $field) => $field->runAfterCreate($data));
+        $fieldsWithEvents->each(fn(WithEvents $field) => $field->runAfterCreate($data));
 
-        if ($resource instanceof WithResourceEvent) {
-            $data = $resource->afterCreate($data);
-        }
+        $data = $resource->runAfterCreate($data);
 
         return response()->json($data, 201);
 

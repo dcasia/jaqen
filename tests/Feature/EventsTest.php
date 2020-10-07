@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
-use DigitalCreative\Dashboard\Concerns\WithFieldEvent;
+use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Controllers\DeleteController;
@@ -18,6 +18,7 @@ use DigitalCreative\Dashboard\Tests\Traits\InteractionWithResponseTrait;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
 use DigitalCreative\Dashboard\Traits\FieldsEvents;
+use DigitalCreative\Dashboard\Traits\EventsTrait;
 
 class FieldEventTest extends TestCase
 {
@@ -31,7 +32,7 @@ class FieldEventTest extends TestCase
 
         /**
          * @var AbstractResource $resource
-         * @var WithFieldEvent $field
+         * @var WithEvents $field
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
@@ -62,7 +63,7 @@ class FieldEventTest extends TestCase
 
         /**
          * @var AbstractResource $resource
-         * @var WithFieldEvent $field
+         * @var WithEvents $field
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
@@ -81,7 +82,7 @@ class FieldEventTest extends TestCase
 
         /**
          * @var AbstractResource $resource
-         * @var WithFieldEvent $field
+         * @var WithEvents $field
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
@@ -102,7 +103,7 @@ class FieldEventTest extends TestCase
 
         /**
          * @var AbstractResource $resource
-         * @var WithFieldEvent $field
+         * @var WithEvents $field
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
@@ -130,7 +131,7 @@ class FieldEventTest extends TestCase
 
         /**
          * @var AbstractResource $resource
-         * @var WithFieldEvent $field
+         * @var WithEvents $field
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
@@ -157,7 +158,7 @@ class FieldEventTest extends TestCase
 
         /**
          * @var AbstractResource $resource
-         * @var WithFieldEvent & AbstractField $field
+         * @var WithEvents & AbstractField $field
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
@@ -189,8 +190,8 @@ class FieldEventTest extends TestCase
     private function getPreConfiguredResource(): array
     {
 
-        $field = new class('Name') extends EditableField implements WithFieldEvent {
-            use FieldsEvents;
+        $field = new class('Name') extends EditableField implements WithEvents {
+            use EventsTrait;
         };
 
         $resource = $this->makeResource()->addDefaultFields($field);

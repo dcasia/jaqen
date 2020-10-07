@@ -6,7 +6,7 @@ namespace DigitalCreative\Dashboard\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 
-interface WithResourceEvent
+interface WithEvents
 {
     public function beforeCreate(callable $callback): self;
 
@@ -16,11 +16,19 @@ interface WithResourceEvent
 
     public function afterUpdate(callable $callback): self;
 
+    public function beforeDelete(callable $callback): self;
+
+    public function afterDelete(callable $callback): self;
+
     public function runBeforeCreate(array $data): array;
 
-    public function runAfterCreate($data): void;
+    public function runAfterCreate($data);
 
     public function runBeforeUpdate(Model $model, array $data): array;
 
     public function runAfterUpdate(Model $model): void;
+
+    public function runBeforeDelete(Model $model): void;
+
+    public function runAfterDelete(Model $model): void;
 }

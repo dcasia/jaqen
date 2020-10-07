@@ -4,17 +4,17 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Fields;
 
-use DigitalCreative\Dashboard\Concerns\WithFieldEvent;
+use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Traits\FieldsEvents;
+use DigitalCreative\Dashboard\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-class FileField extends AbstractField implements WithFieldEvent
+class FileField extends AbstractField implements WithEvents
 {
 
-    use FieldsEvents;
+    use EventsTrait;
 
     private string $disk = 'public';
     private bool $pruneFile = false;

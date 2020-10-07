@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Controllers;
 
-use DigitalCreative\Dashboard\Concerns\WithFieldEvent;
 use DigitalCreative\Dashboard\Concerns\WithCustomUpdate;
+use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
 use Illuminate\Routing\Controller;
@@ -47,15 +47,14 @@ class UpdateController extends Controller
 
         /**
          * Events
-         */
-        $fieldsWithEvents = $fields->whereInstanceOf(WithFieldEvent::class);
-
-        /**
          * Before Update
          */
-        $fieldsWithEvents->each(function(WithFieldEvent $field) use ($model, &$data) {
+        $fieldsWithEvents = $fields->whereInstanceOf(WithEvents::class);
+        $fieldsWithEvents->each(function(WithEvents $field) use ($model, &$data) {
             $data = $field->runBeforeUpdate($model, $data);
         });
+
+        $data = $resource->runBeforeUpdate($model, $data);
 
         if ($resource instanceof WithCustomUpdate) {
 
@@ -73,7 +72,8 @@ class UpdateController extends Controller
         /**
          * After Update
          */
-        $fieldsWithEvents->each(fn(WithFieldEvent $field) => $field->runAfterUpdate($model));
+        $fieldsWithEvents->each(fn(WithEvents $field) => $field->runAfterUpdate($model));
+        $resource->runAfterUpdate($model);
 
         return $response;
 

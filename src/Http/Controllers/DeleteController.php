@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Controllers;
 
-use DigitalCreative\Dashboard\Concerns\WithFieldEvent;
+use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Http\Requests\DeleteResourceRequest;
 use Illuminate\Http\Response;
@@ -27,14 +27,16 @@ class DeleteController extends Controller
         foreach ($items as $model) {
 
             $fields = $resource->resolveFields($request)
-                               ->whereInstanceOf(WithFieldEvent::class)
+                               ->whereInstanceOf(WithEvents::class)
                                ->map(fn(AbstractField $field) => $field->hydrateFromModel($model, $request));
 
-            $fields->each(fn(WithFieldEvent $field) => $field->runBeforeDelete($model));
+            $fields->each(fn(WithEvents $field) => $field->runBeforeDelete($model));
+            $resource->runBeforeDelete($model);
 
             $status->push($repository->delete($model));
 
-            $fields->each(fn(WithFieldEvent $field) => $field->runAfterDelete($model));
+            $fields->each(fn(WithEvents $field) => $field->runAfterDelete($model));
+            $resource->runAfterDelete($model);
 
         }
 

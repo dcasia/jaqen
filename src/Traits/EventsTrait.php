@@ -6,7 +6,7 @@ namespace DigitalCreative\Dashboard\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 
-trait FieldsEvents
+trait EventsTrait
 {
 
     private array $beforeCreateCallbacks = [];
@@ -63,46 +63,44 @@ trait FieldsEvents
     public function runBeforeCreate(array $data): array
     {
 
-        $collection = collect($data);
-
         foreach ($this->beforeCreateCallbacks as $callback) {
 
             if (($result = $callback($data)) && is_array($result)) {
 
-                $collection = $collection->merge($result);
+                $data = $result;
 
             }
 
         }
 
-        return $collection->toArray();
+        return $data;
 
+    }
+
+    public function runAfterCreate($data)
+    {
+        foreach ($this->afterCreateCallbacks as $callback) {
+            $data = $callback($data);
+        }
+
+        return $data;
     }
 
     public function runBeforeUpdate(Model $model, array $data): array
     {
 
-        $collection = collect($data);
-
         foreach ($this->beforeUpdateCallbacks as $callback) {
 
             if (($result = $callback($model, $data)) && is_array($result)) {
 
-                $collection = $collection->merge($result);
+                $data = $result;
 
             }
 
         }
 
-        return $collection->toArray();
+        return $data;
 
-    }
-
-    public function runAfterCreate($data): void
-    {
-        foreach ($this->afterCreateCallbacks as $callback) {
-            $callback($data);
-        }
     }
 
     public function runAfterUpdate(Model $model): void
@@ -119,10 +117,10 @@ trait FieldsEvents
         }
     }
 
-    public function runAfterDelete(): void
+    public function runAfterDelete(Model $model): void
     {
         foreach ($this->afterDeleteCallbacks as $callback) {
-            $callback();
+            $callback($model);
         }
     }
 

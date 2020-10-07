@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Resources;
 
+use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Repository\Repository;
 use DigitalCreative\Dashboard\Repository\RepositoryInterface;
@@ -12,10 +13,11 @@ use DigitalCreative\Dashboard\Traits\OperationTrait;
 use DigitalCreative\Dashboard\Traits\ResolveFieldsTrait;
 use DigitalCreative\Dashboard\Traits\ResolveFiltersTrait;
 use DigitalCreative\Dashboard\Traits\ResolveUriKey;
+use DigitalCreative\Dashboard\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-abstract class AbstractResource
+abstract class AbstractResource implements WithEvents
 {
 
     use ResolveFieldsTrait;
@@ -23,6 +25,7 @@ abstract class AbstractResource
     use ResolveUriKey;
     use MakeableTrait;
     use OperationTrait;
+    use EventsTrait;
 
     private BaseRequest $request;
     private RepositoryInterface $repository;
