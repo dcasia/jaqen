@@ -54,7 +54,7 @@ class FileFieldTest extends TestCase
          */
         $user = UserModel::first();
 
-        $request = $this->updateRequest($resource::uriKey(), $user->id, [ 'name' => $user->name ]);
+        $request = $this->updateRequest($resource, $user->id, [ 'name' => $user->name ]);
 
         (new UpdateController())->update($request);
 
@@ -80,7 +80,7 @@ class FileFieldTest extends TestCase
         $this->assertStringEndsWith('.bin', $user->name);
         $storage->assertExists($user->name);
 
-        $request = $this->updateRequest($resource::uriKey(), $user->id, [ 'name' => null ]);
+        $request = $this->updateRequest($resource, $user->id, [ 'name' => null ]);
 
         (new UpdateController())->update($request);
 
@@ -109,7 +109,7 @@ class FileFieldTest extends TestCase
                              FileField::make('Name')->pruneFile(true)
                          );
 
-        $request = $this->deleteRequest($resource::uriKey(), [ $user->id ]);
+        $request = $this->deleteRequest($resource, [ $user->id ]);
         $storage->assertMissing($user->name);
 
         (new DeleteController())->delete($request);
@@ -129,7 +129,7 @@ class FileFieldTest extends TestCase
                                       ->pruneFile()
                          );
 
-        $request = $this->storeRequest($resource::uriKey(), [ 'name' => UploadedFile::fake()->image('name') ]);
+        $request = $this->storeRequest($resource, [ 'name' => UploadedFile::fake()->image('name') ]);
 
         (new StoreController())->store($request);
 

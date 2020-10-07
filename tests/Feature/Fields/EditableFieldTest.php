@@ -37,7 +37,7 @@ class EditableFieldTest extends TestCase
                              EditableField::make('Password')->rulesForCreate('required'),
                          );
 
-        $request = $this->storeRequest($resource::uriKey(), $data);
+        $request = $this->storeRequest($resource, $data);
 
         (new StoreController())->store($request);
 
@@ -57,7 +57,7 @@ class EditableFieldTest extends TestCase
                              new EditableField('Gender'),
                          );
 
-        $request = $this->updateRequest($resource::uriKey(), $user->id, [ 'name' => 'updated' ]);
+        $request = $this->updateRequest($resource, $user->id, [ 'name' => 'updated' ]);
 
         (new UpdateController())->update($request);
 

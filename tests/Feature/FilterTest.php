@@ -43,7 +43,7 @@ class FilterTest extends TestCase
                          ->addDefaultFields(new EditableField('name'))
                          ->addFilters($filter);
 
-        $request = $this->indexRequest($resource::uriKey(), [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]);
+        $request = $this->indexRequest($resource, [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]);
 
         $result = (new IndexController())->index($request);
 
@@ -75,7 +75,7 @@ class FilterTest extends TestCase
         $resource = $this->makeResource()->addFilters($filter);
 
         $request = $this->indexRequest(
-            $resource::uriKey(), [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]
+            $resource, [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]
         );
 
         $this->expectException(FilterValidationException::class);
@@ -116,7 +116,7 @@ class FilterTest extends TestCase
 
         $resource = $this->makeResource(UserModel::class)->addFilters($filter1, $filter2);
 
-        $request = $this->indexRequest($resource::uriKey(), [], [ 'filters' => $filters ]);
+        $request = $this->indexRequest($resource, [], [ 'filters' => $filters ]);
 
         $this->expectException(FilterValidationException::class);
 
@@ -169,7 +169,7 @@ class FilterTest extends TestCase
 
         $resource = $this->makeResource()->addFilters($filter);
 
-        $request = $this->indexRequest($resource::uriKey(), [ 'filters' => $filters ]);
+        $request = $this->indexRequest($resource, [ 'filters' => $filters ]);
 
         (new IndexController())->index($request);
 

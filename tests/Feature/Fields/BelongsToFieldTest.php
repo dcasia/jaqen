@@ -40,10 +40,12 @@ class BelongsToFieldTest extends TestCase
                          ->addDefaultFields(
                              BelongsToField::make('User')
                                            ->setRelatedResource(MinimalUserResource::class)
-                                           ->withExtraRelatedResourceData(fn(BaseRequest $request, UserModel $user) => [ 'name' => $user->name ]),
+                                           ->withExtraRelatedResourceData(
+                                               fn(BaseRequest $request, UserModel $user) => [ 'name' => $user->name ]
+                                           ),
                          );
 
-        $request = $this->indexRequest($resource::uriKey());
+        $request = $this->indexRequest($resource);
 
         $response = (new IndexController())->index($request);
 
@@ -95,7 +97,7 @@ class BelongsToFieldTest extends TestCase
         $resource = $this->makeResource(ArticleModel::class)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        $request = $this->updateRequest($resource::uriKey(), $article->id, [ 'user_id' => $user->id ]);
+        $request = $this->updateRequest($resource, $article->id, [ 'user_id' => $user->id ]);
 
         $this->assertTrue((new UpdateController())->update($request));
 
@@ -124,7 +126,7 @@ class BelongsToFieldTest extends TestCase
                              BelongsToField::make('User'),
                          );
 
-        $request = $this->storeRequest($resource::uriKey(), $data);
+        $request = $this->storeRequest($resource, $data);
 
         (new StoreController())->store($request);
 
@@ -146,7 +148,7 @@ class BelongsToFieldTest extends TestCase
                              }),
                          );
 
-        $request = $this->detailRequest($resource::uriKey(), $article->id);
+        $request = $this->detailRequest($resource, $article->id);
 
         $response = (new DetailController())->detail($request);
 
@@ -181,23 +183,25 @@ class BelongsToFieldTest extends TestCase
 
         UserFactory::new()->create([ 'name' => 'random' ]);
 
-        $request = $this->belongsToRequest(ArticleResource::uriKey(), $article->id, 'user', [ 'search' => 'random' ]);
+        $resource = $this->makeResource(ArticleModel::class);
 
-        $response = $this->makeResource(ArticleModel::class)
-                         ->addDefaultFields(
-                             BelongsToField::make('User')
-                                           ->setRelatedResource(MinimalUserResource::class)
-                                           ->searchable(function(Builder $builder, BaseRequest $request) {
+        $request = $this->belongsToRequest($resource, $article->id, 'user', [ 'search' => 'random' ]);
 
-                                               $search = $request->query('search');
+        $response = $resource
+            ->addDefaultFields(
+                BelongsToField::make('User')
+                              ->setRelatedResource(MinimalUserResource::class)
+                              ->searchable(function(Builder $builder, BaseRequest $request) {
 
-                                               $this->assertSame('random', $search);
+                                  $search = $request->query('search');
 
-                                               return $builder->where('name', 'like', "%$search%");
+                                  $this->assertSame('random', $search);
 
-                                           }),
-                         )
-                         ->searchBelongsToRelation($request);
+                                  return $builder->where('name', 'like', "%$search%");
+
+                              }),
+            )
+            ->searchBelongsToRelation($request);
 
         $this->assertSame($this->deepSerialize($response), [ [ 'name' => 'random' ] ]);
 
@@ -208,16 +212,17 @@ class BelongsToFieldTest extends TestCase
 
         $article = ArticleFactory::new()->create();
         $user = UserFactory::new()->create();
+        $resource = $this->makeResource(ArticleModel::class);
 
-        $request = $this->belongsToRequest(ArticleResource::uriKey(), $article->id, 'user', [ 'id' => $user->id ]);
+        $request = $this->belongsToRequest($resource, $article->id, 'user', [ 'id' => $user->id ]);
 
-        $response = $this->makeResource(ArticleModel::class)
-                         ->addDefaultFields(
-                             BelongsToField::make('User')
-                                           ->searchable()
-                                           ->setRelatedResource(MinimalUserResource::class),
-                         )
-                         ->searchBelongsToRelation($request);
+        $response = $resource
+            ->addDefaultFields(
+                BelongsToField::make('User')
+                              ->searchable()
+                              ->setRelatedResource(MinimalUserResource::class),
+            )
+            ->searchBelongsToRelation($request);
 
         $this->assertSame($this->deepSerialize($response), [ [ 'name' => $user->name ] ]);
 
@@ -228,8 +233,9 @@ class BelongsToFieldTest extends TestCase
 
         $article = ArticleFactory::new()->create();
         $user = UserFactory::new()->create();
+        $resource = new ArticleResource();
 
-        $request = $this->belongsToRequest(ArticleResource::uriKey(), $article->id, 'user', [ 'id' => $user->id ]);
+        $request = $this->belongsToRequest($resource, $article->id, 'user', [ 'id' => $user->id ]);
 
         $this->expectException(NotFoundHttpException::class);
 

@@ -68,52 +68,52 @@ trait RequestTrait
 
     }
 
-    protected function storeRequest(string $resourceKey, array $data = [], array $query = []): BaseRequest
+    protected function storeRequest(AbstractResource $resource, array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest(
-            [ '/{resource}' => $resourceKey ], 'POST', $data, $query, StoreResourceRequest::class
+            [ '/{resource}' => $resource::uriKey() ], 'POST', $data, $query, StoreResourceRequest::class
         );
     }
 
-    protected function fieldsRequest(string $resourceKey, array $data = [], array $query = []): BaseRequest
+    protected function fieldsRequest(AbstractResource $resource, array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest(
-            [ '/{resource}/fields' => "/$resourceKey/fields" ], 'GET', $data, $query, FieldsResourceRequest::class
+            [ '/{resource}/fields' => "/{$resource::uriKey()}/fields" ], 'GET', $data, $query, FieldsResourceRequest::class
         );
     }
 
-    protected function updateRequest(string $resourceKey, int $key, array $data = [], array $query = []): BaseRequest
+    protected function updateRequest(AbstractResource $resource, int $key, array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest(
-            [ '/{resource}/{key}' => "$resourceKey/$key" ], 'POST', $data, $query, UpdateResourceRequest::class
+            [ '/{resource}/{key}' => "{$resource::uriKey()}/$key" ], 'POST', $data, $query, UpdateResourceRequest::class
         );
     }
 
-    protected function deleteRequest(string $resourceKey, array $keys, array $data = [], array $query = []): BaseRequest
+    protected function deleteRequest(AbstractResource $resource, array $keys, array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest(
-            [ '/{resource}' => $resourceKey ], 'DELETE', array_merge($data, [ 'ids' => $keys ]), $query, DeleteResourceRequest::class
+            [ '/{resource}' => $resource::uriKey() ], 'DELETE', array_merge($data, [ 'ids' => $keys ]), $query, DeleteResourceRequest::class
         );
     }
 
-    protected function indexRequest(string $resourceKey, array $data = [], array $query = []): BaseRequest
+    protected function indexRequest(AbstractResource $resource, array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest(
-            [ '/{resource}' => $resourceKey ], 'GET', $data, $query, IndexResourceRequest::class
+            [ '/{resource}' => $resource::uriKey() ], 'GET', $data, $query, IndexResourceRequest::class
         );
     }
 
-    protected function detailRequest(string $resourceKey, int $key, array $data = [], array $query = []): BaseRequest
+    protected function detailRequest(AbstractResource $resource, int $key, array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest(
-            [ '/{resource}/{key}' => "/$resourceKey/$key" ], 'GET', $data, $query, DetailResourceRequest::class
+            [ '/{resource}/{key}' => "/{$resource::uriKey()}/$key" ], 'GET', $data, $query, DetailResourceRequest::class
         );
     }
 
-    protected function belongsToRequest(string $resourceKey, int $key, string $field, array $data = [], array $query = []): BaseRequest
+    protected function belongsToRequest(AbstractResource $resource, int $key, string $field, array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest(
-            [ '/belongs-to/{resource}/{key}/{field}' => "/belongs-to/$resourceKey/$key/$field" ], 'GET', $data, $query, BelongsToResourceRequest::class
+            [ '/belongs-to/{resource}/{key}/{field}' => "/belongs-to/{$resource::uriKey()}/$key/$field" ], 'GET', $data, $query, BelongsToResourceRequest::class
         );
     }
 

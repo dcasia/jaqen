@@ -29,7 +29,7 @@ class ReadOnlyFieldTest extends TestCase
                              ReadOnlyField::make('Gender'),
                          );
 
-        $request = $this->updateRequest($resource::uriKey(), $user->id, [ 'name' => 'updated' ]);
+        $request = $this->updateRequest($resource, $user->id, [ 'name' => 'updated' ]);
 
         (new UpdateController())->update($request);
 

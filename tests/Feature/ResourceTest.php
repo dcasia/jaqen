@@ -76,7 +76,7 @@ class ResourceTest extends TestCase
 
         $this->registerResource($resource);
 
-        $request = $this->storeRequest($resource::uriKey(), [ 'name' => 'test' ]);
+        $request = $this->storeRequest($resource, [ 'name' => 'test' ]);
 
         $response = (new StoreController())->store($request);
 
@@ -117,7 +117,7 @@ class ResourceTest extends TestCase
 
         $user = UserFactory::new()->create();
 
-        $request = $this->updateRequest($resource::uriKey(), $user->getKey(), [ 'name' => 'test' ]);
+        $request = $this->updateRequest($resource, $user->getKey(), [ 'name' => 'test' ]);
 
         $response = (new UpdateController())->update($request);
 

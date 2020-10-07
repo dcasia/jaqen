@@ -47,7 +47,7 @@ class FieldEventTest extends TestCase
 
         });
 
-        $request = $this->storeRequest($resource::uriKey(), [ 'name' => 'original' ]);
+        $request = $this->storeRequest($resource, [ 'name' => 'original' ]);
 
         (new StoreController())->store($request);
 
@@ -71,7 +71,7 @@ class FieldEventTest extends TestCase
             $this->assertTrue($data);
         });
 
-        $request = $this->storeRequest($resource::uriKey());
+        $request = $this->storeRequest($resource);
 
         (new StoreController())->store($request);
 
@@ -92,7 +92,7 @@ class FieldEventTest extends TestCase
             $this->assertEquals($model->getKey(), $user->getKey());
         });
 
-        $request = $this->updateRequest($resource::uriKey(), $user->id, [ 'name' => 'updated' ]);
+        $request = $this->updateRequest($resource, $user->id, [ 'name' => 'updated' ]);
 
         (new UpdateController())->update($request);
 
@@ -118,7 +118,7 @@ class FieldEventTest extends TestCase
 
         });
 
-        $request = $this->updateRequest($resource::uriKey(), $user->id, [ 'name' => 'updated' ]);
+        $request = $this->updateRequest($resource, $user->id, [ 'name' => 'updated' ]);
 
         (new UpdateController())->update($request);
 
@@ -145,7 +145,7 @@ class FieldEventTest extends TestCase
                 $called = true;
             });
 
-        $request = $this->updateRequest($resource::uriKey(), UserFactory::new()->create()->id);
+        $request = $this->updateRequest($resource, UserFactory::new()->create()->id);
 
         (new UpdateController())->update($request);
 
@@ -178,7 +178,7 @@ class FieldEventTest extends TestCase
             $afterDelete++;
         });
 
-        $request = $this->deleteRequest($resource::uriKey(), $users->pluck('id')->toArray());
+        $request = $this->deleteRequest($resource, $users->pluck('id')->toArray());
 
         (new DeleteController())->delete($request);
 

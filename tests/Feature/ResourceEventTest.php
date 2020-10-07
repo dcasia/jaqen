@@ -30,7 +30,7 @@ class ResourceEventTest extends TestCase
                              return [ 'name' => 'hello' ];
                          });
 
-        $request = $this->storeRequest($resource::uriKey(), [ 'name' => 'ignored' ]);
+        $request = $this->storeRequest($resource, [ 'name' => 'ignored' ]);
 
         (new StoreController())->store($request);
 
@@ -47,7 +47,7 @@ class ResourceEventTest extends TestCase
                              return [ 'success' => true ];
                          });
 
-        $request = $this->storeRequest($resource::uriKey(), [ 'name' => 'ignored' ]);
+        $request = $this->storeRequest($resource, [ 'name' => 'ignored' ]);
 
         $response = (new StoreController())->store($request)->getData(true);
 
@@ -68,7 +68,7 @@ class ResourceEventTest extends TestCase
                              return array_merge($data, [ 'appended' => true ]);
                          });
 
-        $request = $this->storeRequest($resource::uriKey(), [ 'name' => 'ignored' ]);
+        $request = $this->storeRequest($resource, [ 'name' => 'ignored' ]);
 
         $response = (new StoreController())->store($request)->getData(true);
 
@@ -88,7 +88,7 @@ class ResourceEventTest extends TestCase
                              return [ 'name' => 'hello' ];
                          });
 
-        $request = $this->updateRequest($resource::uriKey(), $user->id, [ 'name' => 'ignored' ]);
+        $request = $this->updateRequest($resource, $user->id, [ 'name' => 'ignored' ]);
 
         (new UpdateController())->update($request);
 
@@ -106,7 +106,7 @@ class ResourceEventTest extends TestCase
                              $this->assertEquals($user->getKey(), $model->getKey());
                          });
 
-        $request = $this->updateRequest($resource::uriKey(), $user->id, [ 'name' => 'ignored' ]);
+        $request = $this->updateRequest($resource, $user->id, [ 'name' => 'ignored' ]);
 
         (new UpdateController())->update($request);
 
@@ -122,7 +122,7 @@ class ResourceEventTest extends TestCase
                              $this->assertEquals($user->getKey(), $model->getKey());
                          });
 
-        $request = $this->deleteRequest($resource::uriKey(), [ $user->id ]);
+        $request = $this->deleteRequest($resource, [ $user->id ]);
 
         (new DeleteController())->delete($request);
 
@@ -139,7 +139,7 @@ class ResourceEventTest extends TestCase
                              $this->assertFalse($model->exists);
                          });
 
-        $request = $this->deleteRequest($resource::uriKey(), [ $user->id ]);
+        $request = $this->deleteRequest($resource, [ $user->id ]);
 
         (new DeleteController())->delete($request);
 

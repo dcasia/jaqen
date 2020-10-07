@@ -55,7 +55,7 @@ class PanelTest extends TestCase
         /**
          * Index Controller
          */
-        $indexRequest = $this->indexRequest($resource::uriKey());
+        $indexRequest = $this->indexRequest($resource);
         $indexResponse = $this->deepSerialize((new IndexController())->index($indexRequest));
 
         $this->assertEquals('panel', data_get($indexResponse, 'resources.0.fields.0.component'));
@@ -64,7 +64,7 @@ class PanelTest extends TestCase
         /**
          * Detail Controller
          */
-        $detailRequest = $this->detailRequest($resource::uriKey(), $user->getKey());
+        $detailRequest = $this->detailRequest($resource, $user->getKey());
         $detailResponse = $this->deepSerialize((new DetailController())->detail($detailRequest));
 
         $this->assertEquals('panel', data_get($detailResponse, 'fields.0.component'));
@@ -92,7 +92,7 @@ class PanelTest extends TestCase
                              ])
                          );
 
-        $request = $this->storeRequest($resource::uriKey(), $data);
+        $request = $this->storeRequest($resource, $data);
 
         (new StoreController())->store($request);
 
@@ -116,7 +116,7 @@ class PanelTest extends TestCase
                              ])
                          );
 
-        $request = $this->updateRequest($resource::uriKey(), $user->getKey(), $data);
+        $request = $this->updateRequest($resource, $user->getKey(), $data);
 
         (new UpdateController())->update($request);
 

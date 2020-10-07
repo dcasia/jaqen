@@ -32,16 +32,18 @@ class SelectFieldTest extends TestCase
 
         $field = SelectField::make('Gender')->options([ 'male' => 'Male', 'female' => 'Female' ])->default('male');
 
+        $resource = new UserResource();
+
         /**
          * On Create it should always use defaults if no date was sent
          */
-        $field->resolveValueFromRequest($this->fieldsRequest(UserResource::uriKey()));
+        $field->resolveValueFromRequest($this->fieldsRequest($resource));
         $this->assertEquals($field->toArray(), array_merge($response, [ 'value' => 'male' ]));
 
         /**
          * On Update
          */
-        $field->resolveValueFromRequest($this->updateRequest(UserResource::uriKey(), 1));
+        $field->resolveValueFromRequest($this->updateRequest($resource, 1));
         $this->assertEquals($field->toArray(), array_merge($response, [ 'value' => null ]));
 
     }

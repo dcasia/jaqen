@@ -36,7 +36,7 @@ class FieldTest extends TestCase
                              (new EditableField('name'))->rulesForCreate('required')
                          );
 
-        $request = $this->storeRequest($resource::uriKey(), [ 'name' => null ]);
+        $request = $this->storeRequest($resource, [ 'name' => null ]);
 
         (new StoreController)->store($request);
 
@@ -54,7 +54,7 @@ class FieldTest extends TestCase
                              (new EditableField('name'))->rulesForUpdate('required')
                          );
 
-        $request = $this->updateRequest($resource::uriKey(), $user->id, [ 'name' => null ]);
+        $request = $this->updateRequest($resource, $user->id, [ 'name' => null ]);
 
         (new UpdateController())->update($request);
 
@@ -70,7 +70,7 @@ class FieldTest extends TestCase
                              (new EditableField('name'))->rulesForCreate('required')
                          );
 
-        $request = $this->storeRequest($resource::uriKey());
+        $request = $this->storeRequest($resource);
 
         (new StoreController)->store($request);
 
@@ -89,7 +89,7 @@ class FieldTest extends TestCase
                              (new EditableField('email'))->rulesForUpdate('required')
                          );
 
-        $request = $this->updateRequest($resource::uriKey(), $user->id, [ 'name' => 'Test' ]);
+        $request = $this->updateRequest($resource, $user->id, [ 'name' => 'Test' ]);
 
         (new UpdateController())->update($request);
 
@@ -105,7 +105,7 @@ class FieldTest extends TestCase
                              ];
                          });
 
-        $request = $this->fieldsRequest($resource::uriKey(), [ 'fieldsFor' => 'index-listing' ]);
+        $request = $this->fieldsRequest($resource, [ 'fieldsFor' => 'index-listing' ]);
 
         $this->assertEquals([
             [
@@ -122,9 +122,7 @@ class FieldTest extends TestCase
     public function test_fields_is_resolved_from_method_if_exists(): void
     {
 
-        $request = $this->fieldsRequest(UserResource::uriKey(), [ 'fieldsFor' => 'demo' ]);
-
-        $resource = new class($request) extends AbstractResource {
+        $resource = new class() extends AbstractResource {
 
             public function getModel(): Model
             {
@@ -138,6 +136,8 @@ class FieldTest extends TestCase
                 ];
             }
         };
+
+        $request = $this->fieldsRequest($resource, [ 'fieldsFor' => 'demo' ]);
 
         $response = $resource->resolveFields($request);
 
@@ -156,15 +156,17 @@ class FieldTest extends TestCase
     public function test_field_can_resolve_default_value(): void
     {
 
-        $request = $this->fieldsRequest(UserResource::uriKey());
+        $resource = $this->makeResource(UserModel::class);
 
-        $response = $this->makeResource(UserModel::class)
-                         ->addDefaultFields(
-                             EditableField::make('Name')->default('Demo'),
-                             EditableField::make('Email')->default(fn() => 'demo@email.com'),
-                         )
-                         ->resolveFields($request)
-                         ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
+        $request = $this->fieldsRequest($resource);
+
+        $response = $resource
+            ->addDefaultFields(
+                EditableField::make('Name')->default('Demo'),
+                EditableField::make('Email')->default(fn() => 'demo@email.com'),
+            )
+            ->resolveFields($request)
+            ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
 
         $this->assertEquals(
             [ 'name' => 'Demo', 'email' => 'demo@email.com' ],
@@ -176,16 +178,18 @@ class FieldTest extends TestCase
     public function test_it_returns_only_the_specified_fields(): void
     {
 
-        $request = $this->fieldsRequest(UserResource::uriKey(), [ 'only' => 'first_name,last_name' ]);
+        $resource = $this->makeResource(UserModel::class);
 
-        $response = $this->makeResource(UserModel::class)
-                         ->addDefaultFields(
-                             EditableField::make('First Name')->default('Hello'),
-                             EditableField::make('Last Name')->default('World'),
-                             EditableField::make('Email')->default('demo@email.com'),
-                         )
-                         ->resolveFields($request)
-                         ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
+        $request = $this->fieldsRequest($resource, [ 'only' => 'first_name,last_name' ]);
+
+        $response = $resource
+            ->addDefaultFields(
+                EditableField::make('First Name')->default('Hello'),
+                EditableField::make('Last Name')->default('World'),
+                EditableField::make('Email')->default('demo@email.com'),
+            )
+            ->resolveFields($request)
+            ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
 
         $this->assertEquals(
             [ 'first_name' => 'Hello', 'last_name' => 'World' ],
@@ -197,19 +201,21 @@ class FieldTest extends TestCase
     public function test_only_fields_remove_empty_spaces_correctly(): void
     {
 
+        $resource = $this->makeResource(UserModel::class);
+
         /**
          * Space between , will be trimmed
          */
-        $request = $this->fieldsRequest(UserResource::uriKey(), [ 'only' => 'first_name , email' ]);
+        $request = $this->fieldsRequest($resource, [ 'only' => 'first_name , email' ]);
 
-        $response = $this->makeResource(UserModel::class)
-                         ->addDefaultFields(
-                             EditableField::make('First Name')->default('Hello'),
-                             EditableField::make('Last Name')->default('World'),
-                             EditableField::make('Email')->default('demo@email.com'),
-                         )
-                         ->resolveFields($request)
-                         ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
+        $response = $resource
+            ->addDefaultFields(
+                EditableField::make('First Name')->default('Hello'),
+                EditableField::make('Last Name')->default('World'),
+                EditableField::make('Email')->default('demo@email.com'),
+            )
+            ->resolveFields($request)
+            ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
 
         $this->assertEquals(
             [ 'first_name' => 'Hello', 'email' => 'demo@email.com' ],
@@ -221,16 +227,18 @@ class FieldTest extends TestCase
     public function test_expect_fields_filter_works_correctly(): void
     {
 
-        $request = $this->fieldsRequest(UserResource::uriKey(), [ 'except' => 'first_name , last_name' ]);
+        $resource = $this->makeResource(UserModel::class);
 
-        $response = $this->makeResource(UserModel::class)
-                         ->addDefaultFields(
-                             EditableField::make('First Name')->default('Hello'),
-                             EditableField::make('Last Name')->default('World'),
-                             EditableField::make('Email')->default('demo@email.com'),
-                         )
-                         ->resolveFields($request)
-                         ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
+        $request = $this->fieldsRequest($resource, [ 'except' => 'first_name , last_name' ]);
+
+        $response = $resource
+            ->addDefaultFields(
+                EditableField::make('First Name')->default('Hello'),
+                EditableField::make('Last Name')->default('World'),
+                EditableField::make('Email')->default('demo@email.com'),
+            )
+            ->resolveFields($request)
+            ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
 
         $this->assertEquals(
             [ 'email' => 'demo@email.com' ],
