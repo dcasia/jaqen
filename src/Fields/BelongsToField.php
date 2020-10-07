@@ -26,9 +26,13 @@ class BelongsToField extends AbstractField
      */
     private $searchableCallback = false;
 
-    public function __construct(string $label, string $relation = null)
+    public function __construct(string $label, string $relation = null, string $relatedResource = null)
     {
         $this->relationAttribute = $relation ?? Str::camel($label);
+
+        if ($relatedResource) {
+            $this->setRelatedResource($relatedResource);
+        }
 
         parent::__construct($label, $this->relationAttribute . '_id');
     }
@@ -88,7 +92,7 @@ class BelongsToField extends AbstractField
 
                 }
 
-                return new $this->relatedResource;
+                return resolve($this->relatedResource);
 
             }
 
@@ -157,6 +161,9 @@ class BelongsToField extends AbstractField
 
         }
 
+        /**
+         * @todo try to abstract this call to the repository
+         */
         return static function(Builder $builder, BaseRequest $request): Builder {
             return $builder->when($request->query('id'), fn(Builder $builder, string $search) => $builder->whereKey($search))
                            ->limit(10);

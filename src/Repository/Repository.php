@@ -30,7 +30,7 @@ class Repository implements RepositoryInterface
 
     public function searchForRelatedEntries(callable $userDefinedCallback, BaseRequest $request): Collection
     {
-        return tap($this->newQuery(), static fn(Builder $builder) => $userDefinedCallback($builder, $request))->get();
+        return $userDefinedCallback($this->newQuery(), $request)->get();
     }
 
     public function getOptionsForRelatedResource(callable $userDefinedCallback, BaseRequest $request): Collection

@@ -189,7 +189,7 @@ class BelongsToFieldTest extends TestCase
 
         $field = BelongsToField::make('User')
                                ->setRelatedResource(MinimalUserResource::class)
-                               ->searchable(function(Builder $builder, BaseRequest $request) {
+                               ->searchable(function(Builder $builder, BaseRequest $request): Builder {
 
                                    $search = $request->query('search');
 

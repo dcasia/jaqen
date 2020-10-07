@@ -24,12 +24,10 @@ class BelongsToController extends Controller
             $resource = $field->getRelatedResource();
             $repository = $resource->repository();
 
-            $models = $repository->searchForRelatedEntries(
-                $field->resolveSearchCallback(), $request
-            );
+            $models = $repository->searchForRelatedEntries($field->resolveSearchCallback(), $request);
 
             $response = $models->map(function(Model $model) use ($resource, $request) {
-                return collect($resource->resolveFieldsUsingModel($model, $request)->jsonSerialize())->pluck('value', 'attribute');
+                return collect($resource->resolveFieldsUsingModel($model, $request))->pluck('value', 'attribute');
             });
 
             return response()->json($response);
