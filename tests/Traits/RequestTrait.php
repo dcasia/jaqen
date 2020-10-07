@@ -110,13 +110,6 @@ trait RequestTrait
         );
     }
 
-    protected function belongsToRequest(AbstractResource $resource, int $key, string $field, array $data = [], array $query = []): BaseRequest
-    {
-        return $this->makeRequest(
-            [ '/belongs-to/{resource}/{key}/{field}' => "/belongs-to/{$resource::uriKey()}/$key/$field" ], 'GET', $data, $query, BelongsToResourceRequest::class
-        );
-    }
-
     protected function blankRequest(array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest('/', 'GET', $data, $query, BaseRequest::class);

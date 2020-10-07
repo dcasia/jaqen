@@ -30,11 +30,6 @@ class ResourceController extends Controller
                         });
     }
 
-    public function searchBelongsTo(BaseRequest $request): Collection
-    {
-        return $request->resourceInstance()->searchBelongsToRelation($request);
-    }
-
     public function filters(IndexResourceRequest $request): array
     {
         return $request->resourceInstance()->getFiltersListing();

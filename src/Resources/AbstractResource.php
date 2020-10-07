@@ -9,7 +9,6 @@ use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Repository\Repository;
 use DigitalCreative\Dashboard\Repository\RepositoryInterface;
 use DigitalCreative\Dashboard\Traits\MakeableTrait;
-use DigitalCreative\Dashboard\Traits\OperationTrait;
 use DigitalCreative\Dashboard\Traits\ResolveFieldsTrait;
 use DigitalCreative\Dashboard\Traits\ResolveFiltersTrait;
 use DigitalCreative\Dashboard\Traits\ResolveUriKey;
@@ -24,7 +23,6 @@ abstract class AbstractResource implements WithEvents
     use ResolveFiltersTrait;
     use ResolveUriKey;
     use MakeableTrait;
-    use OperationTrait;
     use EventsTrait;
 
     private BaseRequest $request;

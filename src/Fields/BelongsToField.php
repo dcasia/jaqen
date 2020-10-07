@@ -28,7 +28,7 @@ class BelongsToField extends AbstractField
 
     public function __construct(string $label, string $relation = null)
     {
-        $this->relationAttribute = $relation ?? Str::snake($label);
+        $this->relationAttribute = $relation ?? Str::camel($label);
 
         parent::__construct($label, $this->relationAttribute . '_id');
     }
