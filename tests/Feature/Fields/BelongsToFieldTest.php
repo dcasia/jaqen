@@ -6,14 +6,18 @@ namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\BelongsToField;
 use DigitalCreative\Dashboard\Fields\EditableField;
+use DigitalCreative\Dashboard\Fields\ReadOnlyField;
 use DigitalCreative\Dashboard\Http\Controllers\DetailController;
 use DigitalCreative\Dashboard\Http\Controllers\IndexController;
 use DigitalCreative\Dashboard\Http\Controllers\Relationships\BelongsToController;
 use DigitalCreative\Dashboard\Http\Controllers\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Repository\Repository;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Factories\ArticleFactory;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article as ArticleModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\MinimalUserResource;
@@ -23,6 +27,8 @@ use DigitalCreative\Dashboard\Tests\Traits\RelationshipRequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Mockery\MockInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BelongsToFieldTest extends TestCase
@@ -42,16 +48,14 @@ class BelongsToFieldTest extends TestCase
                          ->addDefaultFields(
                              BelongsToField::make('User')
                                            ->setRelatedResource(MinimalUserResource::class)
-                                           ->withExtraRelatedResourceData(
-                                               fn(BaseRequest $request, UserModel $user) => [ 'name' => $user->name ]
-                                           ),
+                                           ->withAdditionalInformation(fn(UserModel $user) => [ 'name' => $user->name ]),
                          );
 
         $request = $this->indexRequest($resource);
 
-        $response = (new IndexController())->index($request);
+        $response = (new IndexController())->index($request)->getData(true);
 
-        $this->assertEquals($this->deepSerialize($response), [
+        $this->assertEquals($response, [
             'total' => 1,
             'from' => 1,
             'to' => 1,
@@ -72,13 +76,18 @@ class BelongsToFieldTest extends TestCase
                             'settings' => [
                                 'searchable' => false,
                                 'options' => null,
-                                'fields' => [
-                                    [
-                                        'label' => 'Name',
-                                        'attribute' => 'name',
-                                        'value' => null,
-                                        'component' => 'editable-field',
-                                        'additionalInformation' => null,
+                                'relatedResource' => [
+                                    'name' => 'Minimal User Resource',
+                                    'label' => 'Minimal User Resources',
+                                    'uriKey' => 'minimal-user-resources',
+                                    'fields' => [
+                                        [
+                                            'label' => 'Name',
+                                            'attribute' => 'name',
+                                            'value' => null,
+                                            'component' => 'editable-field',
+                                            'additionalInformation' => null,
+                                        ],
                                     ],
                                 ],
                             ],
@@ -87,6 +96,44 @@ class BelongsToFieldTest extends TestCase
                 ],
             ],
         ]);
+
+    }
+
+    public function test_fields_for_works_correctly_on_related_resource(): void
+    {
+
+        ArticleFactory::new()->create();
+
+        $class = new class() extends AbstractResource {
+
+            public function model(): Model
+            {
+                return new ArticleModel();
+            }
+
+            public function fieldsForTest(): array
+            {
+                return [
+                    new ReadOnlyField('Custom Field Name'),
+                ];
+            }
+
+        };
+
+        $resource = $this->makeResource(ArticleModel::class)
+                         ->addDefaultFields(
+                             BelongsToField::make('User')
+                                           ->setRelatedResource(get_class($class))
+                                           ->setRelatedResourceFieldsFor('test'),
+                         );
+
+        $request = $this->indexRequest($resource);
+
+        $response = (new IndexController())->index($request)->getData(true);
+
+        $this->assertEquals(
+            'custom_field_name', data_get($response, 'resources.0.fields.0.settings.relatedResource.fields.0.attribute')
+        );
 
     }
 
@@ -152,7 +199,7 @@ class BelongsToFieldTest extends TestCase
 
         $request = $this->detailRequest($resource, $article->id);
 
-        $response = (new DetailController())->detail($request);
+        $response = (new DetailController())->detail($request)->getData(true);
 
         $this->assertSame($response, [
             'key' => $article->id,
@@ -245,6 +292,75 @@ class BelongsToFieldTest extends TestCase
         $request = $this->belongsToSearchRequest($resource, $article, $field, [ 'id' => $user->id ]);
 
         (new BelongsToController())->searchBelongsTo($request);
+
+    }
+
+    public function test_related_model_can_be_null(): void
+    {
+
+        $article = ArticleFactory::new()->create([ 'user_id' => null ]);
+
+        $resource = $this->makeResource(ArticleModel::class)
+                         ->addDefaultFields(
+                             BelongsToField::make('User')
+                                           ->setRelatedResource(MinimalUserResource::class)
+                                           ->withAdditionalInformation(function($user) {
+                                               $this->assertNull($user);
+                                           }),
+                         );
+
+        $request = $this->detailRequest($resource, $article->id);
+
+        $this->assertSame(200, (new DetailController())->detail($request)->status());
+
+    }
+
+    public function test_eager_loading_does_not_override_user_definitions(): void
+    {
+
+        $article = ArticleFactory::new()->create();
+
+        /**
+         * User defined relationships shouldn't be replaced
+         */
+        $with = [
+            'demo', 'user' => fn(Builder $builder) => $builder,
+        ];
+
+        $repository = $this->mock(Repository::class, function(MockInterface $mock) use ($article, $with) {
+            $mock->shouldReceive('findByKey')->with($article->id, $with)->andReturn($article);
+        });
+
+        $resource = $this->makeResource(ArticleModel::class)
+                         ->useRepository($repository)
+                         ->with($with)
+                         ->addDefaultFields(BelongsToField::make('User'));
+
+        (new DetailController())->detail($this->detailRequest($resource, $article->id));
+
+    }
+
+    public function test_eager_relation_is_injected_into_the_resource(): void
+    {
+
+        $article = ArticleFactory::new()->create();
+
+        $with = [ 'demo' ];
+
+        $repository = $this->mock(Repository::class, function(MockInterface $mock) use ($article, $with) {
+            $mock->shouldReceive('findByKey')
+                 ->with($article->id, array_merge($with, [ 'user' ]))
+                 ->andReturn($article);
+        });
+
+        $resource = $this->makeResource(ArticleModel::class)
+                         ->useRepository($repository)
+                         ->with($with)
+                         ->addDefaultFields(BelongsToField::make('User'));
+
+        (new DetailController())->detail(
+            $this->detailRequest($resource, $article->id)
+        );
 
     }
 

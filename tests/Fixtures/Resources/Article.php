@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 class Article extends AbstractResource
 {
 
-    public function getModel(): Model
+    public function model(): Model
     {
         return new ArticleModel();
     }

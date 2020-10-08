@@ -12,6 +12,7 @@ use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use LogicException;
 use RuntimeException;
 
 /**
@@ -58,13 +59,14 @@ trait ResolveFieldsTrait
      * Resolve fields and remove every field that is not necessary for this given request
      *
      * @param BaseRequest $request
+     * @param string|null $for
      * @return Collection
      */
-    public function resolveFields(BaseRequest $request): Collection
+    public function resolveFields(BaseRequest $request, ?string $for = null): Collection
     {
-        return once(function() use ($request) {
+        return once(function() use ($request, $for) {
 
-            $for = Str::camel($request->input('fieldsFor', 'fields'));
+            $for = $for ?? Str::camel($request->input('fieldsFor', 'fields'));
 
             $only = $request->input('only', null);
             $except = $request->input('except', null);
@@ -96,9 +98,13 @@ trait ResolveFieldsTrait
 
                     }
 
-                } else {
+                } else if (is_array($value)) {
 
                     $fields = $value;
+
+                } else {
+
+                    throw new LogicException('Invalid value given.');
 
                 }
 
@@ -144,6 +150,7 @@ trait ResolveFieldsTrait
                         fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
                     );
                 })
+                ->each(fn(AbstractField $field) => $field->boot($this))
                 ->values();
 
         });

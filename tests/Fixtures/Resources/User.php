@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 class User extends AbstractResource
 {
 
-    public function getModel(): Model
+    public function model(): Model
     {
         return new UserModel();
     }

@@ -20,11 +20,11 @@ interface RepositoryInterface
      */
     public function create(array $data);
 
-    public function findByKey(string $key): ?Model;
+    public function findByKey(string $key, array $with = []): ?Model;
 
     public function findByKeys(array $keys): Collection;
 
-    public function find(FilterCollection $filters, int $page, int $perPage = 15): Collection;
+    public function find(FilterCollection $filters, int $page, int $perPage = 15, array $with = []): Collection;
 
     public function update(Model $model, array $data): bool;
 

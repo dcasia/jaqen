@@ -56,7 +56,7 @@ class PanelTest extends TestCase
          * Index Controller
          */
         $indexRequest = $this->indexRequest($resource);
-        $indexResponse = $this->deepSerialize((new IndexController())->index($indexRequest));
+        $indexResponse = (new IndexController())->index($indexRequest)->getData(true);
 
         $this->assertEquals('panel', data_get($indexResponse, 'resources.0.fields.0.component'));
         $this->assertEquals('hello world', data_get($indexResponse, 'resources.0.fields.0.value.0.value'));
@@ -65,7 +65,7 @@ class PanelTest extends TestCase
          * Detail Controller
          */
         $detailRequest = $this->detailRequest($resource, $user->getKey());
-        $detailResponse = $this->deepSerialize((new DetailController())->detail($detailRequest));
+        $detailResponse = (new DetailController())->detail($detailRequest)->getData(true);
 
         $this->assertEquals('panel', data_get($detailResponse, 'fields.0.component'));
         $this->assertEquals('hello world', data_get($detailResponse, 'fields.0.value.0.value'));

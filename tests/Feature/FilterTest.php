@@ -45,9 +45,9 @@ class FilterTest extends TestCase
 
         $request = $this->indexRequest($resource, [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]);
 
-        $result = (new IndexController())->index($request);
+        $result = (new IndexController())->index($request)->getData();
 
-        $this->assertSame($result['total'], 1);
+        $this->assertSame($result->total, 1);
         $this->assertEquals($user->id, data_get($result, 'resources.0.key'));
         $this->assertEquals($user->name, data_get($result, 'resources.0.fields.0.value'));
 

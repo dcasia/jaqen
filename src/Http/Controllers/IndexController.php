@@ -8,6 +8,7 @@ use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\FilterCollection;
 use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 
@@ -17,7 +18,7 @@ class IndexController extends Controller
     private int $perPage;
     private int $currentPage;
 
-    public function index(IndexResourceRequest $request): array
+    public function index(IndexResourceRequest $request): JsonResponse
     {
 
         $resource = $request->resourceInstance();
@@ -32,26 +33,26 @@ class IndexController extends Controller
         $total = $resource->repository()->count($filters);
 
         $resources = $resource->repository()
-                              ->find($filters, $this->currentPage, $this->perPage)
+                              ->find($filters, $this->currentPage, $this->perPage, $resource->with)
                               ->map(function(Model $model) use ($request, $fields) {
 
                                   return [
                                       'key' => $model->getKey(),
                                       'fields' => $fields->map(function(AbstractField $field) use ($model, $request) {
-                                          return (clone $field)->resolveValueFromModel($model, $request);
+                                          return $field->resolveValueFromModel($model, $request)->toArray();
                                       }),
                                   ];
 
                               });
 
-        return [
+        return response()->json([
             'total' => $total,
             'from' => $this->firstItem($resources),
             'to' => $this->lastItem($resources),
             'currentPage' => $this->currentPage,
             'lastPage' => max((int) ceil($total / $this->perPage), 1),
             'resources' => $resources,
-        ];
+        ]);
     }
 
     public function firstItem(Collection $resources): ?int

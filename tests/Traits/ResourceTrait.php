@@ -23,7 +23,7 @@ trait ResourceTrait
                 $this->model = $model;
             }
 
-            public function getModel(): Model
+            public function model(): Model
             {
                 return new $this->model;
             }

@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Fields;
 
-use Closure;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,10 +15,16 @@ use RuntimeException;
 class BelongsToField extends AbstractField
 {
 
-    private ?Closure $extraRelationDataCallback = null;
-    private ?Closure $optionsCallback = null;
+    /**
+     * @var callable|array
+     */
+    private $optionsCallback;
     private ?string $relationAttribute;
     private ?string $relatedResource = null;
+    private ?string $relatedFieldsFor = null;
+
+    private Model $model;
+    private BaseRequest $request;
 
     /**
      * @var callable|bool
@@ -37,47 +42,30 @@ class BelongsToField extends AbstractField
         parent::__construct($label, $this->relationAttribute . '_id');
     }
 
+    public function boot($resource): void
+    {
+        parent::boot($resource);
+
+        $this->parentResource->with([ $this->relationAttribute  ], false);
+    }
+
     public function resolveValueFromModel(Model $model, BaseRequest $request): BelongsToField
     {
-
-        if ($this->extraRelationDataCallback) {
-
-            $relation = $model->getAttribute($this->relationAttribute);
-
-            if ($relation instanceof Model) {
-
-                $this->withAdditionalInformation(
-                    call_user_func($this->extraRelationDataCallback, $request, $relation)
-                );
-
-            } else {
-
-                $this->withAdditionalInformation($relation);
-
-            }
-
-        }
+        $this->model = $model;
+        $this->request = $request;
 
         return $this->setValue($model->getAttributeValue($this->attribute), $request);
-
     }
 
-    public function withExtraRelatedResourceData(callable $callback): self
-    {
-        $this->extraRelationDataCallback = $callback;
-
-        return $this;
-    }
-
-    protected function resolveOptions(): ?array
+    protected function resolveOptions(BaseRequest $request): ?array
     {
         if (is_callable($this->optionsCallback)) {
 
-            return call_user_func($this->optionsCallback, app(BaseRequest::class));
+            return call_user_func($this->optionsCallback, $request);
 
         }
 
-        return null;
+        return $this->optionsCallback;
     }
 
     private function resolveRelatedResource(): ?AbstractResource
@@ -111,16 +99,56 @@ class BelongsToField extends AbstractField
         return $this->resolveRelatedResource();
     }
 
-    public function getRelatedModel(AbstractResource $parentResource): Model
+    private function getRelatedModelInstance(): ?Model
     {
 
-        if ($resource = $this->resolveRelatedResource()) {
+        if (method_exists($this->model, $this->relationAttribute)) {
 
-            return $resource->getModel();
+            if ($this->model->relationLoaded($this->relationAttribute)) {
+
+                if ($relation = $this->model->getRelation($this->relationAttribute)) {
+
+                    return $relation;
+
+                }
+
+                return null;
+
+            }
+
+            throw new RuntimeException(sprintf('Relationship { %s } was not loaded.', $this->relationAttribute));
 
         }
 
-        $baseModel = $parentResource->getModel();
+        throw new RuntimeException(
+            sprintf(
+                'Relation { %s } does not exist. Please setup the belongsTo relation correctly on your model.', $this->relationAttribute
+            )
+        );
+
+    }
+
+    /**
+     * @return Model
+     * @deprecated
+     */
+    public function getRelatedModel(): Model
+    {
+
+//        if ($resource = $this->resolveRelatedResource()) {
+//
+//            return $resource->getModel();
+//
+//        }
+
+//        dd($this->model);
+
+
+//        $baseModel = $this->model ?? $parentResource->getModel();
+
+//        if ($baseModel->relationLoaded($this->relationAttribute)) {
+//
+//        }
 
         if (method_exists($baseModel, $this->relationAttribute)) {
 
@@ -138,9 +166,20 @@ class BelongsToField extends AbstractField
 
     }
 
-    public function options(callable $options): self
+    /**
+     * @param array|callable $options
+     * @return $this
+     */
+    public function options($options): self
     {
         $this->optionsCallback = $options;
+
+        return $this;
+    }
+
+    public function setRelatedResourceFieldsFor(string $fieldsFor): self
+    {
+        $this->relatedFieldsFor = $fieldsFor;
 
         return $this;
     }
@@ -191,19 +230,28 @@ class BelongsToField extends AbstractField
     public function jsonSerialize(): array
     {
         $data = [
+            'label' => $this->label,
+            'attribute' => $this->attribute,
+            'value' => $this->value,
+            'component' => $this->component(),
+            'additionalInformation' => null,
             'settings' => [
                 'searchable' => $this->isSearchable(),
-                'options' => $this->resolveOptions(),
+                'options' => $this->resolveOptions($this->request),
             ],
         ];
 
-        if ($resource = $this->resolveRelatedResource()) {
+        if ($relatedResource = $this->resolveRelatedResource()) {
 
-            $data['settings']['fields'] = $resource->resolveFields(app(BaseRequest::class))->toArray();
+            $data['additionalInformation'] = $this->resolveAdditionalInformation($this->getRelatedModelInstance());
+            $data['settings']['relatedResource'] = $relatedResource->getDescriptor();
+            $data['settings']['relatedResource']['fields'] = $relatedResource->resolveFields(
+                $this->request, $this->relatedFieldsFor
+            );
 
         }
 
-        return array_merge(parent::jsonSerialize(), $data);
+        return $data;
     }
 
 }

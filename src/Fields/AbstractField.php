@@ -4,7 +4,9 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Fields;
 
+use DigitalCreative\Dashboard\AbstractFilter;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Traits\MakeableTrait;
 use DigitalCreative\Dashboard\Traits\ResolveRulesTrait;
 use DigitalCreative\Dashboard\Traits\ResolveValueTrait;
@@ -21,7 +23,8 @@ abstract class AbstractField implements JsonSerializable, Arrayable
 
     public string $label;
     public string $attribute;
-    public ?array $additionalInformation = null;
+    public array $additionalInformation = [];
+    protected AbstractResource $parentResource;
 
     /**
      * @var callable|mixed
@@ -32,6 +35,27 @@ abstract class AbstractField implements JsonSerializable, Arrayable
     {
         $this->label = $label;
         $this->attribute = $attribute ?? $this->generateAttribute($label);
+    }
+
+    public function boot($resource): void
+    {
+        if ($resource instanceof AbstractResource) {
+            $this->setParentResource($resource);
+        } else if ($resource instanceof AbstractFilter) {
+            //
+        }
+    }
+
+    public function clone(): self
+    {
+        return clone $this;
+    }
+
+    public function setParentResource(AbstractResource $resource): self
+    {
+        $this->parentResource = $resource;
+
+        return $this;
     }
 
     /**
@@ -55,14 +79,34 @@ abstract class AbstractField implements JsonSerializable, Arrayable
         return in_array('required', $this->resolveRules($request), true);
     }
 
-    public function getAdditionalInformation(): ?array
+    protected function resolveAdditionalInformation(): ?array
     {
-        return $this->additionalInformation;
+
+        $arguments = func_get_args();
+
+        $response = collect($this->additionalInformation)
+            ->flatMap(function($value) use ($arguments) {
+                if (is_callable($value)) {
+                    return call_user_func_array($value, $arguments);
+                }
+
+                return $value;
+            });
+
+        if ($response->isEmpty()) {
+            return null;
+        }
+
+        return $response->toArray();
     }
 
-    public function withAdditionalInformation(array $options): self
+    /**
+     * @param array|callable $options
+     * @return $this
+     */
+    public function withAdditionalInformation($options): self
     {
-        $this->additionalInformation = array_merge($this->additionalInformation ?? [], $options);
+        $this->additionalInformation[] = $options;
 
         return $this;
     }
@@ -89,7 +133,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable
             'attribute' => $this->attribute,
             'value' => $this->value,
             'component' => $this->component(),
-            'additionalInformation' => $this->getAdditionalInformation(),
+            'additionalInformation' => $this->resolveAdditionalInformation(),
         ];
     }
 

@@ -42,13 +42,13 @@ class Dashboard
 
             if ($resource = $this->resources->get($request->route('resource'))) {
 
-                if ($resource instanceof AbstractResource) {
+                if (!$resource instanceof AbstractResource) {
 
-                    return $resource;
+                    $resource = new $resource();
 
                 }
 
-                return new $resource();
+                return $resource->bootFields($request);
 
             }
 

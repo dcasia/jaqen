@@ -60,14 +60,14 @@ class Repository implements RepositoryInterface
         return $this->applyFilterToQuery($filters)->count();
     }
 
-    public function find(FilterCollection $filters, int $page, int $perPage = 15): Collection
+    public function find(FilterCollection $filters, int $page, int $perPage = 15, array $with = []): Collection
     {
-        return $this->applyFilterToQuery($filters)->forPage($page, $perPage)->get();
+        return $this->applyFilterToQuery($filters)->with($with)->forPage($page, $perPage)->get();
     }
 
-    public function findByKey(string $key): ?Model
+    public function findByKey(string $key, array $with = []): ?Model
     {
-        return $this->newQuery()->whereKey($key)->firstOrFail();
+        return $this->newQuery()->whereKey($key)->with($with)->firstOrFail();
     }
 
     public function findByKeys(array $keys): Collection

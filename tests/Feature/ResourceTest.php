@@ -13,6 +13,7 @@ use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
+use DigitalCreative\Dashboard\Tests\Fixtures\Fields\Invokable\SampleInvokable;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
@@ -28,22 +29,11 @@ class ResourceTest extends TestCase
     public function test_invokable_fields_works(): void
     {
 
-        $invokable = new class {
-
-            public function __invoke()
-            {
-                return [
-                    new EditableField('Test'),
-                ];
-            }
-
-        };
-
         $fields = $this->makeResource()
-                       ->fieldsFor('demo', fn() => [ $invokable ])
+                       ->fieldsFor('demo', fn() => SampleInvokable::class)
                        ->resolveFields($this->blankRequest([], [ 'fieldsFor' => 'demo' ]));
 
-        $this->assertEquals($fields->first(), $invokable);
+        $this->assertInstanceOf(EditableField::class, $fields->first());
 
     }
 
@@ -58,7 +48,7 @@ class ResourceTest extends TestCase
                 $this->runner = $runner;
             }
 
-            public function getModel(): Model
+            public function model(): Model
             {
                 return new UserModel();
             }
@@ -94,7 +84,7 @@ class ResourceTest extends TestCase
                 $this->runner = $runner;
             }
 
-            public function getModel(): Model
+            public function model(): Model
             {
                 return new UserModel();
             }

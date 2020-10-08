@@ -8,11 +8,11 @@ use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Repository\Repository;
 use DigitalCreative\Dashboard\Repository\RepositoryInterface;
+use DigitalCreative\Dashboard\Traits\EventsTrait;
 use DigitalCreative\Dashboard\Traits\MakeableTrait;
 use DigitalCreative\Dashboard\Traits\ResolveFieldsTrait;
 use DigitalCreative\Dashboard\Traits\ResolveFiltersTrait;
 use DigitalCreative\Dashboard\Traits\ResolveUriKey;
-use DigitalCreative\Dashboard\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -28,11 +28,57 @@ abstract class AbstractResource implements WithEvents
     private BaseRequest $request;
     private RepositoryInterface $repository;
 
-    abstract public function getModel(): Model;
+    public array $with = [];
+
+    abstract public function model(): Model;
+
+    public function with(array $with, bool $override = true): self
+    {
+
+        if ($override) {
+
+            $this->with = array_merge($this->with, $with);
+
+        } else {
+
+            $currentWith = collect($this->with);
+
+            foreach ($with as $relation => $item) {
+
+                $isNumericKey = is_numeric($relation);
+                $relationKey = $isNumericKey ? $item : $relation;
+
+                if ($currentWith->contains($relationKey) || $currentWith->has($relationKey)) {
+                    continue;
+                }
+
+                if ($isNumericKey) {
+
+                    $this->with[] = $relationKey;
+
+                } else {
+
+                    $this->with[$relationKey] = $item;
+
+                }
+
+            }
+
+        }
+
+        return $this;
+    }
+
+    public function bootFields(BaseRequest $request): self
+    {
+        $this->resolveFields($request);
+
+        return $this;
+    }
 
     public function perPage(BaseRequest $request): int
     {
-        return $this->getModel()->getPerPage();
+        return $this->model()->getPerPage();
     }
 
     public function getDescriptor(): array
@@ -63,7 +109,7 @@ abstract class AbstractResource implements WithEvents
 
     public function repository(): RepositoryInterface
     {
-        return $this->repository ?? new Repository($this->getModel());
+        return $this->repository ?? new Repository($this->model());
     }
 
     public function getFiltersListing(): array
