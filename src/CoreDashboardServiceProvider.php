@@ -26,7 +26,7 @@ class CoreDashboardServiceProvider extends ServiceProvider
     {
 
         $this->publishes([
-            __DIR__ . '/Console/DashboardServiceProvide.stub.php' => app_path('Providers/DashboardServiceProvider.php'),
+            __DIR__ . '/Console/stubs/DashboardServiceProvider.stub' => app_path('Providers/DashboardServiceProvider.php'),
         ], 'dashboard-provider');
 
     }
