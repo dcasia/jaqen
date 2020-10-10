@@ -9,6 +9,7 @@ use DigitalCreative\Dashboard\Http\Requests\BelongsToResourceRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
 
 class BelongsToController extends Controller
 {
@@ -17,7 +18,9 @@ class BelongsToController extends Controller
     {
         $resource = $request->resourceInstance();
 
-        $field = $resource->findFieldByAttribute($request, $request->route('field'));
+        $fieldAttribute = Str::of($request->route('field'))->before('_id')->__toString();
+
+        $field = $resource->findFieldByAttribute($request, $fieldAttribute);
 
         if ($field instanceof BelongsToField && $field->isSearchable()) {
 
@@ -27,7 +30,10 @@ class BelongsToController extends Controller
             $models = $repository->searchForRelatedEntries($field->resolveSearchCallback(), $request);
 
             $response = $models->map(function(Model $model) use ($resource, $request) {
-                return collect($resource->resolveFieldsUsingModel($model, $request))->pluck('value', 'attribute');
+                return [
+                    'key' => $model->getKey(),
+                    'fields' => $resource->resolveFieldsUsingModel($model, $request),
+                ];
             });
 
             return response()->json($response);

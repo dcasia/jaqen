@@ -21,7 +21,7 @@ Route::get('/resources', [ ResourceController::class, 'resources' ]);
 /**
  * Relationship
  */
-Route::get('/belongs-to/{resource}/{key}/{field}', [ BelongsToController::class, 'searchBelongsTo' ]);
+Route::get('/belongs-to/{resource}/{field}', [ BelongsToController::class, 'searchBelongsTo' ]);
 
 /**
  * CRUD
