@@ -6,10 +6,10 @@ namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Fields\Panel;
-use DigitalCreative\Dashboard\Http\Controllers\DetailController;
-use DigitalCreative\Dashboard\Http\Controllers\IndexController;
-use DigitalCreative\Dashboard\Http\Controllers\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\DetailController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
@@ -56,7 +56,7 @@ class PanelTest extends TestCase
          * Index Controller
          */
         $indexRequest = $this->indexRequest($resource);
-        $indexResponse = (new IndexController())->index($indexRequest)->getData(true);
+        $indexResponse = (new IndexController())->handle($indexRequest)->getData(true);
 
         $this->assertEquals('panel', data_get($indexResponse, 'resources.0.fields.0.component'));
         $this->assertEquals('hello world', data_get($indexResponse, 'resources.0.fields.0.value.0.value'));
@@ -65,7 +65,7 @@ class PanelTest extends TestCase
          * Detail Controller
          */
         $detailRequest = $this->detailRequest($resource, $user->getKey());
-        $detailResponse = (new DetailController())->detail($detailRequest)->getData(true);
+        $detailResponse = (new DetailController())->handle($detailRequest)->getData(true);
 
         $this->assertEquals('panel', data_get($detailResponse, 'fields.0.component'));
         $this->assertEquals('hello world', data_get($detailResponse, 'fields.0.value.0.value'));
@@ -94,7 +94,7 @@ class PanelTest extends TestCase
 
         $request = $this->storeRequest($resource, $data);
 
-        (new StoreController())->store($request);
+        (new StoreController())->handle($request);
 
         $this->assertDatabaseHas('users', $data);
 
@@ -118,7 +118,7 @@ class PanelTest extends TestCase
 
         $request = $this->updateRequest($resource, $user->getKey(), $data);
 
-        (new UpdateController())->update($request);
+        (new UpdateController())->handle($request);
 
         $this->assertDatabaseHas('users', $data);
 

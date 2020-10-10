@@ -13,10 +13,10 @@ use Illuminate\Database\Eloquent\Model;
 trait RelationshipRequestTrait
 {
 
-    protected function belongsToSearchRequest(AbstractResource $resource, Model $model, BelongsToField $field, array $data = [], array $query = []): BaseRequest
+    protected function belongsToSearchRequest(AbstractResource $resource, BelongsToField $field, array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest(
-            [ '/belongs-to/{resource}/{key}/{field}' => sprintf("/belongs-to/%s/%s/%s", $resource::uriKey(), $model->getKey(), $field->getRelationAttribute()) ],
+            [ '/belongs-to/{resource}/{field}' => sprintf("/belongs-to/%s/%s", $resource::uriKey(), $field->getRelationAttribute()) ],
             'GET',
             $data,
             $query,

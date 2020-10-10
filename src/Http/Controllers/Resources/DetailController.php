@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Controllers;
+namespace DigitalCreative\Dashboard\Http\Controllers\Resources;
 
 use DigitalCreative\Dashboard\Http\Requests\DetailResourceRequest;
 use Illuminate\Http\JsonResponse;
@@ -11,7 +11,7 @@ use Illuminate\Routing\Controller;
 class DetailController extends Controller
 {
 
-    public function detail(DetailResourceRequest $request): JsonResponse
+    public function handle(DetailResourceRequest $request): JsonResponse
     {
         $resource = $request->resourceInstance();
 

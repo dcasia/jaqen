@@ -46,7 +46,7 @@ class BelongsToField extends AbstractField
     {
         parent::boot($resource);
 
-        $this->parentResource->with([ $this->relationAttribute  ], false);
+        $this->parentResource->with([ $this->relationAttribute ], false);
     }
 
     public function resolveValueFromModel(Model $model, BaseRequest $request): BelongsToField
@@ -184,9 +184,13 @@ class BelongsToField extends AbstractField
         return $this;
     }
 
-    public function setRelatedResource(string $relatedResource): self
+    public function setRelatedResource(string $relatedResource, string $fieldsFor = null): self
     {
         $this->relatedResource = $relatedResource;
+
+        if ($fieldsFor) {
+            $this->setRelatedResourceFieldsFor($fieldsFor);
+        }
 
         return $this;
     }

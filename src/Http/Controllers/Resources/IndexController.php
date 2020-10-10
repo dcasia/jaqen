@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Controllers;
+namespace DigitalCreative\Dashboard\Http\Controllers\Resources;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\FilterCollection;
@@ -18,7 +18,7 @@ class IndexController extends Controller
     private int $perPage;
     private int $currentPage;
 
-    public function index(IndexResourceRequest $request): JsonResponse
+    public function handle(IndexResourceRequest $request): JsonResponse
     {
 
         $resource = $request->resourceInstance();

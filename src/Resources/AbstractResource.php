@@ -112,9 +112,4 @@ abstract class AbstractResource implements WithEvents
         return $this->repository ?? new Repository($this->model());
     }
 
-    public function getFiltersListing(): array
-    {
-        return $this->resolveFilters()->toArray();
-    }
-
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Controllers;
+namespace DigitalCreative\Dashboard\Http\Controllers\Resources;
 
 use DigitalCreative\Dashboard\Concerns\WithCustomStore;
 use DigitalCreative\Dashboard\Concerns\WithEvents;
@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 class StoreController extends Controller
 {
 
-    public function store(StoreResourceRequest $request): JsonResponse
+    public function handle(StoreResourceRequest $request): JsonResponse
     {
 
         $resource = $request->resourceInstance();

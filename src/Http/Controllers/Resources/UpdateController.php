@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Controllers;
+namespace DigitalCreative\Dashboard\Http\Controllers\Resources;
 
 use DigitalCreative\Dashboard\Concerns\WithCustomUpdate;
 use DigitalCreative\Dashboard\Concerns\WithEvents;
@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
 class UpdateController extends Controller
 {
 
-    public function update(UpdateResourceRequest $request): bool
+    public function handle(UpdateResourceRequest $request): bool
     {
 
         $resource = $request->resourceInstance();

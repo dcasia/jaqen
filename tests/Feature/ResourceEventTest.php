@@ -5,9 +5,9 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Feature;
 
 use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Http\Controllers\DeleteController;
-use DigitalCreative\Dashboard\Http\Controllers\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\DeleteController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
@@ -32,7 +32,7 @@ class ResourceEventTest extends TestCase
 
         $request = $this->storeRequest($resource, [ 'name' => 'ignored' ]);
 
-        (new StoreController())->store($request);
+        (new StoreController())->handle($request);
 
         $this->assertDatabaseHas('users', [ 'name' => 'hello' ]);
 
@@ -49,7 +49,7 @@ class ResourceEventTest extends TestCase
 
         $request = $this->storeRequest($resource, [ 'name' => 'ignored' ]);
 
-        $response = (new StoreController())->store($request)->getData(true);
+        $response = (new StoreController())->handle($request)->getData(true);
 
         $this->assertEquals([ 'success' => true ], $response);
 
@@ -70,7 +70,7 @@ class ResourceEventTest extends TestCase
 
         $request = $this->storeRequest($resource, [ 'name' => 'ignored' ]);
 
-        $response = (new StoreController())->store($request)->getData(true);
+        $response = (new StoreController())->handle($request)->getData(true);
 
         $this->assertEquals([ 'success' => true, 'appended' => true ], $response);
 
@@ -90,7 +90,7 @@ class ResourceEventTest extends TestCase
 
         $request = $this->updateRequest($resource, $user->id, [ 'name' => 'ignored' ]);
 
-        (new UpdateController())->update($request);
+        (new UpdateController())->handle($request);
 
         $this->assertDatabaseHas('users', [ 'name' => 'hello' ]);
 
@@ -108,7 +108,7 @@ class ResourceEventTest extends TestCase
 
         $request = $this->updateRequest($resource, $user->id, [ 'name' => 'ignored' ]);
 
-        (new UpdateController())->update($request);
+        (new UpdateController())->handle($request);
 
     }
 
@@ -124,7 +124,7 @@ class ResourceEventTest extends TestCase
 
         $request = $this->deleteRequest($resource, [ $user->id ]);
 
-        (new DeleteController())->delete($request);
+        (new DeleteController())->handle($request);
 
     }
 
@@ -141,7 +141,7 @@ class ResourceEventTest extends TestCase
 
         $request = $this->deleteRequest($resource, [ $user->id ]);
 
-        (new DeleteController())->delete($request);
+        (new DeleteController())->handle($request);
 
     }
 

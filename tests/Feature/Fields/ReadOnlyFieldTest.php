@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
-use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
@@ -31,7 +31,7 @@ class ReadOnlyFieldTest extends TestCase
 
         $request = $this->updateRequest($resource, $user->id, [ 'name' => 'updated' ]);
 
-        (new UpdateController())->update($request);
+        (new UpdateController())->handle($request);
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,

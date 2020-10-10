@@ -5,9 +5,9 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\FileField;
-use DigitalCreative\Dashboard\Http\Controllers\DeleteController;
-use DigitalCreative\Dashboard\Http\Controllers\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\DeleteController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
@@ -56,7 +56,7 @@ class FileFieldTest extends TestCase
 
         $request = $this->updateRequest($resource, $user->id, [ 'name' => $user->name ]);
 
-        (new UpdateController())->update($request);
+        (new UpdateController())->handle($request);
 
         $this->assertStringEndsWith('.bin', $user->fresh()->name);
 
@@ -82,7 +82,7 @@ class FileFieldTest extends TestCase
 
         $request = $this->updateRequest($resource, $user->id, [ 'name' => null ]);
 
-        (new UpdateController())->update($request);
+        (new UpdateController())->handle($request);
 
         /**
          * Ensure file got removed
@@ -112,7 +112,7 @@ class FileFieldTest extends TestCase
         $request = $this->deleteRequest($resource, [ $user->id ]);
         $storage->assertMissing($user->name);
 
-        (new DeleteController())->delete($request);
+        (new DeleteController())->handle($request);
 
         $storage->assertMissing($user->name);
         $this->assertNull($user->fresh());
@@ -131,7 +131,7 @@ class FileFieldTest extends TestCase
 
         $request = $this->storeRequest($resource, [ 'name' => UploadedFile::fake()->image('name') ]);
 
-        (new StoreController())->store($request);
+        (new StoreController())->handle($request);
 
         return $resource;
 

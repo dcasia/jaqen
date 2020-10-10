@@ -7,11 +7,11 @@ namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 use DigitalCreative\Dashboard\Fields\BelongsToField;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
-use DigitalCreative\Dashboard\Http\Controllers\DetailController;
-use DigitalCreative\Dashboard\Http\Controllers\IndexController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\DetailController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
 use DigitalCreative\Dashboard\Http\Controllers\Relationships\BelongsToController;
-use DigitalCreative\Dashboard\Http\Controllers\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Repository\Repository;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
@@ -53,7 +53,7 @@ class BelongsToFieldTest extends TestCase
 
         $request = $this->indexRequest($resource);
 
-        $response = (new IndexController())->index($request)->getData(true);
+        $response = (new IndexController())->handle($request)->getData(true);
 
         $this->assertEquals($response, [
             'total' => 1,
@@ -129,7 +129,7 @@ class BelongsToFieldTest extends TestCase
 
         $request = $this->indexRequest($resource);
 
-        $response = (new IndexController())->index($request)->getData(true);
+        $response = (new IndexController())->handle($request)->getData(true);
 
         $this->assertEquals(
             'custom_field_name', data_get($response, 'resources.0.fields.0.settings.relatedResource.fields.0.attribute')
@@ -148,7 +148,7 @@ class BelongsToFieldTest extends TestCase
 
         $request = $this->updateRequest($resource, $article->id, [ 'user_id' => $user->id ]);
 
-        $this->assertTrue((new UpdateController())->update($request));
+        $this->assertTrue((new UpdateController())->handle($request));
 
         $this->assertDatabaseHas('articles', [
             'id' => $article->id,
@@ -177,7 +177,7 @@ class BelongsToFieldTest extends TestCase
 
         $request = $this->storeRequest($resource, $data);
 
-        (new StoreController())->store($request);
+        (new StoreController())->handle($request);
 
         $this->assertDatabaseHas('articles', $data);
 
@@ -199,7 +199,7 @@ class BelongsToFieldTest extends TestCase
 
         $request = $this->detailRequest($resource, $article->id);
 
-        $response = (new DetailController())->detail($request)->getData(true);
+        $response = (new DetailController())->handle($request)->getData(true);
 
         $this->assertSame($response, [
             'key' => $article->id,
@@ -228,9 +228,9 @@ class BelongsToFieldTest extends TestCase
     public function test_searchable_belongs_to_field_works(): void
     {
 
-        $article = ArticleFactory::new()->create();
+        ArticleFactory::new()->create();
 
-        UserFactory::new()->create([ 'name' => 'random' ]);
+        $user = UserFactory::new()->create([ 'name' => 'random' ]);
 
         $resource = $this->makeResource(ArticleModel::class);
 
@@ -246,20 +246,34 @@ class BelongsToFieldTest extends TestCase
 
                                });
 
-        $request = $this->belongsToSearchRequest($resource, $article, $field, [ 'search' => 'random' ]);
+        $request = $this->belongsToSearchRequest($resource, $field, [ 'search' => 'random' ]);
 
         $resource->addDefaultFields($field);
 
         $response = (new BelongsToController())->searchBelongsTo($request);
 
-        $this->assertSame([ [ 'name' => 'random' ] ], $response->getData(true));
+        $this->assertSame([
+            [
+                'key' => $user->id,
+                'fields' => [
+                    [
+                        'label' => 'Name',
+                        'attribute' => 'name',
+                        'value' => $user->name,
+                        'component' => 'editable-field',
+                        'additionalInformation' => null,
+                    ],
+                ],
+            ],
+        ], $response->getData(true));
 
     }
 
     public function test_it_returns_result_using_the_default_search_logic(): void
     {
 
-        $article = ArticleFactory::new()->create();
+        ArticleFactory::new()->create();
+
         $user = UserFactory::new()->create();
         $resource = $this->makeResource(ArticleModel::class);
 
@@ -267,20 +281,34 @@ class BelongsToFieldTest extends TestCase
                                ->searchable()
                                ->setRelatedResource(MinimalUserResource::class);
 
-        $request = $this->belongsToSearchRequest($resource, $article, $field, [ 'id' => $user->id ]);
+        $request = $this->belongsToSearchRequest($resource, $field, [ 'id' => $user->id ]);
 
         $resource->addDefaultFields($field);
 
         $response = (new BelongsToController())->searchBelongsTo($request);
 
-        $this->assertSame([ [ 'name' => $user->name ] ], $response->getData(true));
+        $this->assertSame([
+            [
+                'key' => $user->id,
+                'fields' => [
+                    [
+                        'label' => 'Name',
+                        'attribute' => 'name',
+                        'value' => $user->name,
+                        'component' => 'editable-field',
+                        'additionalInformation' => null,
+                    ],
+                ],
+            ]
+        ], $response->getData(true));
 
     }
 
     public function test_non_searchable_field_cannot_be_searched(): void
     {
 
-        $article = ArticleFactory::new()->create();
+        ArticleFactory::new()->create();
+
         $user = UserFactory::new()->create();
         $field = BelongsToField::make('User');
 
@@ -289,7 +317,7 @@ class BelongsToFieldTest extends TestCase
         $resource = $this->makeResource(ArticleModel::class)
                          ->addDefaultFields($field);
 
-        $request = $this->belongsToSearchRequest($resource, $article, $field, [ 'id' => $user->id ]);
+        $request = $this->belongsToSearchRequest($resource, $field, [ 'id' => $user->id ]);
 
         (new BelongsToController())->searchBelongsTo($request);
 
@@ -311,7 +339,7 @@ class BelongsToFieldTest extends TestCase
 
         $request = $this->detailRequest($resource, $article->id);
 
-        $this->assertSame(200, (new DetailController())->detail($request)->status());
+        $this->assertSame(200, (new DetailController())->handle($request)->status());
 
     }
 
@@ -336,7 +364,7 @@ class BelongsToFieldTest extends TestCase
                          ->with($with)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        (new DetailController())->detail($this->detailRequest($resource, $article->id));
+        (new DetailController())->handle($this->detailRequest($resource, $article->id));
 
     }
 
@@ -358,7 +386,7 @@ class BelongsToFieldTest extends TestCase
                          ->with($with)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        (new DetailController())->detail(
+        (new DetailController())->handle(
             $this->detailRequest($resource, $article->id)
         );
 

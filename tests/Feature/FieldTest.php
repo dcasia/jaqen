@@ -6,12 +6,11 @@ namespace DigitalCreative\Dashboard\Tests\Feature;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Http\Controllers\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
-use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User as UserResource;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\InteractionWithResponseTrait;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
@@ -38,7 +37,7 @@ class FieldTest extends TestCase
 
         $request = $this->storeRequest($resource, [ 'name' => null ]);
 
-        (new StoreController)->store($request);
+        (new StoreController)->handle($request);
 
     }
 
@@ -56,7 +55,7 @@ class FieldTest extends TestCase
 
         $request = $this->updateRequest($resource, $user->id, [ 'name' => null ]);
 
-        (new UpdateController())->update($request);
+        (new UpdateController())->handle($request);
 
     }
 
@@ -72,7 +71,7 @@ class FieldTest extends TestCase
 
         $request = $this->storeRequest($resource);
 
-        (new StoreController)->store($request);
+        (new StoreController)->handle($request);
 
     }
 
@@ -91,7 +90,7 @@ class FieldTest extends TestCase
 
         $request = $this->updateRequest($resource, $user->id, [ 'name' => 'Test' ]);
 
-        (new UpdateController())->update($request);
+        (new UpdateController())->handle($request);
 
     }
 
@@ -258,6 +257,20 @@ class FieldTest extends TestCase
         $this->assertEquals('2_hello_world_2', EditableField::make(' 2 Hello  worlD 2 ')->attribute);
         $this->assertEquals('helloworld', EditableField::make('HelloWorld')->attribute);
         $this->assertEquals('hello_world', EditableField::make('HelloWorld', 'hello_world')->attribute);
+    }
+
+    public function test_boot_works(): void
+    {
+
+        $field = $this->spy(EditableField::class);
+
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields($field);
+
+        $resource->resolveFields($this->fieldsRequest($resource));
+
+        $field->shouldHaveReceived('boot');
+
     }
 
 }

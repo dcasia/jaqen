@@ -5,8 +5,8 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Http\Controllers\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
@@ -39,7 +39,7 @@ class EditableFieldTest extends TestCase
 
         $request = $this->storeRequest($resource, $data);
 
-        (new StoreController())->store($request);
+        (new StoreController())->handle($request);
 
         $this->assertDatabaseHas('users', $data);
 
@@ -59,7 +59,7 @@ class EditableFieldTest extends TestCase
 
         $request = $this->updateRequest($resource, $user->id, [ 'name' => 'updated' ]);
 
-        (new UpdateController())->update($request);
+        (new UpdateController())->handle($request);
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,

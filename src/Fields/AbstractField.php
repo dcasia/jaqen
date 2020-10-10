@@ -46,11 +46,6 @@ abstract class AbstractField implements JsonSerializable, Arrayable
         }
     }
 
-    public function clone(): self
-    {
-        return clone $this;
-    }
-
     public function setParentResource(AbstractResource $resource): self
     {
         $this->parentResource = $resource;

@@ -7,9 +7,9 @@ namespace DigitalCreative\Dashboard\Tests\Feature;
 use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Http\Controllers\DeleteController;
-use DigitalCreative\Dashboard\Http\Controllers\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\DeleteController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
@@ -49,7 +49,7 @@ class FieldEventTest extends TestCase
 
         $request = $this->storeRequest($resource, [ 'name' => 'original' ]);
 
-        (new StoreController())->store($request);
+        (new StoreController())->handle($request);
 
         $this->assertDatabaseHas('users', [
             'name' => 'hello world',
@@ -73,7 +73,7 @@ class FieldEventTest extends TestCase
 
         $request = $this->storeRequest($resource);
 
-        (new StoreController())->store($request);
+        (new StoreController())->handle($request);
 
     }
 
@@ -94,7 +94,7 @@ class FieldEventTest extends TestCase
 
         $request = $this->updateRequest($resource, $user->id, [ 'name' => 'updated' ]);
 
-        (new UpdateController())->update($request);
+        (new UpdateController())->handle($request);
 
     }
 
@@ -120,7 +120,7 @@ class FieldEventTest extends TestCase
 
         $request = $this->updateRequest($resource, $user->id, [ 'name' => 'updated' ]);
 
-        (new UpdateController())->update($request);
+        (new UpdateController())->handle($request);
 
         $this->assertEquals('modified', $user->fresh()->name);
 
@@ -147,7 +147,7 @@ class FieldEventTest extends TestCase
 
         $request = $this->updateRequest($resource, UserFactory::new()->create()->id);
 
-        (new UpdateController())->update($request);
+        (new UpdateController())->handle($request);
 
         $this->assertFalse($called);
 
@@ -180,7 +180,7 @@ class FieldEventTest extends TestCase
 
         $request = $this->deleteRequest($resource, $users->pluck('id')->toArray());
 
-        (new DeleteController())->delete($request);
+        (new DeleteController())->handle($request);
 
         $this->assertEquals(5, $afterDelete);
         $this->assertEquals(5, $beforeDelete);

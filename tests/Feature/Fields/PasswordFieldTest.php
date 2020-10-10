@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\PasswordField;
-use DigitalCreative\Dashboard\Http\Controllers\DetailController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\DetailController;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
@@ -27,7 +27,7 @@ class PasswordFieldTest extends TestCase
 
         $request = $this->detailRequest($resource, $user->id);
 
-        $response = (new DetailController())->detail($request);
+        $response = (new DetailController())->handle($request);
 
         $this->assertNull(data_get($response, 'fields.0.value'));
 

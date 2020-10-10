@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Controllers;
+namespace DigitalCreative\Dashboard\Http\Controllers\Resources;
 
 use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Fields\AbstractField;
@@ -14,7 +14,7 @@ use RuntimeException;
 class DeleteController extends Controller
 {
 
-    public function delete(DeleteResourceRequest $request): Response
+    public function handle(DeleteResourceRequest $request): Response
     {
 
         $ids = $request->input('ids');

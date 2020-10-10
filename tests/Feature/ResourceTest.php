@@ -7,8 +7,8 @@ namespace DigitalCreative\Dashboard\Tests\Feature;
 use DigitalCreative\Dashboard\Concerns\WithCustomStore;
 use DigitalCreative\Dashboard\Concerns\WithCustomUpdate;
 use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Http\Controllers\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
@@ -68,7 +68,7 @@ class ResourceTest extends TestCase
 
         $request = $this->storeRequest($resource, [ 'name' => 'test' ]);
 
-        $response = (new StoreController())->store($request);
+        $response = (new StoreController())->handle($request);
 
         $this->assertEquals([ 'test' => 123 ], $response->getData(true));
     }
@@ -109,7 +109,7 @@ class ResourceTest extends TestCase
 
         $request = $this->updateRequest($resource, $user->getKey(), [ 'name' => 'test' ]);
 
-        $response = (new UpdateController())->update($request);
+        $response = (new UpdateController())->handle($request);
 
         $this->assertTrue($response);
     }

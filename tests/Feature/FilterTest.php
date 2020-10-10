@@ -8,7 +8,7 @@ use DigitalCreative\Dashboard\Exceptions\FilterValidationException;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\FilterCollection;
-use DigitalCreative\Dashboard\Http\Controllers\IndexController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\SampleFilter;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
@@ -45,7 +45,7 @@ class FilterTest extends TestCase
 
         $request = $this->indexRequest($resource, [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]);
 
-        $result = (new IndexController())->index($request)->getData();
+        $result = (new IndexController())->handle($request)->getData();
 
         $this->assertSame($result->total, 1);
         $this->assertEquals($user->id, data_get($result, 'resources.0.key'));
@@ -80,7 +80,7 @@ class FilterTest extends TestCase
 
         $this->expectException(FilterValidationException::class);
 
-        (new IndexController())->index($request);
+        (new IndexController())->handle($request);
 
     }
 
@@ -120,7 +120,7 @@ class FilterTest extends TestCase
 
         $this->expectException(FilterValidationException::class);
 
-        (new IndexController())->index($request);
+        (new IndexController())->handle($request);
 
     }
 
@@ -171,7 +171,7 @@ class FilterTest extends TestCase
 
         $request = $this->indexRequest($resource, [ 'filters' => $filters ]);
 
-        (new IndexController())->index($request);
+        (new IndexController())->handle($request);
 
     }
 

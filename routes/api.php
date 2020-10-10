@@ -1,20 +1,22 @@
 <?php
 
-use DigitalCreative\Dashboard\Http\Controllers\DeleteController;
-use DigitalCreative\Dashboard\Http\Controllers\DetailController;
-use DigitalCreative\Dashboard\Http\Controllers\IndexController;
+use DigitalCreative\Dashboard\Http\Controllers\FiltersController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\DeleteController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\DetailController;
+use DigitalCreative\Dashboard\Http\Controllers\FieldsController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
 use DigitalCreative\Dashboard\Http\Controllers\Relationships\BelongsToController;
 use DigitalCreative\Dashboard\Http\Controllers\ResourceController;
-use DigitalCreative\Dashboard\Http\Controllers\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\UpdateController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use Illuminate\Support\Facades\Route;
 
 /**
  * Filters
  */
-Route::get('/{resource}/filters', [ ResourceController::class, 'filters' ]);
-Route::get('/{resource}/fields', [ ResourceController::class, 'fields' ]);
-Route::get('/resources', [ ResourceController::class, 'list' ]);
+Route::get('/{resource}/filters', [ FiltersController::class, 'filters' ]);
+Route::get('/{resource}/fields', [ FieldsController::class, 'fields' ]);
+Route::get('/resources', [ ResourceController::class, 'resources' ]);
 
 /**
  * Relationship
@@ -24,8 +26,8 @@ Route::get('/belongs-to/{resource}/{key}/{field}', [ BelongsToController::class,
 /**
  * CRUD
  */
-Route::get('/{resource}/{key}', [ DetailController::class, 'detail' ]);
-Route::patch('/{resource}/{key}', [ UpdateController::class, 'update' ]);
-Route::delete('/{resource}', [ DeleteController::class, 'delete' ]);
-Route::post('/{resource}', [ StoreController::class, 'store' ]);
-Route::get('/{resource}', [ IndexController::class, 'index' ]);
+Route::get('/{resource}/{key}', [ DetailController::class, 'handle' ]);
+Route::patch('/{resource}/{key}', [ UpdateController::class, 'handle' ]);
+Route::delete('/{resource}', [ DeleteController::class, 'handle' ]);
+Route::post('/{resource}', [ StoreController::class, 'handle' ]);
+Route::get('/{resource}', [ IndexController::class, 'handle' ]);
