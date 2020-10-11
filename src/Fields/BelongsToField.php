@@ -8,7 +8,6 @@ use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -70,7 +69,7 @@ class BelongsToField extends AbstractField
 
     private function resolveRelatedResource(): ?AbstractResource
     {
-        return once(function() {
+        return once(function () {
 
             if ($this->relatedResource) {
 
@@ -129,44 +128,6 @@ class BelongsToField extends AbstractField
     }
 
     /**
-     * @return Model
-     * @deprecated
-     */
-    public function getRelatedModel(): Model
-    {
-
-//        if ($resource = $this->resolveRelatedResource()) {
-//
-//            return $resource->getModel();
-//
-//        }
-
-//        dd($this->model);
-
-
-//        $baseModel = $this->model ?? $parentResource->getModel();
-
-//        if ($baseModel->relationLoaded($this->relationAttribute)) {
-//
-//        }
-
-        if (method_exists($baseModel, $this->relationAttribute)) {
-
-            $relation = $baseModel->{$this->relationAttribute}();
-
-            if ($relation instanceof BelongsTo) {
-
-                return $relation->getRelated();
-
-            }
-
-        }
-
-        throw new RuntimeException('Could not determined the related model for this resource.');
-
-    }
-
-    /**
      * @param array|callable $options
      * @return $this
      */
@@ -207,7 +168,7 @@ class BelongsToField extends AbstractField
         /**
          * @todo try to abstract this call to the repository
          */
-        return static function(Builder $builder, BaseRequest $request): Builder {
+        return static function (Builder $builder, BaseRequest $request): Builder {
             return $builder->when($request->query('id'), fn(Builder $builder, string $search) => $builder->whereKey($search))
                            ->limit(10);
         };

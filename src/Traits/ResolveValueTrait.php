@@ -6,7 +6,6 @@ namespace DigitalCreative\Dashboard\Traits;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Value;
 use Illuminate\Database\Eloquent\Model;
 
 trait ResolveValueTrait

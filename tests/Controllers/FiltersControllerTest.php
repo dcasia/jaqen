@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Controller;
+namespace DigitalCreative\Dashboard\Tests\Controllers;
 
 use DigitalCreative\Dashboard\Tests\TestCase;
 
-class ResourceFiltersTest extends TestCase
+class FiltersControllerTest extends TestCase
 {
 
     public function test_resource_filters_works(): void

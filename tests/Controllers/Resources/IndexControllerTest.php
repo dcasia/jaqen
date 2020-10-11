@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Controller;
+namespace DigitalCreative\Dashboard\Tests\Controllers\Resources;
 
 use DigitalCreative\Dashboard\FilterCollection;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
@@ -11,7 +11,7 @@ use DigitalCreative\Dashboard\Tests\Fixtures\Filters\GenderFilter;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\ResourceWithRequiredFilters;
 use DigitalCreative\Dashboard\Tests\TestCase;
 
-class ResourceIndexTest extends TestCase
+class IndexControllerTest extends TestCase
 {
 
     public function test_resource_listing(): void

@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Controller;
+namespace DigitalCreative\Dashboard\Tests\Controllers;
 
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\TestCase;
 
-class ResourceListTest extends TestCase
+class ResourceControllerTest extends TestCase
 {
 
     public function test_resource_list_api(): void

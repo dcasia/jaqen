@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Controller;
+namespace DigitalCreative\Dashboard\Tests\Controllers;
 
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\TestCase;
 
-class ResourceFieldsTest extends TestCase
+class FieldsControllerTest extends TestCase
 {
 
     public function test_fields_api_returns_correct_data(): void
