@@ -84,7 +84,7 @@ class BelongsToFieldTest extends TestCase
                                         [
                                             'label' => 'Name',
                                             'attribute' => 'name',
-                                            'value' => null,
+                                            'value' => $article->user->name,
                                             'component' => 'editable-field',
                                             'additionalInformation' => null,
                                         ],
@@ -299,7 +299,7 @@ class BelongsToFieldTest extends TestCase
                         'additionalInformation' => null,
                     ],
                 ],
-            ]
+            ],
         ], $response->getData(true));
 
     }

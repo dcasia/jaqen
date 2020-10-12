@@ -22,8 +22,8 @@ class BelongsToField extends AbstractField
     private ?string $relatedResource = null;
     private ?string $relatedFieldsFor = null;
 
-    private Model $model;
-    private BaseRequest $request;
+    protected Model $model;
+    protected BaseRequest $request;
 
     /**
      * @var callable|bool
@@ -38,6 +38,12 @@ class BelongsToField extends AbstractField
             $this->setRelatedResource($relatedResource);
         }
 
+        /**
+         * @todo
+         * Support specifying a custom logic for the _id prefix.. because the user could have a relationship that has
+         * a completely different key from model_id convention
+         * Perhaps the best approach would be replacing the $relation as on set on the model to the attribute as the one that exists on the database
+         */
         parent::__construct($label, $this->relationAttribute . '_id');
     }
 
@@ -167,6 +173,7 @@ class BelongsToField extends AbstractField
 
         /**
          * @todo try to abstract this call to the repository
+         * @todo instance of $request->query('id') try $request->query(RelatedModel::getKeyName()) in case user dont call the key as ID
          */
         return static function (Builder $builder, BaseRequest $request): Builder {
             return $builder->when($request->query('id'), fn(Builder $builder, string $search) => $builder->whereKey($search))
@@ -208,8 +215,16 @@ class BelongsToField extends AbstractField
 
         if ($relatedResource = $this->resolveRelatedResource()) {
 
-            $data['additionalInformation'] = $this->resolveAdditionalInformation($this->getRelatedModelInstance());
+            $relatedModel = $this->getRelatedModelInstance();
+
+            $data['additionalInformation'] = $this->resolveAdditionalInformation($relatedModel);
             $data['settings']['relatedResource'] = $relatedResource->getDescriptor();
+
+            $fields = $relatedResource->resolveFields($this->request, $this->relatedFieldsFor);
+
+            $fields->when($relatedModel)
+                   ->each(fn(AbstractField $field) => $field->hydrateFromModel($relatedModel, $this->request));
+
             $data['settings']['relatedResource']['fields'] = $relatedResource->resolveFields(
                 $this->request, $this->relatedFieldsFor
             );
