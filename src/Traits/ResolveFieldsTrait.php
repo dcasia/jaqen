@@ -150,7 +150,7 @@ trait ResolveFieldsTrait
                         fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
                     );
                 })
-                ->each(fn(AbstractField $field) => $field->boot($this))
+                ->each(fn(AbstractField $field) => $field->boot($this, $request))
                 ->values();
 
         });

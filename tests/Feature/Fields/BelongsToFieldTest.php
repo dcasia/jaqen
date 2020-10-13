@@ -7,9 +7,10 @@ namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 use DigitalCreative\Dashboard\Fields\BelongsToField;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
+use DigitalCreative\Dashboard\Http\Controllers\FieldsController;
+use DigitalCreative\Dashboard\Http\Controllers\Relationships\BelongsToController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\DetailController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
-use DigitalCreative\Dashboard\Http\Controllers\Relationships\BelongsToController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
@@ -190,7 +191,7 @@ class BelongsToFieldTest extends TestCase
 
         $resource = $this->makeResource(ArticleModel::class)
                          ->addDefaultFields(
-                             BelongsToField::make('User')->options(function(BaseRequest $request) {
+                             BelongsToField::make('User')->options(function (BaseRequest $request) {
                                  return [
                                      [ 'id' => 1 ],
                                  ];
@@ -236,7 +237,7 @@ class BelongsToFieldTest extends TestCase
 
         $field = BelongsToField::make('User')
                                ->setRelatedResource(MinimalUserResource::class)
-                               ->searchable(function(Builder $builder, BaseRequest $request): Builder {
+                               ->searchable(function (Builder $builder, BaseRequest $request): Builder {
 
                                    $search = $request->query('search');
 
@@ -332,7 +333,7 @@ class BelongsToFieldTest extends TestCase
                          ->addDefaultFields(
                              BelongsToField::make('User')
                                            ->setRelatedResource(MinimalUserResource::class)
-                                           ->withAdditionalInformation(function($user) {
+                                           ->withAdditionalInformation(function ($user) {
                                                $this->assertNull($user);
                                            }),
                          );
@@ -355,7 +356,7 @@ class BelongsToFieldTest extends TestCase
             'demo', 'user' => fn(Builder $builder) => $builder,
         ];
 
-        $repository = $this->mock(Repository::class, function(MockInterface $mock) use ($article, $with) {
+        $repository = $this->mock(Repository::class, function (MockInterface $mock) use ($article, $with) {
             $mock->shouldReceive('findByKey')->with($article->id, $with)->andReturn($article);
         });
 
@@ -375,7 +376,7 @@ class BelongsToFieldTest extends TestCase
 
         $with = [ 'demo' ];
 
-        $repository = $this->mock(Repository::class, function(MockInterface $mock) use ($article, $with) {
+        $repository = $this->mock(Repository::class, function (MockInterface $mock) use ($article, $with) {
             $mock->shouldReceive('findByKey')
                  ->with($article->id, array_merge($with, [ 'user' ]))
                  ->andReturn($article);
@@ -389,6 +390,48 @@ class BelongsToFieldTest extends TestCase
         (new DetailController())->handle(
             $this->detailRequest($resource, $article->id)
         );
+
+    }
+
+    public function test_it_works_on_fields_request_call(): void
+    {
+
+        $resource = $this->makeResource(ArticleModel::class)
+                         ->addDefaultFields(
+                             BelongsToField::make('User')->setRelatedResource(MinimalUserResource::class),
+                         );
+
+        $request = $this->fieldsRequest($resource);
+
+        $response = (new FieldsController())->fields($request)->getData(true);
+
+        $this->assertEquals([
+            [
+                'label' => 'User',
+                'attribute' => 'user_id',
+                'value' => null,
+                'component' => 'belongs-to-field',
+                'additionalInformation' => null,
+                'settings' => [
+                    'searchable' => false,
+                    'options' => null,
+                    'relatedResource' => [
+                        'name' => 'Minimal User Resource',
+                        'label' => 'Minimal User Resources',
+                        'uriKey' => 'minimal-user-resources',
+                        'fields' => [
+                            [
+                                'label' => 'Name',
+                                'attribute' => 'name',
+                                'value' => null,
+                                'component' => 'editable-field',
+                                'additionalInformation' => null,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $response);
 
     }
 

@@ -37,7 +37,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable
         $this->attribute = $attribute ?? $this->generateAttribute($label);
     }
 
-    public function boot($resource): void
+    public function boot($resource, BaseRequest $request): void
     {
         if ($resource instanceof AbstractResource) {
             $this->setParentResource($resource);

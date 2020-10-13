@@ -22,7 +22,7 @@ class BelongsToField extends AbstractField
     private ?string $relatedResource = null;
     private ?string $relatedFieldsFor = null;
 
-    protected Model $model;
+    protected ?Model $model = null;
     protected BaseRequest $request;
 
     /**
@@ -47,10 +47,11 @@ class BelongsToField extends AbstractField
         parent::__construct($label, $this->relationAttribute . '_id');
     }
 
-    public function boot($resource): void
+    public function boot($resource, BaseRequest $request): void
     {
-        parent::boot($resource);
+        parent::boot($resource, $request);
 
+        $this->request = $request;
         $this->parentResource->with([ $this->relationAttribute ], false);
     }
 
@@ -107,6 +108,10 @@ class BelongsToField extends AbstractField
     private function getRelatedModelInstance(): ?Model
     {
 
+        if ($this->model === null) {
+            return null;
+        }
+
         if (method_exists($this->model, $this->relationAttribute)) {
 
             if ($this->model->relationLoaded($this->relationAttribute)) {
@@ -135,6 +140,7 @@ class BelongsToField extends AbstractField
 
     /**
      * @param array|callable $options
+     *
      * @return $this
      */
     public function options($options): self
@@ -215,17 +221,20 @@ class BelongsToField extends AbstractField
 
         if ($relatedResource = $this->resolveRelatedResource()) {
 
-            $relatedModel = $this->getRelatedModelInstance();
+            if ($relatedModel = $this->getRelatedModelInstance()) {
 
-            $data['additionalInformation'] = $this->resolveAdditionalInformation($relatedModel);
-            $data['settings']['relatedResource'] = $relatedResource->getDescriptor();
+                $data[ 'additionalInformation' ] = $this->resolveAdditionalInformation($relatedModel);
+
+            }
+
+            $data[ 'settings' ][ 'relatedResource' ] = $relatedResource->getDescriptor();
 
             $fields = $relatedResource->resolveFields($this->request, $this->relatedFieldsFor);
 
             $fields->when($relatedModel)
                    ->each(fn(AbstractField $field) => $field->hydrateFromModel($relatedModel, $this->request));
 
-            $data['settings']['relatedResource']['fields'] = $relatedResource->resolveFields(
+            $data[ 'settings' ][ 'relatedResource' ][ 'fields' ] = $relatedResource->resolveFields(
                 $this->request, $this->relatedFieldsFor
             );
 

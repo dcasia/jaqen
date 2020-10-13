@@ -19,6 +19,10 @@ abstract class AbstractFilter implements JsonSerializable
 
     abstract public function apply(Builder $builder, FieldsData $value): Builder;
 
+    /**
+     * @return BaseRequest
+     * @todo delete
+     */
     protected function getRequest(): BaseRequest
     {
         return FilterRequest::createFromFilter(
@@ -33,4 +37,5 @@ abstract class AbstractFilter implements JsonSerializable
             'fields' => $this->resolveFields(app(BaseRequest::class)),
         ];
     }
+
 }
