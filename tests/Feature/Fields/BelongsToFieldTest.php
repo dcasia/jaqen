@@ -20,7 +20,6 @@ use DigitalCreative\Dashboard\Tests\Factories\ArticleFactory;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article as ArticleModel;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\MinimalUserResource;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\InteractionWithResponseTrait;
@@ -49,7 +48,6 @@ class BelongsToFieldTest extends TestCase
                          ->addDefaultFields(
                              BelongsToField::make('User')
                                            ->setRelatedResource(MinimalUserResource::class)
-                                           ->withAdditionalInformation(fn(UserModel $user) => [ 'name' => $user->name ]),
                          );
 
         $request = $this->indexRequest($resource);
@@ -71,9 +69,7 @@ class BelongsToFieldTest extends TestCase
                             'attribute' => 'user_id',
                             'value' => $article->user->id,
                             'component' => 'belongs-to-field',
-                            'additionalInformation' => [
-                                'name' => $article->user->name,
-                            ],
+                            'additionalInformation' => null,
                             'settings' => [
                                 'searchable' => false,
                                 'options' => null,
@@ -332,10 +328,7 @@ class BelongsToFieldTest extends TestCase
         $resource = $this->makeResource(ArticleModel::class)
                          ->addDefaultFields(
                              BelongsToField::make('User')
-                                           ->setRelatedResource(MinimalUserResource::class)
-                                           ->withAdditionalInformation(function ($user) {
-                                               $this->assertNull($user);
-                                           }),
+                                           ->setRelatedResource(MinimalUserResource::class),
                          );
 
         $request = $this->detailRequest($resource, $article->id);

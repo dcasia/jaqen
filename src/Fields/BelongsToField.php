@@ -212,7 +212,7 @@ class BelongsToField extends AbstractField
             'attribute' => $this->attribute,
             'value' => $this->value,
             'component' => $this->component(),
-            'additionalInformation' => null,
+            'additionalInformation' => $this->resolveAdditionalInformation(),
             'settings' => [
                 'searchable' => $this->isSearchable(),
                 'options' => $this->resolveOptions($this->request),
@@ -221,11 +221,7 @@ class BelongsToField extends AbstractField
 
         if ($relatedResource = $this->resolveRelatedResource()) {
 
-            if ($relatedModel = $this->getRelatedModelInstance()) {
-
-                $data[ 'additionalInformation' ] = $this->resolveAdditionalInformation($relatedModel);
-
-            }
+            $relatedModel = $this->getRelatedModelInstance();
 
             $data[ 'settings' ][ 'relatedResource' ] = $relatedResource->getDescriptor();
 

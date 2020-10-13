@@ -55,6 +55,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable
 
     /**
      * @param bool|callable $state
+     *
      * @return $this
      */
     public function readOnly($state = true): self
@@ -76,17 +77,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable
 
     protected function resolveAdditionalInformation(): ?array
     {
-
-        $arguments = func_get_args();
-
-        $response = collect($this->additionalInformation)
-            ->flatMap(function($value) use ($arguments) {
-                if (is_callable($value)) {
-                    return call_user_func_array($value, $arguments);
-                }
-
-                return $value;
-            });
+        $response = collect($this->additionalInformation)->flatMap(fn($value) => value($value));
 
         if ($response->isEmpty()) {
             return null;
@@ -97,6 +88,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable
 
     /**
      * @param array|callable $options
+     *
      * @return $this
      */
     public function withAdditionalInformation($options): self
