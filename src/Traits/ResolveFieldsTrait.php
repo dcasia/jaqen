@@ -124,34 +124,34 @@ trait ResolveFieldsTrait
 
             }
 
-            return FieldsCollection::make($fields)
-                                   ->when($request->isStoringResourceToDatabase(), function(FieldsCollection $fields) {
+            return (new FieldsCollection($fields))
+                ->when($request->isStoringResourceToDatabase(), function(FieldsCollection $fields) {
 
-                                       return $fields->flatMap(function(AbstractField $field) {
+                    return $fields->flatMap(function(AbstractField $field) {
 
-                                           if ($field instanceof BehaveAsPanel) {
+                        if ($field instanceof BehaveAsPanel) {
 
-                                               return $field->getFields();
+                            return $field->getFields();
 
-                                           }
+                        }
 
-                                           return [ $field ];
+                        return [ $field ];
 
-                                       });
+                    });
 
-                                   })
-                                   ->when($only, function(FieldsCollection $fields, string $only) {
-                                       return $fields->filter(
-                                           fn(AbstractField $field) => $this->stringContains($only, $field->attribute)
-                                       );
-                                   })
-                                   ->when($except, function(FieldsCollection $fields, string $except) {
-                                       return $fields->filter(
-                                           fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
-                                       );
-                                   })
-                                   ->each(fn(AbstractField $field) => $field->boot($this, $request))
-                                   ->values();
+                })
+                ->when($only, function(FieldsCollection $fields, string $only) {
+                    return $fields->filter(
+                        fn(AbstractField $field) => $this->stringContains($only, $field->attribute)
+                    );
+                })
+                ->when($except, function(FieldsCollection $fields, string $except) {
+                    return $fields->filter(
+                        fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
+                    );
+                })
+                ->each(fn(AbstractField $field) => $field->boot($this, $request))
+                ->values();
 
         });
     }
