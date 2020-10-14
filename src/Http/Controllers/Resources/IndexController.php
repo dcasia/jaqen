@@ -38,9 +38,7 @@ class IndexController extends Controller
 
                                   return [
                                       'key' => $model->getKey(),
-                                      'fields' => $fields->map(function(AbstractField $field) use ($model, $request) {
-                                          return $field->resolveValueFromModel($model, $request)->toArray();
-                                      }),
+                                      'fields' => $fields->getResolvedFieldsData($model, $request),
                                   ];
 
                               });

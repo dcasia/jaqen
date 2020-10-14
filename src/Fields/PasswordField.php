@@ -11,8 +11,8 @@ class PasswordField extends AbstractField
     {
         parent::__construct($label, $attribute);
 
-        $this->rulesForUpdate(['sometimes', 'required', 'min:8'])
-             ->rulesForCreate(['required', 'min:8']);
+        $this->rulesForUpdate([ 'sometimes', 'required', 'min:8' ])
+             ->rulesForCreate([ 'required', 'min:8' ]);
     }
 
     public function jsonSerialize(): array

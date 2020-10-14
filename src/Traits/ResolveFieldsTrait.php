@@ -166,8 +166,7 @@ trait ResolveFieldsTrait
 
     public function resolveFieldsUsingModel(Model $model, BaseRequest $request): FieldsCollection
     {
-        return $this->resolveFields($request)
-                    ->each(fn(AbstractField $field) => $field->resolveValueFromModel($model, $request));
+        return $this->resolveFields($request)->getResolvedFieldsData($model, $request);
     }
 
     public function filterNonUpdatableFields(FieldsCollection $fields): FieldsCollection

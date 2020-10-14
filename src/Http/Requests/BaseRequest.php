@@ -26,11 +26,6 @@ class BaseRequest extends FormRequest
         return Dashboard::getInstance()->resourceForRequest($this);
     }
 
-    public function isListing(): bool
-    {
-        return $this instanceof IndexResourceRequest;
-    }
-
     public function isCreate(): bool
     {
         return $this instanceof StoreResourceRequest
@@ -46,11 +41,6 @@ class BaseRequest extends FormRequest
     {
         return $this instanceof StoreResourceRequest
             || $this instanceof UpdateResourceRequest;
-    }
-
-    public function isUpdate(): bool
-    {
-        return $this instanceof UpdateResourceRequest;
     }
 
 }

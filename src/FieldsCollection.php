@@ -6,8 +6,10 @@ namespace DigitalCreative\Dashboard;
 
 use DigitalCreative\Dashboard\Concerns\WithCustomStore;
 use DigitalCreative\Dashboard\Concerns\WithEvents;
+use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 
@@ -23,6 +25,13 @@ class FieldsCollection extends Collection
     public function getFieldsWithEvents(): self
     {
         return $this->whereInstanceOf(WithEvents::class);
+    }
+
+    public function getResolvedFieldsData(Model $model, BaseRequest $request): self
+    {
+        return $this->map(function(AbstractField $field) use ($model, $request) {
+            return $field->resolveValueFromModel($model, $request)->toArray();
+        });
     }
 
     public function persist(AbstractResource $resource, BaseRequest $request)

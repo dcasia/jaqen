@@ -68,7 +68,7 @@ trait ResolveRulesTrait
 
             if ($request->isCreate()) {
                 $rules = $this->createRules ?? $this->rules;
-            } else if ($request->isUpdate()) {
+            } else if ($request->isStoringResourceToDatabase()) {
                 $rules = $this->updateRules ?? $this->rules;
             }
 
