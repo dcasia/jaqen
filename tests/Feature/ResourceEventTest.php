@@ -10,10 +10,12 @@ use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
+use Illuminate\Database\Eloquent\Model;
 
 class ResourceEventTest extends TestCase
 {
@@ -42,8 +44,8 @@ class ResourceEventTest extends TestCase
     {
 
         $resource = $this->getPreConfiguredResource()
-                         ->afterCreate(function($data) {
-                             $this->assertTrue($data);
+                         ->afterCreate(function(UserModel $model) {
+                             $this->assertInstanceOf(UserModel::class, $model);
                              return [ 'success' => true ];
                          });
 
@@ -59,8 +61,8 @@ class ResourceEventTest extends TestCase
     {
 
         $resource = $this->getPreConfiguredResource()
-                         ->afterCreate(function(bool $data) {
-                             $this->assertTrue($data);
+                         ->afterCreate(function(UserModel $model) {
+                             $this->assertInstanceOf(UserModel::class, $model);
                              return [ 'success' => true ];
                          })
                          ->afterCreate(function(array $data) {

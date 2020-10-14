@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types = 1);
+
+namespace DigitalCreative\Dashboard\Tests\Fixtures\Resources;
+
+use DigitalCreative\Dashboard\Fields\EditableField;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\Phone as PhoneModel;
+use Illuminate\Database\Eloquent\Model;
+
+class PhoneResource extends AbstractResource
+{
+
+    public function model(): Model
+    {
+        return new PhoneModel();
+    }
+
+    public function fieldsForCreation(): array
+    {
+        return [
+            EditableField::make('Number'),
+        ];
+    }
+
+}

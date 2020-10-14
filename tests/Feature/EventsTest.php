@@ -67,8 +67,8 @@ class FieldEventTest extends TestCase
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
-        $field->afterCreate(function($data) {
-            $this->assertTrue($data);
+        $field->afterCreate(function($model) {
+            $this->assertInstanceOf(UserModel::class, $model);
         });
 
         $request = $this->storeRequest($resource);

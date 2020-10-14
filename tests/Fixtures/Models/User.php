@@ -6,6 +6,7 @@ namespace DigitalCreative\Dashboard\Tests\Fixtures\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 
 /**
@@ -14,6 +15,7 @@ use Illuminate\Support\Collection;
  * @property string gender
  * @property string email
  * @property Collection $articles
+ * @property Phone|null $phone
  */
 class User extends Model
 {
@@ -24,11 +26,16 @@ class User extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'int'
+        'id' => 'int',
     ];
 
     public function articles(): HasMany
     {
         return $this->hasMany(Article::class);
+    }
+
+    public function phone(): HasOne
+    {
+        return $this->hasOne(Phone::class);
     }
 }

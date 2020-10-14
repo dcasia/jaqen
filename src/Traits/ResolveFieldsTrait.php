@@ -7,10 +7,10 @@ namespace DigitalCreative\Dashboard\Traits;
 use DigitalCreative\Dashboard\Concerns\BehaveAsPanel;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\BelongsToField;
+use DigitalCreative\Dashboard\FieldsCollection;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use LogicException;
 use RuntimeException;
@@ -60,9 +60,9 @@ trait ResolveFieldsTrait
      *
      * @param BaseRequest $request
      * @param string|null $for
-     * @return Collection
+     * @return FieldsCollection
      */
-    public function resolveFields(BaseRequest $request, ?string $for = null): Collection
+    public function resolveFields(BaseRequest $request, ?string $for = null): FieldsCollection
     {
         return once(function() use ($request, $for) {
 
@@ -124,34 +124,34 @@ trait ResolveFieldsTrait
 
             }
 
-            return collect($fields)
-                ->when($request->isStoringResourceToDatabase(), function(Collection $fields) {
+            return FieldsCollection::make($fields)
+                                   ->when($request->isStoringResourceToDatabase(), function(FieldsCollection $fields) {
 
-                    return $fields->flatMap(function(AbstractField $field) {
+                                       return $fields->flatMap(function(AbstractField $field) {
 
-                        if ($field instanceof BehaveAsPanel) {
+                                           if ($field instanceof BehaveAsPanel) {
 
-                            return $field->getFields();
+                                               return $field->getFields();
 
-                        }
+                                           }
 
-                        return [ $field ];
+                                           return [ $field ];
 
-                    });
+                                       });
 
-                })
-                ->when($only, function(Collection $fields, string $only) {
-                    return $fields->filter(
-                        fn(AbstractField $field) => $this->stringContains($only, $field->attribute)
-                    );
-                })
-                ->when($except, function(Collection $fields, string $except) {
-                    return $fields->filter(
-                        fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
-                    );
-                })
-                ->each(fn(AbstractField $field) => $field->boot($this, $request))
-                ->values();
+                                   })
+                                   ->when($only, function(FieldsCollection $fields, string $only) {
+                                       return $fields->filter(
+                                           fn(AbstractField $field) => $this->stringContains($only, $field->attribute)
+                                       );
+                                   })
+                                   ->when($except, function(FieldsCollection $fields, string $except) {
+                                       return $fields->filter(
+                                           fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
+                                       );
+                                   })
+                                   ->each(fn(AbstractField $field) => $field->boot($this, $request))
+                                   ->values();
 
         });
     }
@@ -164,18 +164,18 @@ trait ResolveFieldsTrait
                   ->contains($attribute);
     }
 
-    public function resolveFieldsUsingModel(Model $model, BaseRequest $request): Collection
+    public function resolveFieldsUsingModel(Model $model, BaseRequest $request): FieldsCollection
     {
         return $this->resolveFields($request)
                     ->each(fn(AbstractField $field) => $field->resolveValueFromModel($model, $request));
     }
 
-    public function filterNonUpdatableFields(Collection $fields): Collection
+    public function filterNonUpdatableFields(FieldsCollection $fields): FieldsCollection
     {
         return $fields->filter(fn(AbstractField $field) => $field->isReadOnly() === false);
     }
 
-    private function validateFields(Collection $fields, BaseRequest $request): array
+    private function validateFields(FieldsCollection $fields, BaseRequest $request): array
     {
 
         $rules = $fields

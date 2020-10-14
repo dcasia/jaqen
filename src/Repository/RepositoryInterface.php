@@ -18,7 +18,7 @@ interface RepositoryInterface
      *
      * @return mixed
      */
-    public function create(array $data);
+    public function create(array $data): Model;
 
     public function findByKey(string $key, array $with = []): ?Model;
 

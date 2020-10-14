@@ -11,10 +11,11 @@ use DigitalCreative\Dashboard\Traits\MakeableTrait;
 use DigitalCreative\Dashboard\Traits\ResolveRulesTrait;
 use DigitalCreative\Dashboard\Traits\ResolveValueTrait;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Str;
 use JsonSerializable;
 
-abstract class AbstractField implements JsonSerializable, Arrayable
+abstract class AbstractField implements JsonSerializable, Arrayable, PotentiallyMissing
 {
 
     use ResolveRulesTrait;
@@ -24,6 +25,8 @@ abstract class AbstractField implements JsonSerializable, Arrayable
     public string $label;
     public string $attribute;
     public array $additionalInformation = [];
+    public array $data = [];
+
     protected AbstractResource $parentResource;
 
     /**
@@ -35,6 +38,11 @@ abstract class AbstractField implements JsonSerializable, Arrayable
     {
         $this->label = $label;
         $this->attribute = $attribute ?? $this->generateAttribute($label);
+    }
+
+    public function isMissing(): bool
+    {
+        return false;
     }
 
     public function boot($resource, BaseRequest $request): void
@@ -113,15 +121,27 @@ abstract class AbstractField implements JsonSerializable, Arrayable
         return $this->jsonSerialize();
     }
 
+    public function withData($data): self
+    {
+        $this->data[] = $data;
+
+        return $this;
+    }
+
+    private function resolveData(): array
+    {
+        return collect($this->data)->flatMap(fn($value) => value($value))->toArray();
+    }
+
     public function jsonSerialize(): array
     {
-        return [
+        return array_merge([
             'label' => $this->label,
             'attribute' => $this->attribute,
             'value' => $this->value,
             'component' => $this->component(),
             'additionalInformation' => $this->resolveAdditionalInformation(),
-        ];
+        ], $this->resolveData());
     }
 
 }

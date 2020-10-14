@@ -6,6 +6,7 @@ namespace DigitalCreative\Dashboard\Tests\Controllers\Resources;
 
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Repository\Repository;
+use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
@@ -45,8 +46,10 @@ class StoreControllerTest extends TestCase
     public function test_returning_a_custom_data_works_as_expected(): void
     {
 
-        $repository = $this->mock(Repository::class, function(MockInterface $mock) {
-            $mock->shouldReceive('create')->andReturn([ 'id' => 123 ]);
+        $user = UserFactory::new()->create();
+
+        $repository = $this->mock(Repository::class, function(MockInterface $mock) use ($user) {
+            $mock->shouldReceive('create')->andReturn($user);
         });
 
         $resource = $this->makeResource(UserModel::class)
@@ -54,7 +57,7 @@ class StoreControllerTest extends TestCase
 
         $this->callStore($resource)
              ->assertStatus(201)
-             ->assertJsonFragment([ 'id' => 123 ]);
+             ->assertJsonFragment([ 'id' => $user->id ]);
 
     }
 

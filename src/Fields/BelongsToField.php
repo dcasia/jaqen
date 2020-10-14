@@ -14,16 +14,12 @@ use RuntimeException;
 class BelongsToField extends AbstractField
 {
 
-    /**
-     * @var callable|array
-     */
-    private $optionsCallback;
-    private ?string $relationAttribute;
     private ?string $relatedResource = null;
-    private ?string $relatedFieldsFor = null;
 
     protected ?Model $model = null;
     protected BaseRequest $request;
+    protected ?string $relationAttribute;
+    protected ?string $relatedFieldsFor = null;
 
     /**
      * @var callable|bool
@@ -44,7 +40,12 @@ class BelongsToField extends AbstractField
          * a completely different key from model_id convention
          * Perhaps the best approach would be replacing the $relation as on set on the model to the attribute as the one that exists on the database
          */
-        parent::__construct($label, $this->relationAttribute . '_id');
+        parent::__construct($label, $this->getRelationAttributeKey());
+    }
+
+    public function getRelationAttributeKey(): string
+    {
+        return $this->relationAttribute . '_id';
     }
 
     public function boot($resource, BaseRequest $request): void
@@ -63,20 +64,9 @@ class BelongsToField extends AbstractField
         return $this->setValue($model->getAttributeValue($this->attribute), $request);
     }
 
-    protected function resolveOptions(BaseRequest $request): ?array
+    protected function resolveRelatedResource(): ?AbstractResource
     {
-        if (is_callable($this->optionsCallback)) {
-
-            return call_user_func($this->optionsCallback, $request);
-
-        }
-
-        return $this->optionsCallback;
-    }
-
-    private function resolveRelatedResource(): ?AbstractResource
-    {
-        return once(function () {
+        return once(function() {
 
             if ($this->relatedResource) {
 
@@ -105,7 +95,7 @@ class BelongsToField extends AbstractField
         return $this->resolveRelatedResource();
     }
 
-    private function getRelatedModelInstance(): ?Model
+    protected function getRelatedModelInstance(): ?Model
     {
 
         if ($this->model === null) {
@@ -136,18 +126,6 @@ class BelongsToField extends AbstractField
             )
         );
 
-    }
-
-    /**
-     * @param array|callable $options
-     *
-     * @return $this
-     */
-    public function options($options): self
-    {
-        $this->optionsCallback = $options;
-
-        return $this;
     }
 
     public function setRelatedResourceFieldsFor(string $fieldsFor): self
@@ -181,7 +159,7 @@ class BelongsToField extends AbstractField
          * @todo try to abstract this call to the repository
          * @todo instance of $request->query('id') try $request->query(RelatedModel::getKeyName()) in case user dont call the key as ID
          */
-        return static function (Builder $builder, BaseRequest $request): Builder {
+        return static function(Builder $builder, BaseRequest $request): Builder {
             return $builder->when($request->query('id'), fn(Builder $builder, string $search) => $builder->whereKey($search))
                            ->limit(10);
         };
@@ -205,38 +183,44 @@ class BelongsToField extends AbstractField
         return is_callable($this->searchableCallback) ? true : $this->searchableCallback;
     }
 
-    public function jsonSerialize(): array
+    protected function getRelatedResourcePayload(): array
     {
-        $data = [
-            'label' => $this->label,
-            'attribute' => $this->attribute,
-            'value' => $this->value,
-            'component' => $this->component(),
-            'additionalInformation' => $this->resolveAdditionalInformation(),
-            'settings' => [
-                'searchable' => $this->isSearchable(),
-                'options' => $this->resolveOptions($this->request),
-            ],
-        ];
+
+        $payload = [];
 
         if ($relatedResource = $this->resolveRelatedResource()) {
 
             $relatedModel = $this->getRelatedModelInstance();
 
-            $data[ 'settings' ][ 'relatedResource' ] = $relatedResource->getDescriptor();
+            $payload['relatedResource'] = $relatedResource->getDescriptor();
 
             $fields = $relatedResource->resolveFields($this->request, $this->relatedFieldsFor);
 
             $fields->when($relatedModel)
                    ->each(fn(AbstractField $field) => $field->hydrateFromModel($relatedModel, $this->request));
 
-            $data[ 'settings' ][ 'relatedResource' ][ 'fields' ] = $relatedResource->resolveFields(
+            $payload['relatedResource']['fields'] = $relatedResource->resolveFields(
                 $this->request, $this->relatedFieldsFor
             );
 
         }
 
-        return $data;
+        return $payload;
+
+    }
+
+    protected function getSettings(): array
+    {
+        $data = [
+            'searchable' => $this->isSearchable(),
+        ];
+
+        return array_merge($data, $this->getRelatedResourcePayload());
+    }
+
+    public function jsonSerialize(): array
+    {
+        return array_merge(parent::jsonSerialize(), $this->getSettings());
     }
 
 }

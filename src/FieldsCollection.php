@@ -1,0 +1,59 @@
+<?php
+
+declare(strict_types = 1);
+
+namespace DigitalCreative\Dashboard;
+
+use DigitalCreative\Dashboard\Concerns\WithCustomStore;
+use DigitalCreative\Dashboard\Concerns\WithEvents;
+use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Dashboard\Resources\AbstractResource;
+use Illuminate\Http\Resources\PotentiallyMissing;
+use Illuminate\Support\Collection;
+
+class FieldsCollection extends Collection
+{
+    public function resolveData(): array
+    {
+        return $this->filter(fn(PotentiallyMissing $field) => !$field->isMissing())
+                    ->pluck('value', 'attribute')
+                    ->toArray();
+    }
+
+    public function getFieldsWithEvents(): self
+    {
+        return $this->whereInstanceOf(WithEvents::class);
+    }
+
+    public function runEvents(AbstractResource $resource, BaseRequest $request)
+    {
+
+        $data = $this->resolveData();
+
+        $fieldsWithEvents = $this->getFieldsWithEvents();
+
+        /**
+         * Before Create
+         */
+        $fieldsWithEvents->each(function(WithEvents $field) use (&$data) {
+            $data = $field->runBeforeCreate($data);
+        });
+
+        $data = $resource->runBeforeCreate($data);
+
+        if ($resource instanceof WithCustomStore) {
+            $data = $resource->storeResource($data, $request);
+        } else {
+            $data = $resource->repository()->create($data);
+        }
+
+        /**
+         * After Create
+         */
+        $fieldsWithEvents->each(fn(WithEvents $field) => $field->runAfterCreate($data));
+
+        return $resource->runAfterCreate($data);
+
+    }
+
+}

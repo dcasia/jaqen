@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Controllers\Resources;
 
-use DigitalCreative\Dashboard\Concerns\WithCustomStore;
-use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
 use Illuminate\Http\JsonResponse;
@@ -36,33 +34,7 @@ class StoreController extends Controller
         $fields = $resource->filterNonUpdatableFields($fields)
                            ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
 
-        $data = $fields->pluck('value', 'attribute')->toArray();
-
-        $fieldsWithEvents = $fields->whereInstanceOf(WithEvents::class);
-
-        /**
-         * Before Create
-         */
-        $fieldsWithEvents->each(function(WithEvents $field) use (&$data) {
-            $data = $field->runBeforeCreate($data);
-        });
-
-        $data = $resource->runBeforeCreate($data);
-
-        if ($resource instanceof WithCustomStore) {
-            $data = $resource->storeResource($data, $request);
-        } else {
-            $data = $resource->repository()->create($data);
-        }
-
-        /**
-         * After Create
-         */
-        $fieldsWithEvents->each(fn(WithEvents $field) => $field->runAfterCreate($data));
-
-        $data = $resource->runAfterCreate($data);
-
-        return response()->json($data, 201);
+        return response()->json($fields->runEvents($resource, $request), 201);
 
     }
 

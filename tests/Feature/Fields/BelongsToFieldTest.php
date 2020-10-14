@@ -70,21 +70,18 @@ class BelongsToFieldTest extends TestCase
                             'value' => $article->user->id,
                             'component' => 'belongs-to-field',
                             'additionalInformation' => null,
-                            'settings' => [
-                                'searchable' => false,
-                                'options' => null,
-                                'relatedResource' => [
-                                    'name' => 'Minimal User Resource',
-                                    'label' => 'Minimal User Resources',
-                                    'uriKey' => 'minimal-user-resources',
-                                    'fields' => [
-                                        [
-                                            'label' => 'Name',
-                                            'attribute' => 'name',
-                                            'value' => $article->user->name,
-                                            'component' => 'editable-field',
-                                            'additionalInformation' => null,
-                                        ],
+                            'searchable' => false,
+                            'relatedResource' => [
+                                'name' => 'Minimal User Resource',
+                                'label' => 'Minimal User Resources',
+                                'uriKey' => 'minimal-user-resources',
+                                'fields' => [
+                                    [
+                                        'label' => 'Name',
+                                        'attribute' => 'name',
+                                        'value' => $article->user->name,
+                                        'component' => 'editable-field',
+                                        'additionalInformation' => null,
                                     ],
                                 ],
                             ],
@@ -129,7 +126,7 @@ class BelongsToFieldTest extends TestCase
         $response = (new IndexController())->handle($request)->getData(true);
 
         $this->assertEquals(
-            'custom_field_name', data_get($response, 'resources.0.fields.0.settings.relatedResource.fields.0.attribute')
+            'custom_field_name', data_get($response, 'resources.0.fields.0.relatedResource.fields.0.attribute')
         );
 
     }
@@ -180,45 +177,6 @@ class BelongsToFieldTest extends TestCase
 
     }
 
-    public function test_user_is_able_to_pass_options(): void
-    {
-
-        $article = ArticleFactory::new()->create();
-
-        $resource = $this->makeResource(ArticleModel::class)
-                         ->addDefaultFields(
-                             BelongsToField::make('User')->options(function (BaseRequest $request) {
-                                 return [
-                                     [ 'id' => 1 ],
-                                 ];
-                             }),
-                         );
-
-        $request = $this->detailRequest($resource, $article->id);
-
-        $response = (new DetailController())->handle($request)->getData(true);
-
-        $this->assertSame($response, [
-            'key' => $article->id,
-            'fields' => [
-                [
-                    'label' => 'User',
-                    'attribute' => 'user_id',
-                    'value' => $article->user->id,
-                    'component' => 'belongs-to-field',
-                    'additionalInformation' => null,
-                    'settings' => [
-                        'searchable' => false,
-                        'options' => [
-                            [ 'id' => 1 ],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
-
-    }
-
     /**
      * Searchable
      */
@@ -233,7 +191,7 @@ class BelongsToFieldTest extends TestCase
 
         $field = BelongsToField::make('User')
                                ->setRelatedResource(MinimalUserResource::class)
-                               ->searchable(function (Builder $builder, BaseRequest $request): Builder {
+                               ->searchable(function(Builder $builder, BaseRequest $request): Builder {
 
                                    $search = $request->query('search');
 
@@ -349,7 +307,7 @@ class BelongsToFieldTest extends TestCase
             'demo', 'user' => fn(Builder $builder) => $builder,
         ];
 
-        $repository = $this->mock(Repository::class, function (MockInterface $mock) use ($article, $with) {
+        $repository = $this->mock(Repository::class, function(MockInterface $mock) use ($article, $with) {
             $mock->shouldReceive('findByKey')->with($article->id, $with)->andReturn($article);
         });
 
@@ -369,7 +327,7 @@ class BelongsToFieldTest extends TestCase
 
         $with = [ 'demo' ];
 
-        $repository = $this->mock(Repository::class, function (MockInterface $mock) use ($article, $with) {
+        $repository = $this->mock(Repository::class, function(MockInterface $mock) use ($article, $with) {
             $mock->shouldReceive('findByKey')
                  ->with($article->id, array_merge($with, [ 'user' ]))
                  ->andReturn($article);
@@ -405,21 +363,18 @@ class BelongsToFieldTest extends TestCase
                 'value' => null,
                 'component' => 'belongs-to-field',
                 'additionalInformation' => null,
-                'settings' => [
-                    'searchable' => false,
-                    'options' => null,
-                    'relatedResource' => [
-                        'name' => 'Minimal User Resource',
-                        'label' => 'Minimal User Resources',
-                        'uriKey' => 'minimal-user-resources',
-                        'fields' => [
-                            [
-                                'label' => 'Name',
-                                'attribute' => 'name',
-                                'value' => null,
-                                'component' => 'editable-field',
-                                'additionalInformation' => null,
-                            ],
+                'searchable' => false,
+                'relatedResource' => [
+                    'name' => 'Minimal User Resource',
+                    'label' => 'Minimal User Resources',
+                    'uriKey' => 'minimal-user-resources',
+                    'fields' => [
+                        [
+                            'label' => 'Name',
+                            'attribute' => 'name',
+                            'value' => null,
+                            'component' => 'editable-field',
+                            'additionalInformation' => null,
                         ],
                     ],
                 ],
