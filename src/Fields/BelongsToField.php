@@ -199,9 +199,7 @@ class BelongsToField extends AbstractField
             $fields->when($relatedModel)
                    ->each(fn(AbstractField $field) => $field->hydrateFromModel($relatedModel, $this->request));
 
-            $payload['relatedResource']['fields'] = $relatedResource->resolveFields(
-                $this->request, $this->relatedFieldsFor
-            );
+            $payload['relatedResource']['fields'] = $fields->toArray();
 
         }
 

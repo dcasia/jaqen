@@ -4,23 +4,14 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
-use DigitalCreative\Dashboard\Fields\BelongsToField;
-use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Fields\HasOneField;
-use DigitalCreative\Dashboard\Fields\ReadOnlyField;
 use DigitalCreative\Dashboard\Http\Controllers\FieldsController;
-use DigitalCreative\Dashboard\Http\Controllers\Relationships\BelongsToController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\DetailController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Repository\Repository;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
-use DigitalCreative\Dashboard\Tests\Factories\ArticleFactory;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article as ArticleModel;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\MinimalUserResource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\PhoneResource;
@@ -29,10 +20,6 @@ use DigitalCreative\Dashboard\Tests\Traits\InteractionWithResponseTrait;
 use DigitalCreative\Dashboard\Tests\Traits\RelationshipRequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Mockery\MockInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HasOneFieldTest extends TestCase
 {
@@ -47,16 +34,57 @@ class HasOneFieldTest extends TestCase
 
         $resource = $this->makeResource(UserModel::class)
                          ->addDefaultFields(
-                             HasOneField::make('Phone')
-                                        ->setRelatedResource(PhoneResource::class)
-                                        ->setRelatedResourceFieldsFor('creation'),
+                             HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
                          );
 
         $request = $this->storeRequest($resource, [ 'phone' => [ 'number' => 123456 ] ]);
 
         $response = (new StoreController())->handle($request)->getData(true);
 
-        $this->markTestIncomplete('todo');
+        $this->assertEquals(123456, data_get($response, 'phone.number'));
+        $this->assertEquals(1, data_get($response, 'phone.user_id'));
+        $this->assertEquals(1, data_get($response, 'phone.id'));
+        $this->assertEquals(1, data_get($response, 'id'));
+
+    }
+
+    public function test_it_works_on_index(): void
+    {
+
+        $user = UserFactory::new()->count(2)->withPhone()->create()->first();
+
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields(
+                             HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
+                         );
+
+        $request = $this->indexRequest($resource);
+
+        $response = (new IndexController())->handle($request)->getData(true);
+
+        $this->assertEquals($user->id, data_get($response, 'resources.0.key'));
+        $this->assertEquals($user->phone->id, data_get($response, 'resources.0.fields.0.value'));
+        $this->assertEquals($user->phone->number, data_get($response, 'resources.0.fields.0.relatedResource.fields.0.value'));
+
+    }
+
+    public function test_index_listing_works_when_related_resource_is_null(): void
+    {
+
+        $user = UserFactory::new()->count(2)->create()->first();
+
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields(
+                             HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
+                         );
+
+        $request = $this->indexRequest($resource);
+
+        $response = (new IndexController())->handle($request)->getData(true);
+
+        $this->assertEquals($user->id, data_get($response, 'resources.0.key'));
+        $this->assertEquals(null, data_get($response, 'resources.0.fields.0.value'));
+        $this->assertEquals(null, data_get($response, 'resources.0.fields.0.relatedResource.fields.0.value'));
 
     }
 

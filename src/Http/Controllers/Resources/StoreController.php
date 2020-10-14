@@ -34,7 +34,7 @@ class StoreController extends Controller
         $fields = $resource->filterNonUpdatableFields($fields)
                            ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
 
-        return response()->json($fields->runEvents($resource, $request), 201);
+        return response()->json($fields->persist($resource, $request), 201);
 
     }
 

@@ -30,4 +30,12 @@ class UserFactory extends Factory
             'password' => $this->faker->password,
         ];
     }
+
+    public function withPhone(): self
+    {
+        return $this->afterCreating(function(User $user) {
+            return PhoneFactory::new()->create([ 'user_id' => $user->id ]);
+        });
+    }
+
 }

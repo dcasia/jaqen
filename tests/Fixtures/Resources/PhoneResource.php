@@ -17,7 +17,7 @@ class PhoneResource extends AbstractResource
         return new PhoneModel();
     }
 
-    public function fieldsForCreation(): array
+    public function fields(): array
     {
         return [
             EditableField::make('Number'),

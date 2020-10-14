@@ -24,7 +24,10 @@ class HasOneField extends BelongsToField implements WithEvents
             $resource = $this->getRelatedResource();
 
             $foreignerKey = $this->getRelationForeignKeyName($model);
-            $requestData = array_merge($this->request->input($this->relationAttribute), [ $foreignerKey => $model->getKey() ]);
+
+            $requestData = array_merge(
+                $this->request->input($this->relationAttribute), [ $foreignerKey => $model->getKey() ]
+            );
 
             $cloneRequest = $this->request->duplicate($this->request->query(), $requestData);
 
@@ -32,7 +35,9 @@ class HasOneField extends BelongsToField implements WithEvents
                                ->push(new EditableField('__injected__', $foreignerKey))
                                ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($cloneRequest));
 
-            $fields->runEvents($resource, $cloneRequest);
+            $model->setRelation(
+                $this->relationAttribute, $fields->persist($resource, $cloneRequest)
+            );
 
         });
     }
@@ -56,7 +61,16 @@ class HasOneField extends BelongsToField implements WithEvents
     {
         $this->model = $model;
 
-        return $this->setValue($model->getRelation($this->getRelationAttribute())->getKey(), $request);
+        $relation = $model->getRelation($this->getRelationAttribute());
+
+        if ($relation instanceof Model) {
+
+            return $this->setValue($relation->getKey(), $request);
+
+        }
+
+        return $this;
+
     }
 
     public function getRelationAttributeKey(): string

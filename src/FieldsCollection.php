@@ -25,7 +25,7 @@ class FieldsCollection extends Collection
         return $this->whereInstanceOf(WithEvents::class);
     }
 
-    public function runEvents(AbstractResource $resource, BaseRequest $request)
+    public function persist(AbstractResource $resource, BaseRequest $request)
     {
 
         $data = $this->resolveData();
@@ -42,9 +42,13 @@ class FieldsCollection extends Collection
         $data = $resource->runBeforeCreate($data);
 
         if ($resource instanceof WithCustomStore) {
+
             $data = $resource->storeResource($data, $request);
+
         } else {
+
             $data = $resource->repository()->create($data);
+
         }
 
         /**
