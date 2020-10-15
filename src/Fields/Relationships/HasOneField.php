@@ -2,9 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Fields;
+namespace DigitalCreative\Dashboard\Fields\Relationships;
 
 use DigitalCreative\Dashboard\Concerns\WithEvents;
+use DigitalCreative\Dashboard\Fields\AbstractField;
+use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
 use DigitalCreative\Dashboard\Traits\EventsTrait;

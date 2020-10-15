@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Controllers\Relationships;
 
-use DigitalCreative\Dashboard\Fields\BelongsToField;
+use DigitalCreative\Dashboard\Fields\Relationships\BelongsToField;
 use DigitalCreative\Dashboard\Http\Requests\BelongsToResourceRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;

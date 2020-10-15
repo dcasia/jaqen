@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
-use DigitalCreative\Dashboard\Fields\BelongsToField;
+use DigitalCreative\Dashboard\Fields\Relationships\BelongsToField;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
 use DigitalCreative\Dashboard\Http\Controllers\FieldsController;

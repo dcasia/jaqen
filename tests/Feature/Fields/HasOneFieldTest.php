@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
-use DigitalCreative\Dashboard\Fields\HasOneField;
+use DigitalCreative\Dashboard\Fields\Relationships\HasOneField;
 use DigitalCreative\Dashboard\Http\Controllers\FieldsController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;

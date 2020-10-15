@@ -2,8 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Fields;
+namespace DigitalCreative\Dashboard\Fields\Relationships;
 
+use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,15 +12,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use RuntimeException;
 
-class BelongsToField extends AbstractField
+class BelongsToField extends Relationship
 {
-
-    private ?string $relatedResource = null;
 
     protected ?Model $model = null;
     protected BaseRequest $request;
     protected ?string $relationAttribute;
-    protected ?string $relatedFieldsFor = null;
 
     /**
      * @var callable|bool
@@ -126,24 +124,6 @@ class BelongsToField extends AbstractField
             )
         );
 
-    }
-
-    public function setRelatedResourceFieldsFor(string $fieldsFor): self
-    {
-        $this->relatedFieldsFor = $fieldsFor;
-
-        return $this;
-    }
-
-    public function setRelatedResource(string $relatedResource, string $fieldsFor = null): self
-    {
-        $this->relatedResource = $relatedResource;
-
-        if ($fieldsFor) {
-            $this->setRelatedResourceFieldsFor($fieldsFor);
-        }
-
-        return $this;
     }
 
     public function resolveSearchCallback(): callable

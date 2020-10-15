@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Fixtures\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
@@ -38,4 +39,10 @@ class User extends Model
     {
         return $this->hasOne(Phone::class);
     }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
 }

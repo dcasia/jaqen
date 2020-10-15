@@ -6,7 +6,7 @@ namespace DigitalCreative\Dashboard\Traits;
 
 use DigitalCreative\Dashboard\Concerns\BehaveAsPanel;
 use DigitalCreative\Dashboard\Fields\AbstractField;
-use DigitalCreative\Dashboard\Fields\BelongsToField;
+use DigitalCreative\Dashboard\Fields\Relationships\BelongsToField;
 use DigitalCreative\Dashboard\FieldsCollection;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;

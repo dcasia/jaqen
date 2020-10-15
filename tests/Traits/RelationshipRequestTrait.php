@@ -4,11 +4,10 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Traits;
 
-use DigitalCreative\Dashboard\Fields\BelongsToField;
+use DigitalCreative\Dashboard\Fields\Relationships\BelongsToField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Http\Requests\BelongsToResourceRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
-use Illuminate\Database\Eloquent\Model;
 
 trait RelationshipRequestTrait
 {
