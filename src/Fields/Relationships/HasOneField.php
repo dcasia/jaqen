@@ -21,7 +21,7 @@ class HasOneField extends BelongsToField implements WithEvents
     {
         parent::__construct($label, $relation, $relatedResource);
 
-        $this->afterCreate(function(User $model) {
+        $this->afterCreate(function(Model $model) {
 
             $resource = $this->getRelatedResource();
 

@@ -21,7 +21,7 @@ class CreateRoleUserTable extends Migration
             $table->increments('id');
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Role::class);
-            $table->timestamps();
+            $table->string('extra')->nullable();
         });
     }
 

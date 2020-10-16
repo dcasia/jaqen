@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Fixtures\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -13,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string content
  * @property User user
  */
-class Article extends Model
+class Article extends AbstractModel
 {
 
     /**

@@ -2,16 +2,14 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
+namespace DigitalCreative\Dashboard\Tests\Feature\Fields\Relationships;
 
 use DigitalCreative\Dashboard\Fields\Relationships\HasOneField;
 use DigitalCreative\Dashboard\Http\Controllers\FieldsController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article as ArticleModel;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\MinimalUserResource;
 use DigitalCreative\Dashboard\Tests\Fixtures\Resources\PhoneResource;

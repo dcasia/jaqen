@@ -20,7 +20,6 @@ class CreateArticlesTable extends Migration
             $table->string('title');
             $table->text('content');
             $table->foreignId('user_id')->nullable();
-            $table->timestamps();
         });
     }
 

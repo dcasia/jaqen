@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
+namespace DigitalCreative\Dashboard\Tests\Feature\Fields\Relationships;
 
 use DigitalCreative\Dashboard\Fields\Relationships\BelongsToField;
 use DigitalCreative\Dashboard\Fields\EditableField;

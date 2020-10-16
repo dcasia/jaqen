@@ -20,7 +20,6 @@ class CreatePhonesTable extends Migration
             $table->increments('id');
             $table->string('number');
             $table->foreignIdFor(User::class);
-            $table->timestamps();
         });
     }
 

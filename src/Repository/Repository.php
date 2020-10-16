@@ -8,6 +8,7 @@ use DigitalCreative\Dashboard\FilterCollection;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
 class Repository implements RepositoryInterface
@@ -37,13 +38,14 @@ class Repository implements RepositoryInterface
         return $this->searchForRelatedEntries($userDefinedCallback, $request);
     }
 
-    /**
-     * @param array $data
-     * @return mixed
-     */
     public function create(array $data): Model
     {
         return tap($this->newModel()->forceFill($data))->save();
+    }
+
+    public function saveMany(BelongsToMany $relation, array $models, array $pivotAttributes = []): void
+    {
+        $relation->saveMany($models, $pivotAttributes);
     }
 
     public function delete(Model $model): bool
