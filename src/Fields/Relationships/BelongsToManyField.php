@@ -9,8 +9,11 @@ use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\FieldsCollection;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
+use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
 use DigitalCreative\Dashboard\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 use RuntimeException;
 
 class BelongsToManyField extends BelongsToField implements WithEvents
@@ -45,7 +48,7 @@ class BelongsToManyField extends BelongsToField implements WithEvents
             }
 
             $resource->repository()->saveMany(
-                $model->{$this->relationAttribute}(), $models, $pivotAttributes
+                $this->getRelationInstance($model), $models, $pivotAttributes
             );
 
             $model->setRelation($this->relationAttribute, collect($models));
@@ -127,6 +130,16 @@ class BelongsToManyField extends BelongsToField implements WithEvents
         return $this->relationAttribute;
     }
 
+    public function getRelationInstance(Model $model): BelongsToMany
+    {
+        return once(fn() => $model->{$this->relationAttribute}());
+    }
+
+    public function getPivotAccessor(Model $model = null): string
+    {
+        return $this->getRelationInstance($model ?? $this->model)->getPivotAccessor();
+    }
+
     public function setPivotFields($fields): self
     {
         $this->pivotFields = $fields;
@@ -138,8 +151,76 @@ class BelongsToManyField extends BelongsToField implements WithEvents
     {
         return [
             'attribute' => $this->getRelatedPivotAttribute(),
-            'fields' => $this->resolvePivotFields(),
+            'fields' => $this->resolvePivotFields()
+                             ->when($this->getRelatedModelInstance(), function(FieldsCollection $pivotFields, Collection $models) {
+                                 return $this->resolveRelatedPivotFieldsData($pivotFields, $models);
+                             }),
         ];
+    }
+
+    private function resolveRelatedPivotFieldsData(FieldsCollection $pivotFields, Collection $models): array
+    {
+        $data = [];
+
+        $pivotAccessor = $this->getPivotAccessor();
+
+        /**
+         * @var User $model
+         */
+        foreach ($models as $model) {
+
+            $data[] = $pivotFields->getResolvedFieldsData(
+                $model->getRelation($pivotAccessor), $this->request
+            );
+
+        }
+
+        return $data;
+    }
+
+    protected function getRelatedResourcePayload(): array
+    {
+
+        $payload = [];
+
+        if ($relatedResource = $this->resolveRelatedResource()) {
+
+            $payload['relatedResource'] = $relatedResource->getDescriptor();
+
+            /**
+             * @var Collection $models
+             */
+            $models = $this->getRelatedModelInstance();
+
+            $fields = $relatedResource->resolveFields($this->request, $this->relatedFieldsFor);
+
+            if (is_null($models)) {
+
+                $payload['relatedResource']['fields'] = $fields;
+
+            } else {
+
+                if (!$models instanceof Collection) {
+
+                    throw new RuntimeException('Invalid relationship type.');
+
+                }
+
+                /**
+                 * @var Model $model
+                 */
+                foreach ($models as $model) {
+
+                    $payload['relatedResource']['fields'][] = $fields->hydrate($model, $this->request)->toArray();
+
+                }
+
+            }
+
+        }
+
+        return $payload;
+
     }
 
     public function jsonSerialize(): array

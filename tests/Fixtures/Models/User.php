@@ -15,6 +15,7 @@ use Illuminate\Support\Collection;
  * @property string email
  * @property Collection $articles
  * @property Phone|null $phone
+ * @property Collection $roles
  */
 class User extends AbstractModel
 {
@@ -32,6 +33,11 @@ class User extends AbstractModel
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class)->withPivot('extra');
+    }
+
+    public function rolesWithCustomAccessor(): BelongsToMany
+    {
+        return $this->roles()->as('customAccessor')->using(RoleUser::class);
     }
 
 }

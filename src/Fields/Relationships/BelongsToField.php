@@ -9,6 +9,7 @@ use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -93,11 +94,16 @@ class BelongsToField extends Relationship
         return $this->resolveRelatedResource();
     }
 
-    protected function getRelatedModelInstance(): ?Model
+    /**
+     * @return Model|Collection|null
+     */
+    protected function getRelatedModelInstance()
     {
 
         if ($this->model === null) {
+
             return null;
+
         }
 
         if (method_exists($this->model, $this->relationAttribute)) {
@@ -118,11 +124,7 @@ class BelongsToField extends Relationship
 
         }
 
-        throw new RuntimeException(
-            sprintf(
-                'Relation { %s } does not exist. Please setup the belongsTo relation correctly on your model.', $this->relationAttribute
-            )
-        );
+        throw new RuntimeException(sprintf('Relation { %s } does not exist.', $this->relationAttribute));
 
     }
 

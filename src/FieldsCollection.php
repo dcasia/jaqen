@@ -27,6 +27,11 @@ class FieldsCollection extends Collection
         return $this->whereInstanceOf(WithEvents::class);
     }
 
+    public function hydrate(Model $model, BaseRequest $request): self
+    {
+        return $this->map(fn(AbstractField $field) => $field->hydrateFromModel($model, $request));
+    }
+
     public function getResolvedFieldsData(Model $model, BaseRequest $request): self
     {
         return $this->map(function(AbstractField $field) use ($model, $request) {
