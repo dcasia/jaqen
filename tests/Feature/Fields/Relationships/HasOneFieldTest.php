@@ -18,6 +18,7 @@ use DigitalCreative\Dashboard\Tests\Traits\InteractionWithResponseTrait;
 use DigitalCreative\Dashboard\Tests\Traits\RelationshipRequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
+use Illuminate\Validation\ValidationException;
 
 class HasOneFieldTest extends TestCase
 {
@@ -121,6 +122,21 @@ class HasOneFieldTest extends TestCase
                 ],
             ],
         ], $response);
+
+    }
+
+    public function test_validation_works(): void
+    {
+
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields(
+                             HasOneField::make('Phone')
+                                        ->setRelatedResource(PhoneResource::class, 'fieldsWithValidation'),
+                         );
+
+        $this->expectException(ValidationException::class);
+
+        $this->storeResponse($resource, [ 'phone' => [ 'number' => 'abc' ] ]);
 
     }
 

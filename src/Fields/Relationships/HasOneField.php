@@ -8,7 +8,6 @@ use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
 use DigitalCreative\Dashboard\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -36,6 +35,8 @@ class HasOneField extends BelongsToField implements WithEvents
             $fields = $resource->filterNonUpdatableFields($resource->resolveFields($cloneRequest, $this->relatedFieldsFor))
                                ->push(new EditableField('__injected__', $foreignerKey))
                                ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($cloneRequest));
+
+            $fields->validate($cloneRequest);
 
             $model->setRelation(
                 $this->relationAttribute, $fields->store($resource, $cloneRequest)

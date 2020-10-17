@@ -24,4 +24,11 @@ class PhoneResource extends AbstractResource
         ];
     }
 
+    public function fieldsForFieldsWithValidation(): array
+    {
+        return [
+            EditableField::make('Number')->rules([ 'numeric' ]),
+        ];
+    }
+
 }
