@@ -32,11 +32,12 @@ class HasOneField extends BelongsToField implements WithEvents
 
             $cloneRequest = $this->request->duplicate($this->request->query(), $requestData);
 
-            $fields = $resource->filterNonUpdatableFields($resource->resolveFields($cloneRequest, $this->relatedFieldsFor))
+            $fields = $resource->resolveFields($cloneRequest, $this->relatedFieldsFor);
+            $fields->validate($cloneRequest);
+
+            $fields = $resource->filterNonUpdatableFields($fields)
                                ->push(new EditableField('__injected__', $foreignerKey))
                                ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($cloneRequest));
-
-            $fields->validate($cloneRequest);
 
             $model->setRelation(
                 $this->relationAttribute, $fields->store($resource, $cloneRequest)
