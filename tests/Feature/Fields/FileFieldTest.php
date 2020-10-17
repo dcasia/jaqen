@@ -5,9 +5,6 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\FileField;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\DeleteController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
@@ -54,9 +51,7 @@ class FileFieldTest extends TestCase
          */
         $user = UserModel::first();
 
-        $request = $this->updateRequest($resource, $user->id, [ 'name' => $user->name ]);
-
-        (new UpdateController())->handle($request);
+        $this->updateResponse($resource, $user->id, [ 'name' => $user->name ]);
 
         $this->assertStringEndsWith('.bin', $user->fresh()->name);
 
@@ -80,9 +75,7 @@ class FileFieldTest extends TestCase
         $this->assertStringEndsWith('.bin', $user->name);
         $storage->assertExists($user->name);
 
-        $request = $this->updateRequest($resource, $user->id, [ 'name' => null ]);
-
-        (new UpdateController())->handle($request);
+        $this->updateResponse($resource, $user->id, [ 'name' => null ]);
 
         /**
          * Ensure file got removed
@@ -109,10 +102,9 @@ class FileFieldTest extends TestCase
                              FileField::make('Name')->pruneFile(true)
                          );
 
-        $request = $this->deleteRequest($resource, [ $user->id ]);
         $storage->assertMissing($user->name);
 
-        (new DeleteController())->handle($request);
+        $this->deleteResponse($resource, [ $user->id ]);
 
         $storage->assertMissing($user->name);
         $this->assertNull($user->fresh());
@@ -129,9 +121,7 @@ class FileFieldTest extends TestCase
                                       ->pruneFile()
                          );
 
-        $request = $this->storeRequest($resource, [ 'name' => UploadedFile::fake()->image('name') ]);
-
-        (new StoreController())->handle($request);
+        $this->storeResponse($resource, [ 'name' => UploadedFile::fake()->image('name') ]);
 
         return $resource;
 

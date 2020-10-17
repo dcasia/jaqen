@@ -37,9 +37,7 @@ class BelongsToManyTest extends TestCase
                                                ->setRelatedResource(RoleResource::class),
                          );
 
-        $request = $this->fieldsRequest($resource);
-
-        $response = (new FieldsController())->fields($request)->getData(true);
+        $response = $this->fieldsResponse($resource);
 
         $this->assertEquals([
             [
@@ -83,9 +81,7 @@ class BelongsToManyTest extends TestCase
                                                }),
                          );
 
-        $request = $this->fieldsRequest($resource);
-
-        $response = (new FieldsController())->fields($request)->getData(true);
+        $response = $this->fieldsResponse($resource);
 
         $this->assertEquals([
             [
@@ -245,6 +241,7 @@ class BelongsToManyTest extends TestCase
                                                    new EditableField('Extra'),
                                                ]),
                          );
+
         $response = $this->indexResponse($resource);
 
         $expectedData = [

@@ -6,6 +6,7 @@ namespace DigitalCreative\Dashboard\Tests\Traits;
 
 use DigitalCreative\Dashboard\Http\Controllers\FieldsController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\DeleteController;
+use DigitalCreative\Dashboard\Http\Controllers\Resources\DetailController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
 use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
@@ -148,12 +149,12 @@ trait RequestTrait
 
     public function detailResponse(AbstractResource $resource, int $key, array $data = [], array $query = []): array
     {
-        return (new UpdateController())->handle($this->detailRequest($resource, $key, $data, $query))->getData(true);
+        return (new DetailController())->handle($this->detailRequest($resource, $key, $data, $query))->getData(true);
     }
 
-    public function deleteResponse(AbstractResource $resource, array $keys, array $data = [], array $query = []): array
+    public function deleteResponse(AbstractResource $resource, array $keys, array $data = [], array $query = []): void
     {
-        return (new DeleteController())->handle($this->deleteRequest($resource, $keys, $data, $query))->getData(true);
+        (new DeleteController())->handle($this->deleteRequest($resource, $keys, $data, $query));
     }
 
     public function fieldsResponse(AbstractResource $resource, array $data = [], array $query = []): array

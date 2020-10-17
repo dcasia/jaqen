@@ -7,9 +7,6 @@ namespace DigitalCreative\Dashboard\Tests\Feature;
 use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\DeleteController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
@@ -17,8 +14,8 @@ use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\InteractionWithResponseTrait;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
-use DigitalCreative\Dashboard\Traits\FieldsEvents;
 use DigitalCreative\Dashboard\Traits\EventsTrait;
+use DigitalCreative\Dashboard\Traits\FieldsEvents;
 
 class FieldEventTest extends TestCase
 {
@@ -47,9 +44,7 @@ class FieldEventTest extends TestCase
 
         });
 
-        $request = $this->storeRequest($resource, [ 'name' => 'original' ]);
-
-        (new StoreController())->handle($request);
+        $this->storeResponse($resource, [ 'name' => 'original' ]);
 
         $this->assertDatabaseHas('users', [
             'name' => 'hello world',
@@ -71,9 +66,7 @@ class FieldEventTest extends TestCase
             $this->assertInstanceOf(UserModel::class, $model);
         });
 
-        $request = $this->storeRequest($resource);
-
-        (new StoreController())->handle($request);
+        $this->storeResponse($resource);
 
     }
 
@@ -92,9 +85,7 @@ class FieldEventTest extends TestCase
             $this->assertEquals($model->getKey(), $user->getKey());
         });
 
-        $request = $this->updateRequest($resource, $user->id, [ 'name' => 'updated' ]);
-
-        (new UpdateController())->handle($request);
+        $this->updateResponse($resource, $user->id, [ 'name' => 'updated' ]);
 
     }
 
@@ -118,9 +109,7 @@ class FieldEventTest extends TestCase
 
         });
 
-        $request = $this->updateRequest($resource, $user->id, [ 'name' => 'updated' ]);
-
-        (new UpdateController())->handle($request);
+        $this->updateResponse($resource, $user->id, [ 'name' => 'updated' ]);
 
         $this->assertEquals('modified', $user->fresh()->name);
 
@@ -145,9 +134,7 @@ class FieldEventTest extends TestCase
                 $called = true;
             });
 
-        $request = $this->updateRequest($resource, UserFactory::new()->create()->id);
-
-        (new UpdateController())->handle($request);
+        $this->updateResponse($resource, UserFactory::new()->create()->id);
 
         $this->assertFalse($called);
 
@@ -178,9 +165,7 @@ class FieldEventTest extends TestCase
             $afterDelete++;
         });
 
-        $request = $this->deleteRequest($resource, $users->pluck('id')->toArray());
-
-        (new DeleteController())->handle($request);
+        $this->deleteResponse($resource, $users->pluck('id')->toArray());
 
         $this->assertEquals(5, $afterDelete);
         $this->assertEquals(5, $beforeDelete);

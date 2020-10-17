@@ -5,9 +5,6 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields\Relationships;
 
 use DigitalCreative\Dashboard\Fields\Relationships\HasOneField;
-use DigitalCreative\Dashboard\Http\Controllers\FieldsController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article as ArticleModel;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
@@ -36,9 +33,7 @@ class HasOneFieldTest extends TestCase
                              HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
                          );
 
-        $request = $this->storeRequest($resource, [ 'phone' => [ 'number' => 123456 ] ]);
-
-        $response = (new StoreController())->handle($request)->getData(true);
+        $response = $this->storeResponse($resource, [ 'phone' => [ 'number' => 123456 ] ]);
 
         $this->assertEquals(123456, data_get($response, 'phone.number'));
         $this->assertEquals(1, data_get($response, 'phone.user_id'));
@@ -57,9 +52,7 @@ class HasOneFieldTest extends TestCase
                              HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
                          );
 
-        $request = $this->indexRequest($resource);
-
-        $response = (new IndexController())->handle($request)->getData(true);
+        $response = $this->indexResponse($resource);
 
         $this->assertEquals($user->id, data_get($response, 'resources.0.key'));
         $this->assertEquals($user->phone->id, data_get($response, 'resources.0.fields.0.value'));
@@ -77,9 +70,7 @@ class HasOneFieldTest extends TestCase
                              HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
                          );
 
-        $request = $this->indexRequest($resource);
-
-        $response = (new IndexController())->handle($request)->getData(true);
+        $response = $this->indexResponse($resource);
 
         $this->assertEquals($user->id, data_get($response, 'resources.0.key'));
         $this->assertEquals(null, data_get($response, 'resources.0.fields.0.value'));
@@ -95,9 +86,7 @@ class HasOneFieldTest extends TestCase
                              HasOneField::make('User')->setRelatedResource(MinimalUserResource::class),
                          );
 
-        $request = $this->fieldsRequest($resource);
-
-        $response = (new FieldsController())->fields($request)->getData(true);
+        $response = $this->fieldsResponse($resource);
 
         $this->assertEquals([
             [

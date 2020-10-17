@@ -6,7 +6,6 @@ namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
 
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\TestCase;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
@@ -30,9 +29,7 @@ class ReadOnlyFieldTest extends TestCase
                              ReadOnlyField::make('Gender'),
                          );
 
-        $request = $this->updateRequest($resource, $user->id, [ 'name' => 'updated' ]);
-
-        (new UpdateController())->handle($request);
+        $this->updateResponse($resource, $user->id, [ 'name' => 'updated' ]);
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,

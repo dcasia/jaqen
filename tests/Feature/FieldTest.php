@@ -6,8 +6,6 @@ namespace DigitalCreative\Dashboard\Tests\Feature;
 
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
@@ -35,9 +33,7 @@ class FieldTest extends TestCase
                              (new EditableField('name'))->rulesForCreate('required')
                          );
 
-        $request = $this->storeRequest($resource, [ 'name' => null ]);
-
-        (new StoreController)->handle($request);
+        $this->storeResponse($resource, [ 'name' => null ]);
 
     }
 
@@ -53,9 +49,7 @@ class FieldTest extends TestCase
                              (new EditableField('name'))->rulesForUpdate('required')
                          );
 
-        $request = $this->updateRequest($resource, $user->id, [ 'name' => null ]);
-
-        (new UpdateController())->handle($request);
+        $this->updateResponse($resource, $user->id, [ 'name' => null ]);
 
     }
 
@@ -69,9 +63,7 @@ class FieldTest extends TestCase
                              (new EditableField('name'))->rulesForCreate('required')
                          );
 
-        $request = $this->storeRequest($resource);
-
-        (new StoreController)->handle($request);
+        $this->storeResponse($resource);
 
     }
 
@@ -88,9 +80,7 @@ class FieldTest extends TestCase
                              (new EditableField('email'))->rulesForUpdate('required')
                          );
 
-        $request = $this->updateRequest($resource, $user->id, [ 'name' => 'Test' ]);
-
-        (new UpdateController())->handle($request);
+        $this->updateResponse($resource, $user->id, [ 'name' => 'Test' ]);
 
     }
 
@@ -105,6 +95,7 @@ class FieldTest extends TestCase
                          });
 
         $request = $this->fieldsRequest($resource, [ 'fieldsFor' => 'index-listing' ]);
+        $response = $resource->resolveFields($request)->toArray();
 
         $this->assertEquals([
             [
@@ -114,7 +105,7 @@ class FieldTest extends TestCase
                 'component' => 'editable-field',
                 'additionalInformation' => null,
             ],
-        ], $resource->resolveFields($request)->toArray());
+        ], $response);
 
     }
 
@@ -137,8 +128,7 @@ class FieldTest extends TestCase
         };
 
         $request = $this->fieldsRequest($resource, [ 'fieldsFor' => 'demo' ]);
-
-        $response = $resource->resolveFields($request);
+        $response = $resource->resolveFields($request)->toArray();
 
         $this->assertEquals([
             [
@@ -148,7 +138,7 @@ class FieldTest extends TestCase
                 'component' => 'editable-field',
                 'additionalInformation' => null,
             ],
-        ], $response->toArray());
+        ], $response);
 
     }
 

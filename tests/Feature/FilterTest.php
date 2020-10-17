@@ -8,7 +8,6 @@ use DigitalCreative\Dashboard\Exceptions\FilterValidationException;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\FieldsData;
 use DigitalCreative\Dashboard\FilterCollection;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Filters\SampleFilter;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
@@ -43,13 +42,11 @@ class FilterTest extends TestCase
                          ->addDefaultFields(new EditableField('name'))
                          ->addFilters($filter);
 
-        $request = $this->indexRequest($resource, [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]);
+        $response = $this->indexResponse($resource, [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]);
 
-        $result = (new IndexController())->handle($request)->getData();
-
-        $this->assertSame($result->total, 1);
-        $this->assertEquals($user->id, data_get($result, 'resources.0.key'));
-        $this->assertEquals($user->name, data_get($result, 'resources.0.fields.0.value'));
+        $this->assertSame(data_get($response, 'total'), 1);
+        $this->assertEquals($user->id, data_get($response, 'resources.0.key'));
+        $this->assertEquals($user->name, data_get($response, 'resources.0.fields.0.value'));
 
     }
 
@@ -74,13 +71,11 @@ class FilterTest extends TestCase
 
         $resource = $this->makeResource()->addFilters($filter);
 
-        $request = $this->indexRequest(
-            $resource, [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]
-        );
-
         $this->expectException(FilterValidationException::class);
 
-        (new IndexController())->handle($request);
+        $this->indexResponse(
+            $resource, [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]
+        );
 
     }
 
@@ -116,11 +111,9 @@ class FilterTest extends TestCase
 
         $resource = $this->makeResource(UserModel::class)->addFilters($filter1, $filter2);
 
-        $request = $this->indexRequest($resource, [], [ 'filters' => $filters ]);
-
         $this->expectException(FilterValidationException::class);
 
-        (new IndexController())->handle($request);
+        $this->indexResponse($resource, [], [ 'filters' => $filters ]);
 
     }
 
@@ -169,9 +162,7 @@ class FilterTest extends TestCase
 
         $resource = $this->makeResource()->addFilters($filter);
 
-        $request = $this->indexRequest($resource, [ 'filters' => $filters ]);
-
-        (new IndexController())->handle($request);
+        $this->indexResponse($resource, [ 'filters' => $filters ]);
 
     }
 

@@ -4,15 +4,10 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields\Relationships;
 
-use DigitalCreative\Dashboard\Fields\Relationships\BelongsToField;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Fields\ReadOnlyField;
-use DigitalCreative\Dashboard\Http\Controllers\FieldsController;
+use DigitalCreative\Dashboard\Fields\Relationships\BelongsToField;
 use DigitalCreative\Dashboard\Http\Controllers\Relationships\BelongsToController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\DetailController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Repository\Repository;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
@@ -50,9 +45,7 @@ class BelongsToFieldTest extends TestCase
                                            ->setRelatedResource(MinimalUserResource::class)
                          );
 
-        $request = $this->indexRequest($resource);
-
-        $response = (new IndexController())->handle($request)->getData(true);
+        $response = $this->indexResponse($resource);
 
         $this->assertEquals($response, [
             'total' => 1,
@@ -121,9 +114,7 @@ class BelongsToFieldTest extends TestCase
                                            ->setRelatedResourceFieldsFor('test'),
                          );
 
-        $request = $this->indexRequest($resource);
-
-        $response = (new IndexController())->handle($request)->getData(true);
+        $response = $this->indexResponse($resource);
 
         $this->assertEquals(
             'custom_field_name', data_get($response, 'resources.0.fields.0.relatedResource.fields.0.attribute')
@@ -140,9 +131,9 @@ class BelongsToFieldTest extends TestCase
         $resource = $this->makeResource(ArticleModel::class)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        $request = $this->updateRequest($resource, $article->id, [ 'user_id' => $user->id ]);
+        $response = $this->updateResponse($resource, $article->id, [ 'user_id' => $user->id ]);
 
-        $this->assertTrue((new UpdateController())->handle($request)->getData(true));
+        $this->assertTrue($response);
 
         $this->assertDatabaseHas('articles', [
             'id' => $article->id,
@@ -169,9 +160,7 @@ class BelongsToFieldTest extends TestCase
                              BelongsToField::make('User'),
                          );
 
-        $request = $this->storeRequest($resource, $data);
-
-        (new StoreController())->handle($request);
+        $this->storeResponse($resource, $data);
 
         $this->assertDatabaseHas('articles', $data);
 
@@ -289,9 +278,9 @@ class BelongsToFieldTest extends TestCase
                                            ->setRelatedResource(MinimalUserResource::class),
                          );
 
-        $request = $this->detailRequest($resource, $article->id);
+        $response = $this->detailResponse($resource, $article->id);
 
-        $this->assertSame(200, (new DetailController())->handle($request)->status());
+        $this->assertIsArray($response);
 
     }
 
@@ -316,7 +305,7 @@ class BelongsToFieldTest extends TestCase
                          ->with($with)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        (new DetailController())->handle($this->detailRequest($resource, $article->id));
+        $this->detailResponse($resource, $article->id);
 
     }
 
@@ -338,9 +327,7 @@ class BelongsToFieldTest extends TestCase
                          ->with($with)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        (new DetailController())->handle(
-            $this->detailRequest($resource, $article->id)
-        );
+        $this->detailResponse($resource, $article->id);
 
     }
 
@@ -352,9 +339,7 @@ class BelongsToFieldTest extends TestCase
                              BelongsToField::make('User')->setRelatedResource(MinimalUserResource::class),
                          );
 
-        $request = $this->fieldsRequest($resource);
-
-        $response = (new FieldsController())->fields($request)->getData(true);
+        $response = $this->fieldsResponse($resource);
 
         $this->assertEquals([
             [
