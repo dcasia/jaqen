@@ -18,6 +18,7 @@ use DigitalCreative\Dashboard\Tests\Traits\RelationshipRequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
 use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
 use Illuminate\Database\Eloquent\RelationNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 class BelongsToManyTest extends TestCase
 {
@@ -123,6 +124,66 @@ class BelongsToManyTest extends TestCase
 
         $this->assertDatabaseHas('role_user', [ 'user_id' => 1, 'role_id' => 1 ]);
         $this->assertDatabaseHas('role_user', [ 'user_id' => 1, 'role_id' => 2 ]);
+
+    }
+
+    public function test_validation_works(): void
+    {
+
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields(
+                             BelongsToManyField::make('Roles')
+                                               ->setRelatedResource(RoleResource::class)
+                                               ->rules('required'),
+                         );
+
+        $this->expectException(ValidationException::class);
+
+        $this->storeResponse($resource, [ 'roles' => null ]);
+
+    }
+
+    public function test_related_resource_validation_works(): void
+    {
+
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields(
+                             BelongsToManyField::make('Roles')
+                                               ->setRelatedResource(RoleResource::class)
+                                               ->setRelatedResourceFieldsFor('fieldsWithValidation'),
+                         );
+
+        $this->expectException(ValidationException::class);
+
+        $this->storeResponse($resource, [
+            'roles' => [
+                [ 'fields' => [ 'name' => null ] ],
+                [ 'fields' => [ 'name' => 'Programmer' ] ],
+            ],
+        ]);
+
+    }
+
+    public function test_validation_works_on_pivot_fields(): void
+    {
+
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields(
+                             BelongsToManyField::make('Roles')
+                                               ->setRelatedResource(RoleResource::class)
+                                               ->setPivotFields([
+                                                   EditableField::make('Extra')->rules('required'),
+                                               ]),
+                         );
+
+        $this->expectException(ValidationException::class);
+
+        $this->storeResponse($resource, [
+            'roles' => [
+                [ 'fields' => [ 'name' => 'Admin' ] ],
+                [ 'fields' => [ 'name' => 'Programmer' ] ],
+            ],
+        ]);
 
     }
 

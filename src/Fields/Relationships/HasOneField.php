@@ -38,7 +38,7 @@ class HasOneField extends BelongsToField implements WithEvents
                                ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($cloneRequest));
 
             $model->setRelation(
-                $this->relationAttribute, $fields->persist($resource, $cloneRequest)
+                $this->relationAttribute, $fields->store($resource, $cloneRequest)
             );
 
         });

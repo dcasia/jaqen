@@ -40,6 +40,14 @@ class FieldsCollection extends Collection
         });
     }
 
+    public function validate(BaseRequest $request): array
+    {
+        $rules = $this->mapWithKeys(fn(AbstractField $field) => [ $field->attribute => $field->resolveRules($request) ])
+                      ->toArray();
+
+        return $request->validate($rules);
+    }
+
     public function update(AbstractResource $resource, Model $model, BaseRequest $request): bool
     {
 
@@ -77,7 +85,7 @@ class FieldsCollection extends Collection
 
     }
 
-    public function persist(AbstractResource $resource, BaseRequest $request)
+    public function store(AbstractResource $resource, BaseRequest $request)
     {
 
         $data = $this->resolveData();

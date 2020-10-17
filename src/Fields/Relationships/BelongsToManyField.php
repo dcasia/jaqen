@@ -95,6 +95,8 @@ class BelongsToManyField extends BelongsToField implements WithEvents
     {
         $pivotRequest = $request->duplicate($request->query(), $pivotFieldsData);
 
+        $pivotFields->validate($pivotRequest);
+
         return $pivotFields->map(fn(AbstractField $field) => $field->resolveValueFromRequest($pivotRequest))
                            ->resolveData();
     }
@@ -121,10 +123,13 @@ class BelongsToManyField extends BelongsToField implements WithEvents
              */
             $fieldsRequest = $request->duplicate($request->query(), $fieldsData);
 
-            $fields = $resource->filterNonUpdatableFields($resource->resolveFields($fieldsRequest, $this->relatedFieldsFor))
+            $fields = $resource->resolveFields($fieldsRequest, $this->relatedFieldsFor);
+            $fields->validate($fieldsRequest);
+
+            $fields = $resource->filterNonUpdatableFields($fields)
                                ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($fieldsRequest));
 
-            $models[] = $fields->persist($resource, $fieldsRequest);
+            $models[] = $fields->store($resource, $fieldsRequest);
 
             /**
              * Resolve Pivot Attributes

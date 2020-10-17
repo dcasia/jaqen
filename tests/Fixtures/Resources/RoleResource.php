@@ -24,4 +24,11 @@ class RoleResource extends AbstractResource
         ];
     }
 
+    public function fieldsForFieldsWithValidation(): array
+    {
+        return [
+            EditableField::make('Name')->rules('required'),
+        ];
+    }
+
 }
