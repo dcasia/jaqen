@@ -322,4 +322,54 @@ class BelongsToManyTest extends TestCase
 
     }
 
+    public function test_it_can_update_related_resources(): void
+    {
+
+        $user = UserFactory::new()
+                           ->hasAttached(RoleFactory::new()->state([ 'name' => 'admin-1' ]), [ 'extra' => 'sample-1' ])
+                           ->hasAttached(RoleFactory::new()->state([ 'name' => 'admin-2' ]), [ 'extra' => 'sample-2' ])
+                           ->create();
+
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields(
+                             BelongsToManyField::make('Roles')
+                                               ->setRelatedResource(RoleResource::class)
+                                               ->setPivotFields([
+                                                   new EditableField('Extra'),
+                                               ]),
+                         );
+
+        $updatedData = [
+            'roles' => [
+                [
+                    'key' => 1,
+                    'fields' => [
+                        'name' => 'admin-a',
+                    ],
+                    'pivotFields' => [
+                        'extra' => 'sample-a',
+                    ],
+                ],
+                [
+                    'key' => 2,
+                    'fields' => [
+                        'name' => 'admin-b',
+                    ],
+                    'pivotFields' => [
+                        'extra' => 'sample-b',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->assertTrue($this->updateResponse($resource, $user->id, $updatedData));
+
+        $this->assertDatabaseHas('roles', [ 'id' => 1, 'name' => 'admin-a' ]);
+        $this->assertDatabaseHas('roles', [ 'id' => 2, 'name' => 'admin-b' ]);
+
+        $this->assertDatabaseHas('role_user', [ 'user_id' => 1, 'role_id' => 1, 'extra' => 'sample-a' ]);
+        $this->assertDatabaseHas('role_user', [ 'user_id' => 1, 'role_id' => 2, 'extra' => 'sample-b' ]);
+
+    }
+
 }

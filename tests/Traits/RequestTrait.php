@@ -141,7 +141,7 @@ trait RequestTrait
         return (new StoreController())->handle($this->storeRequest($resource, $data, $query))->getData(true);
     }
 
-    public function updateResponse(AbstractResource $resource, int $key, array $data = [], array $query = []): array
+    public function updateResponse(AbstractResource $resource, int $key, array $data = [], array $query = []): bool
     {
         return (new UpdateController())->handle($this->updateRequest($resource, $key, $data, $query))->getData(true);
     }

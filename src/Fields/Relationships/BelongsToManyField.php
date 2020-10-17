@@ -29,6 +29,14 @@ class BelongsToManyField extends BelongsToField implements WithEvents
     {
         parent::__construct($label, $relation, $relatedResource);
 
+        $this->afterUpdate(function(Model $model) {
+
+            $resource = $this->getRelatedResource();
+
+            $this->updateRelatedModels($resource, $model, $this->request);
+
+        });
+
         $this->afterCreate(function(Model $model) {
 
             $resource = $this->getRelatedResource();
@@ -42,7 +50,53 @@ class BelongsToManyField extends BelongsToField implements WithEvents
             $model->setRelation($this->relationAttribute, collect($models));
 
         });
+    }
 
+    private function updateRelatedModels(AbstractResource $resource, Model $model, BaseRequest $request): void
+    {
+
+        $relatedData = $request->input($this->relationAttribute, []);
+        $pivotFields = $resource->filterNonUpdatableFields($this->resolvePivotFields());
+
+        /**
+         * Create the related models
+         */
+        foreach ($relatedData as $data) {
+
+            $key = (string) data_get($data, 'key');
+            $fieldsData = data_get($data, 'fields', []);
+            $pivotFieldsData = data_get($data, 'pivotFields', []);
+
+            /**
+             * Store Model
+             */
+            $fieldsRequest = $request->duplicate($request->query(), $fieldsData);
+
+            $fields = $resource->filterNonUpdatableFields($resource->resolveFields($fieldsRequest, $this->relatedFieldsFor))
+                               ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($fieldsRequest));
+
+            $relatedModel = $resource->repository()->findByKey($key);
+
+            $fields->update($resource, $relatedModel, $fieldsRequest);
+
+            /**
+             * Resolve Pivot Attributes
+             */
+            $pivotAttributes = $this->getPivotAttributeData($pivotFields, $request, $pivotFieldsData);
+
+            $resource->repository()
+                     ->updatePivot($this->getRelationInstance($model), $key, $pivotAttributes);
+
+        }
+
+    }
+
+    private function getPivotAttributeData(FieldsCollection $pivotFields, BaseRequest $request, array $pivotFieldsData): array
+    {
+        $pivotRequest = $request->duplicate($request->query(), $pivotFieldsData);
+
+        return $pivotFields->map(fn(AbstractField $field) => $field->resolveValueFromRequest($pivotRequest))
+                           ->resolveData();
     }
 
     private function createRelatedModels(AbstractResource $resource, BaseRequest $request): array
@@ -59,8 +113,8 @@ class BelongsToManyField extends BelongsToField implements WithEvents
          */
         foreach ($relatedData as $data) {
 
-            $fieldsData = data_get($data, 'fields');
-            $pivotFieldsData = data_get($data, 'pivotFields');
+            $fieldsData = data_get($data, 'fields', []);
+            $pivotFieldsData = data_get($data, 'pivotFields', []);
 
             /**
              * Store Model
@@ -75,10 +129,7 @@ class BelongsToManyField extends BelongsToField implements WithEvents
             /**
              * Resolve Pivot Attributes
              */
-            $pivotRequest = $request->duplicate($request->query(), $pivotFieldsData);
-
-            $pivotAttributes[] = $pivotFields->map(fn(AbstractField $field) => $field->resolveValueFromRequest($pivotRequest))
-                                             ->resolveData();
+            $pivotAttributes[] = $this->getPivotAttributeData($pivotFields, $request, $pivotFieldsData);
 
         }
 

@@ -48,6 +48,11 @@ class Repository implements RepositoryInterface
         $relation->saveMany($models, $pivotAttributes);
     }
 
+    public function updatePivot(BelongsToMany $relation, string $key, array $pivotAttributes = []): void
+    {
+        $relation->updateExistingPivot($key, $pivotAttributes);
+    }
+
     public function delete(Model $model): bool
     {
         return (bool) $model->delete();
