@@ -52,6 +52,7 @@ class BelongsToManyTest extends TestCase
                     'name' => 'Role Resource',
                     'label' => 'Role Resources',
                     'uriKey' => 'role-resources',
+                    'pivotFields' => [],
                     'fields' => [
                         [
                             'label' => 'Name',
@@ -61,10 +62,6 @@ class BelongsToManyTest extends TestCase
                             'additionalInformation' => null,
                         ],
                     ],
-                ],
-                'relatedResourcePivot' => [
-                    'attribute' => 'rolesPivot',
-                    'fields' => [],
                 ],
             ],
         ], $response);
@@ -90,17 +87,14 @@ class BelongsToManyTest extends TestCase
         $response = (new FieldsController())->fields($request)->getData(true);
 
         $this->assertEquals([
-            'attribute' => 'rolesPivot',
-            'fields' => [
-                [
-                    'label' => 'Hello World',
-                    'attribute' => 'hello_world',
-                    'value' => null,
-                    'component' => 'editable-field',
-                    'additionalInformation' => null,
-                ],
+            [
+                'label' => 'Hello World',
+                'attribute' => 'hello_world',
+                'value' => null,
+                'component' => 'editable-field',
+                'additionalInformation' => null,
             ],
-        ], $response[0]['relatedResourcePivot']);
+        ], data_get($response, '0.relatedResource.pivotFields'));
 
     }
 
@@ -114,8 +108,8 @@ class BelongsToManyTest extends TestCase
 
         $response = $this->storeResponse($resource, [
             'roles' => [
-                [ 'name' => 'Admin' ],
-                [ 'name' => 'Programmer' ],
+                [ 'fields' => [ 'name' => 'Admin' ] ],
+                [ 'fields' => [ 'name' => 'Programmer' ] ],
             ],
         ]);
 
@@ -145,13 +139,15 @@ class BelongsToManyTest extends TestCase
                          );
 
         $response = $this->storeResponse($resource, [
-            'rolesPivot' => [
-                [ 'extra' => 'sample' ],
-                [],
-            ],
             'roles' => [
-                [ 'name' => 'Admin' ],
-                [ 'name' => 'Programmer' ],
+                [
+                    'fields' => [ 'name' => 'Admin' ],
+                    'pivotFields' => [ 'extra' => 'sample' ],
+                ],
+                [
+                    'fields' => [ 'name' => 'Programmer' ],
+                    'pivotFields' => [],
+                ],
             ],
         ]);
 
@@ -165,40 +161,6 @@ class BelongsToManyTest extends TestCase
 
         $this->assertDatabaseHas('role_user', [ 'user_id' => 1, 'role_id' => 1, 'extra' => 'sample' ]);
         $this->assertDatabaseHas('role_user', [ 'user_id' => 1, 'role_id' => 2, 'extra' => null ]);
-
-    }
-
-    public function test_an_error_is_thrown_when_pivot_attributes_and_data_length_differs(): void
-    {
-
-        $resource = $this->makeResource(UserModel::class)
-                         ->addDefaultFields(
-                             BelongsToManyField::make('Roles')
-                                               ->setRelatedResource(RoleResource::class)
-                                               ->setPivotFields([ new EditableField('Extra') ]),
-                         );
-
-        $this->expectExceptionMessage('Invalid attributes length.');
-
-        $this->storeResponse($resource, [
-            'rolesPivot' => [
-                [ 'extra' => 'sample' ],
-            ],
-            'roles' => [
-                [ 'name' => 'Admin' ],
-                [ 'name' => 'Programmer' ],
-            ],
-        ]);
-
-        $this->storeResponse($resource, [
-            'rolesPivot' => [
-                [ 'extra' => 'sample' ],
-                [ 'extra' => 'sample' ],
-            ],
-            'roles' => [
-                [ 'name' => 'Programmer' ],
-            ],
-        ]);
 
     }
 
@@ -238,46 +200,47 @@ class BelongsToManyTest extends TestCase
                         'name' => 'Role Resource',
                         'label' => 'Role Resources',
                         'uriKey' => 'role-resources',
-                        'fields' => [
+                        'resources' => [
                             [
-                                [
-                                    'label' => 'Name',
-                                    'attribute' => 'name',
-                                    'value' => 'admin-1',
-                                    'component' => 'editable-field',
-                                    'additionalInformation' => null,
+                                'key' => 1,
+                                'fields' => [
+                                    [
+                                        'label' => 'Name',
+                                        'attribute' => 'name',
+                                        'value' => 'admin-1',
+                                        'component' => 'editable-field',
+                                        'additionalInformation' => null,
+                                    ],
+                                ],
+                                'pivotFields' => [
+                                    [
+                                        'label' => 'Extra',
+                                        'attribute' => 'extra',
+                                        'value' => 'sample-1',
+                                        'component' => 'editable-field',
+                                        'additionalInformation' => null,
+                                    ],
                                 ],
                             ],
                             [
-                                [
-                                    'label' => 'Name',
-                                    'attribute' => 'name',
-                                    'value' => 'admin-2',
-                                    'component' => 'editable-field',
-                                    'additionalInformation' => null,
+                                'key' => 2,
+                                'fields' => [
+                                    [
+                                        'label' => 'Name',
+                                        'attribute' => 'name',
+                                        'value' => 'admin-2',
+                                        'component' => 'editable-field',
+                                        'additionalInformation' => null,
+                                    ],
                                 ],
-                            ],
-                        ],
-                    ],
-                    'relatedResourcePivot' => [
-                        'attribute' => 'rolesPivot',
-                        'fields' => [
-                            [
-                                [
-                                    'label' => 'Extra',
-                                    'attribute' => 'extra',
-                                    'value' => 'sample-1',
-                                    'component' => 'editable-field',
-                                    'additionalInformation' => null,
-                                ],
-                            ],
-                            [
-                                [
-                                    'label' => 'Extra',
-                                    'attribute' => 'extra',
-                                    'value' => 'sample-2',
-                                    'component' => 'editable-field',
-                                    'additionalInformation' => null,
+                                'pivotFields' => [
+                                    [
+                                        'label' => 'Extra',
+                                        'attribute' => 'extra',
+                                        'value' => 'sample-2',
+                                        'component' => 'editable-field',
+                                        'additionalInformation' => null,
+                                    ],
                                 ],
                             ],
                         ],
@@ -288,11 +251,8 @@ class BelongsToManyTest extends TestCase
 
         $this->assertEquals($expectedData, data_get($response, 'resources.0'));
 
-        $this->assertEquals('user', data_get($response, 'resources.1.fields.0.relatedResource.fields.0.0.value'));
-        $this->assertNull(data_get($response, 'resources.1.fields.0.relatedResource.fields.0.1.value'));
-
-        $this->assertEquals('test', data_get($response, 'resources.1.fields.0.relatedResourcePivot.fields.0.0.value'));
-        $this->assertNull(data_get($response, 'resources.1.fields.0.relatedResourcePivot.fields.0.1.value'));
+        $this->assertEquals('user', data_get($response, 'resources.1.fields.0.relatedResource.resources.0.fields.0.value'));
+        $this->assertEquals('test', data_get($response, 'resources.1.fields.0.relatedResource.resources.0.pivotFields.0.value'));
 
     }
 
@@ -313,21 +273,16 @@ class BelongsToManyTest extends TestCase
         $response = $this->indexResponse($resource);
 
         $expectedData = [
-            'attribute' => 'rolesWithCustomAccessorPivot',
-            'fields' => [
-                [
-                    [
-                        'label' => 'Extra',
-                        'attribute' => 'extra',
-                        'value' => 'sample-1',
-                        'component' => 'editable-field',
-                        'additionalInformation' => null,
-                    ],
-                ],
+            [
+                'label' => 'Extra',
+                'attribute' => 'extra',
+                'value' => 'sample-1',
+                'component' => 'editable-field',
+                'additionalInformation' => null,
             ],
         ];
 
-        $this->assertEquals($expectedData, data_get($response, 'resources.0.fields.0.relatedResourcePivot'));
+        $this->assertEquals($expectedData, data_get($response, 'resources.0.fields.0.relatedResource.resources.0.pivotFields'));
 
     }
 

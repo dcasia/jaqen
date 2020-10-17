@@ -9,7 +9,6 @@ use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\FieldsCollection;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
 use DigitalCreative\Dashboard\Resources\AbstractResource;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
 use DigitalCreative\Dashboard\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -34,18 +33,7 @@ class BelongsToManyField extends BelongsToField implements WithEvents
 
             $resource = $this->getRelatedResource();
 
-            $models = $this->createRelatedModels($resource, $this->request);
-            $pivotAttributes = $this->getPivotAttributes($resource, $this->request);
-
-            /**
-             * @todo run this check before creating the models above by using the request itself
-             * as this data can be assumed by just looking into the request data itself
-             */
-            if ($this->usePivot() && count($models) !== count($pivotAttributes)) {
-
-                throw new RuntimeException('Invalid attributes length.');
-
-            }
+            [ $models, $pivotAttributes ] = $this->createRelatedModels($resource, $this->request);
 
             $resource->repository()->saveMany(
                 $this->getRelationInstance($model), $models, $pivotAttributes
@@ -57,56 +45,44 @@ class BelongsToManyField extends BelongsToField implements WithEvents
 
     }
 
-    private function usePivot(): bool
-    {
-        return $this->pivotFields !== null;
-    }
-
-    private function getPivotAttributes(AbstractResource $resource, BaseRequest $request): array
-    {
-
-        $pivotAttributes = [];
-        $relatedPivotData = $request->input($this->getRelatedPivotAttribute(), []);
-
-        /**
-         * Attach all related models to resource
-         */
-        $pivotFields = $resource->filterNonUpdatableFields($this->resolvePivotFields());
-
-        foreach ($relatedPivotData as $data) {
-
-            $cloneRequest = $request->duplicate($request->query(), $data);
-
-            $pivotAttributes[] = $pivotFields->map(fn(AbstractField $field) => $field->resolveValueFromRequest($cloneRequest))
-                                             ->resolveData();
-
-        }
-
-        return $pivotAttributes;
-
-    }
-
     private function createRelatedModels(AbstractResource $resource, BaseRequest $request): array
     {
 
         $models = [];
+        $pivotAttributes = [];
+
         $relatedData = $request->input($this->relationAttribute, []);
+        $pivotFields = $resource->filterNonUpdatableFields($this->resolvePivotFields());
 
         /**
          * Create the related models
          */
         foreach ($relatedData as $data) {
 
-            $cloneRequest = $request->duplicate($request->query(), $data);
+            $fieldsData = data_get($data, 'fields');
+            $pivotFieldsData = data_get($data, 'pivotFields');
 
-            $fields = $resource->filterNonUpdatableFields($resource->resolveFields($cloneRequest, $this->relatedFieldsFor))
-                               ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($cloneRequest));
+            /**
+             * Store Model
+             */
+            $fieldsRequest = $request->duplicate($request->query(), $fieldsData);
 
-            $models[] = $fields->persist($resource, $cloneRequest);
+            $fields = $resource->filterNonUpdatableFields($resource->resolveFields($fieldsRequest, $this->relatedFieldsFor))
+                               ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($fieldsRequest));
+
+            $models[] = $fields->persist($resource, $fieldsRequest);
+
+            /**
+             * Resolve Pivot Attributes
+             */
+            $pivotRequest = $request->duplicate($request->query(), $pivotFieldsData);
+
+            $pivotAttributes[] = $pivotFields->map(fn(AbstractField $field) => $field->resolveValueFromRequest($pivotRequest))
+                                             ->resolveData();
 
         }
 
-        return $models;
+        return [ $models, $pivotAttributes ];
 
     }
 
@@ -147,35 +123,13 @@ class BelongsToManyField extends BelongsToField implements WithEvents
         return $this;
     }
 
-    private function getRelatedResourcePivotData(): array
+    private function resolveRelatedPivotFieldsData(FieldsCollection $pivotFields, Model $model): FieldsCollection
     {
-        return [
-            'attribute' => $this->getRelatedPivotAttribute(),
-            'fields' => $this->resolvePivotFields()
-                             ->when($this->getRelatedModelInstance(), function(FieldsCollection $pivotFields, Collection $models) {
-                                 return $this->resolveRelatedPivotFieldsData($pivotFields, $models);
-                             }),
-        ];
-    }
-
-    private function resolveRelatedPivotFieldsData(FieldsCollection $pivotFields, Collection $models): array
-    {
-        $data = [];
-
         $pivotAccessor = $this->getPivotAccessor();
 
-        /**
-         * @var User $model
-         */
-        foreach ($models as $model) {
-
-            $data[] = $pivotFields->getResolvedFieldsData(
-                $model->getRelation($pivotAccessor), $this->request
-            );
-
-        }
-
-        return $data;
+        return $pivotFields->getResolvedFieldsData(
+            $model->getRelation($pivotAccessor), $this->request
+        );
     }
 
     protected function getRelatedResourcePayload(): array
@@ -187,33 +141,39 @@ class BelongsToManyField extends BelongsToField implements WithEvents
 
             $payload['relatedResource'] = $relatedResource->getDescriptor();
 
+            $fields = $relatedResource->resolveFields($this->request, $this->relatedFieldsFor);
+            $pivotFields = $this->resolvePivotFields();
+
+            if ($this->request->isSchemaFetching()) {
+
+                $payload['relatedResource']['fields'] = $fields;
+                $payload['relatedResource']['pivotFields'] = $pivotFields;
+
+                return $payload;
+
+            }
+
             /**
              * @var Collection $models
              */
             $models = $this->getRelatedModelInstance();
 
-            $fields = $relatedResource->resolveFields($this->request, $this->relatedFieldsFor);
+            if (!$models instanceof Collection) {
 
-            if (is_null($models)) {
+                throw new RuntimeException('Invalid relationship type.');
 
-                $payload['relatedResource']['fields'] = $fields;
+            }
 
-            } else {
+            /**
+             * @var Model $model
+             */
+            foreach ($models as $model) {
 
-                if (!$models instanceof Collection) {
-
-                    throw new RuntimeException('Invalid relationship type.');
-
-                }
-
-                /**
-                 * @var Model $model
-                 */
-                foreach ($models as $model) {
-
-                    $payload['relatedResource']['fields'][] = $fields->hydrate($model, $this->request)->toArray();
-
-                }
+                $payload['relatedResource']['resources'][] = [
+                    'key' => $model->getKey(),
+                    'fields' => $fields->hydrate($model, $this->request)->toArray(),
+                    'pivotFields' => $this->resolveRelatedPivotFieldsData($pivotFields, $model),
+                ];
 
             }
 
@@ -221,11 +181,6 @@ class BelongsToManyField extends BelongsToField implements WithEvents
 
         return $payload;
 
-    }
-
-    public function jsonSerialize(): array
-    {
-        return array_merge(parent::jsonSerialize(), [ 'relatedResourcePivot' => $this->getRelatedResourcePivotData() ]);
     }
 
 }
