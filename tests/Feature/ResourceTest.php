@@ -111,7 +111,7 @@ class ResourceTest extends TestCase
 
         $response = (new UpdateController())->handle($request);
 
-        $this->assertTrue($response);
+        $this->assertTrue($response->getData(true));
     }
 
 }

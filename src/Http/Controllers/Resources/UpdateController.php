@@ -4,17 +4,16 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Http\Controllers\Resources;
 
-use DigitalCreative\Dashboard\Concerns\WithCustomUpdate;
-use DigitalCreative\Dashboard\Concerns\WithEvents;
 use DigitalCreative\Dashboard\Fields\AbstractField;
+use DigitalCreative\Dashboard\FieldsCollection;
 use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Collection;
 
 class UpdateController extends Controller
 {
 
-    public function handle(UpdateResourceRequest $request): bool
+    public function handle(UpdateResourceRequest $request): JsonResponse
     {
 
         $resource = $request->resourceInstance();
@@ -22,7 +21,7 @@ class UpdateController extends Controller
         /**
          * Validate all fields and throw validation exception in case of invalid data
          *
-         * @var $fields Collection
+         * @var $fields FieldsCollection
          * @var $validatedData array
          */
         [ $fields, $validatedData ] = $resource->resolveNonUpdatableValidatedFields($request);
@@ -43,39 +42,7 @@ class UpdateController extends Controller
                 return $field->isRequired($request) || $field->isDirty();
             });
 
-        $data = $fields->pluck('value', 'attribute')->toArray();
-
-        /**
-         * Events
-         * Before Update
-         */
-        $fieldsWithEvents = $fields->whereInstanceOf(WithEvents::class);
-        $fieldsWithEvents->each(function(WithEvents $field) use ($model, &$data) {
-            $data = $field->runBeforeUpdate($model, $data);
-        });
-
-        $data = $resource->runBeforeUpdate($model, $data);
-
-        if ($resource instanceof WithCustomUpdate) {
-
-            /**
-             * @todo find a better method name for WithCustomUpdate methods
-             */
-            $response = $resource->updateResource($model, $data, $request);
-
-        } else {
-
-            $response = $resource->repository()->update($model, $data);
-
-        }
-
-        /**
-         * After Update
-         */
-        $fieldsWithEvents->each(fn(WithEvents $field) => $field->runAfterUpdate($model));
-        $resource->runAfterUpdate($model);
-
-        return $response;
+        return response()->json($fields->update($resource, $model, $request), 200);
 
     }
 

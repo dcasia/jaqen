@@ -142,7 +142,7 @@ class BelongsToFieldTest extends TestCase
 
         $request = $this->updateRequest($resource, $article->id, [ 'user_id' => $user->id ]);
 
-        $this->assertTrue((new UpdateController())->handle($request));
+        $this->assertTrue((new UpdateController())->handle($request)->getData(true));
 
         $this->assertDatabaseHas('articles', [
             'id' => $article->id,
