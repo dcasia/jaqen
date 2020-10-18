@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Dashboard\Fields\Relationships;
 
 use DigitalCreative\Dashboard\Concerns\WithEvents;
+use DigitalCreative\Dashboard\Exceptions\BelongsToManyException;
 use DigitalCreative\Dashboard\Fields\AbstractField;
 use DigitalCreative\Dashboard\FieldsCollection;
 use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
@@ -13,6 +14,7 @@ use DigitalCreative\Dashboard\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use RuntimeException;
 
 class BelongsToManyField extends BelongsToField implements WithEvents
@@ -52,6 +54,12 @@ class BelongsToManyField extends BelongsToField implements WithEvents
         });
     }
 
+    /**
+     * @param AbstractResource $resource
+     * @param Model $model
+     * @param BaseRequest $request
+     * @throws BelongsToManyException
+     */
     private function updateRelatedModels(AbstractResource $resource, Model $model, BaseRequest $request): void
     {
 
@@ -64,16 +72,11 @@ class BelongsToManyField extends BelongsToField implements WithEvents
         foreach ($relatedData as $data) {
 
             $key = (string) data_get($data, 'key');
-            $fieldsData = data_get($data, 'fields', []);
-            $pivotFieldsData = data_get($data, 'pivotFields', []);
 
             /**
              * Store Model
              */
-            $fieldsRequest = $request->duplicate($request->query(), $fieldsData);
-
-            $fields = $resource->filterNonUpdatableFields($resource->resolveFields($fieldsRequest, $this->relatedFieldsFor))
-                               ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($fieldsRequest));
+            [ $fields, $fieldsRequest, $pivotRequest ] = $this->processFields($request, $resource, $data, $pivotFields);
 
             $relatedModel = $resource->repository()->findByKey($key);
 
@@ -82,7 +85,7 @@ class BelongsToManyField extends BelongsToField implements WithEvents
             /**
              * Resolve Pivot Attributes
              */
-            $pivotAttributes = $this->getPivotAttributeData($pivotFields, $request, $pivotFieldsData);
+            $pivotAttributes = $this->getPivotAttributeData($pivotFields, $pivotRequest);
 
             $resource->repository()
                      ->updatePivot($this->getRelationInstance($model), $key, $pivotAttributes);
@@ -91,16 +94,23 @@ class BelongsToManyField extends BelongsToField implements WithEvents
 
     }
 
-    private function getPivotAttributeData(FieldsCollection $pivotFields, BaseRequest $request, array $pivotFieldsData): array
+    /**
+     * @param FieldsCollection $pivotFields
+     * @param BaseRequest $request
+     * @return array
+     */
+    private function getPivotAttributeData(FieldsCollection $pivotFields, BaseRequest $request): array
     {
-        $pivotRequest = $request->duplicate($request->query(), $pivotFieldsData);
-
-        $pivotFields->validate($pivotRequest);
-
-        return $pivotFields->map(fn(AbstractField $field) => $field->resolveValueFromRequest($pivotRequest))
+        return $pivotFields->map(fn(AbstractField $field) => $field->resolveValueFromRequest($request))
                            ->resolveData();
     }
 
+    /**
+     * @param AbstractResource $resource
+     * @param BaseRequest $request
+     * @return array[]
+     * @throws BelongsToManyException
+     */
     private function createRelatedModels(AbstractResource $resource, BaseRequest $request): array
     {
 
@@ -115,30 +125,93 @@ class BelongsToManyField extends BelongsToField implements WithEvents
          */
         foreach ($relatedData as $data) {
 
-            $fieldsData = data_get($data, 'fields', []);
-            $pivotFieldsData = data_get($data, 'pivotFields', []);
-
             /**
              * Store Model
              */
-            $fieldsRequest = $request->duplicate($request->query(), $fieldsData);
-
-            $fields = $resource->resolveFields($fieldsRequest, $this->relatedFieldsFor);
-            $fields->validate($fieldsRequest);
-
-            $fields = $resource->filterNonUpdatableFields($fields)
-                               ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($fieldsRequest));
+            [ $fields, $fieldsRequest, $pivotRequest ] = $this->processFields($request, $resource, $data, $pivotFields);
 
             $models[] = $fields->store($resource, $fieldsRequest);
 
             /**
              * Resolve Pivot Attributes
              */
-            $pivotAttributes[] = $this->getPivotAttributeData($pivotFields, $request, $pivotFieldsData);
+            $pivotAttributes[] = $this->getPivotAttributeData($pivotFields, $pivotRequest);
 
         }
 
         return [ $models, $pivotAttributes ];
+
+    }
+
+    /**
+     * @param BaseRequest $request
+     * @param AbstractResource $resource
+     * @param array $requestData
+     * @param FieldsCollection $pivotFields
+     *
+     * @return array
+     *
+     * @throws BelongsToManyException
+     */
+    private function processFields(BaseRequest $request, AbstractResource $resource, array $requestData, FieldsCollection $pivotFields): array
+    {
+
+        $fieldsData = data_get($requestData, 'fields', []);
+        $pivotFieldsData = data_get($requestData, 'pivotFields', []);
+
+        $fieldsRequest = $request::createFromBase($request)->replace($fieldsData);
+        $pivotRequest = $request::createFromBase($request)->replace($pivotFieldsData);
+
+        $fields = $resource->resolveFields($fieldsRequest, $this->relatedFieldsFor);
+
+        $this->validateFields([ 'fields' => [ $fields, $fieldsRequest ], 'pivotFields' => [ $pivotFields, $pivotRequest ] ]);
+
+        $fields = $resource->filterNonUpdatableFields($fields)
+                           ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($fieldsRequest));
+
+        return [
+            $fields,
+            $fieldsRequest,
+            $pivotRequest,
+        ];
+
+    }
+
+    /**
+     * @param array $fieldsGroup
+     * @throws BelongsToManyException
+     */
+    private function validateFields(array $fieldsGroup): void
+    {
+
+        $exceptions = [];
+
+        /**
+         * @var string $attributeKey
+         * @var FieldsCollection $fields
+         * @var BaseRequest $request
+         */
+        foreach ($fieldsGroup as $attributeKey => [$fields, $request]) {
+
+            try {
+
+                $fields->validate($request);
+
+            } catch (ValidationException $exception) {
+
+                $exceptions[$attributeKey] = $exception;
+
+            }
+
+        }
+
+        if (count($exceptions)) {
+
+            throw BelongsToManyException::fromValidationExceptions([
+                $this->getRelationAttribute() => $exceptions,
+            ]);
+
+        }
 
     }
 

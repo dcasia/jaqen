@@ -4,9 +4,9 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Dashboard\Tests\Feature\Fields\Relationships;
 
+use DigitalCreative\Dashboard\Exceptions\BelongsToManyException;
 use DigitalCreative\Dashboard\Fields\EditableField;
 use DigitalCreative\Dashboard\Fields\Relationships\BelongsToManyField;
-use DigitalCreative\Dashboard\Http\Controllers\FieldsController;
 use DigitalCreative\Dashboard\Tests\Factories\RoleFactory;
 use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
 use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
@@ -139,6 +139,27 @@ class BelongsToManyTest extends TestCase
 
     }
 
+    public function test_resource_count_validation_works(): void
+    {
+
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields(
+                             BelongsToManyField::make('Roles')
+                                               ->setRelatedResource(RoleResource::class)
+                                               ->rules([ 'min:3' ]),
+                         );
+
+        $this->expectException(ValidationException::class);
+
+        $this->storeResponse($resource, [
+            'roles' => [
+                [ 'fields' => [ 'name' => 1 ] ],
+                [ 'fields' => [ 'name' => 2 ] ],
+            ],
+        ]);
+
+    }
+
     public function test_related_resource_validation_works(): void
     {
 
@@ -149,7 +170,7 @@ class BelongsToManyTest extends TestCase
                                                ->setRelatedResourceFieldsFor('fieldsWithValidation'),
                          );
 
-        $this->expectException(ValidationException::class);
+        $this->expectException(BelongsToManyException::class);
 
         $this->storeResponse($resource, [
             'roles' => [
@@ -172,7 +193,7 @@ class BelongsToManyTest extends TestCase
                                                ]),
                          );
 
-        $this->expectException(ValidationException::class);
+        $this->expectException(BelongsToManyException::class);
 
         $this->storeResponse($resource, [
             'roles' => [
@@ -181,6 +202,79 @@ class BelongsToManyTest extends TestCase
             ],
         ]);
 
+    }
+
+    public function test_validation_response_is_correctly_prefixed_with_field_name(): void
+    {
+
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields(
+                             BelongsToManyField::make('Roles')
+                                               ->setRelatedResource(RoleResource::class, 'fieldsWithValidation')
+                                               ->setPivotFields([
+                                                   EditableField::make('Extra')->rules('required'),
+                                               ]),
+                         );
+
+        $response = $this->callStore($resource, [
+            'roles' => [
+                [ 'fields' => [ 'name' => null ] ],
+            ],
+        ]);
+
+        $response->assertJsonFragment([
+            'message' => 'The given data was invalid.',
+            'errors' => [
+                'roles' => [
+                    'fields' => [
+                        'name' => [ 'The name field is required.' ],
+                    ],
+                    'pivotFields' => [
+                        'extra' => [ 'The extra field is required.' ],
+                    ],
+                ],
+            ],
+        ]);
+
+    }
+
+    public function test_it_works_correctly_simulating_a_real_call(): void
+    {
+
+        $resource = $this->makeResource(UserModel::class)
+                         ->addDefaultFields(
+                             BelongsToManyField::make('Roles')
+                                               ->setRelatedResource(RoleResource::class, 'fieldsWithValidation')
+                                               ->setPivotFields([
+                                                   EditableField::make('Extra')->rules('required'),
+                                               ]),
+                         );
+
+        $response = $this->callStore($resource, [
+            'roles' => [
+                [
+                    'fields' => [ 'name' => 'admin' ],
+                    'pivotFields' => [ 'extra' => 'test' ],
+                ],
+            ],
+        ]);
+
+        $response->assertJsonFragment([
+            'roles' => [
+                [ 'id' => 1, 'name' => 'admin' ],
+            ],
+        ]);
+
+    }
+
+    public function test_file_upload_works_on_related_resource_and_on_pivot_fields(): void
+    {
+        $this->markTestIncomplete('Test if files uploads works when creating related resource, as the request is duplicated a few times maybe files attachments could get lost.');
+    }
+
+    public function test_validation_works_on_update(): void
+    {
+        $this->markTestIncomplete('Test if validation is working when updating an existing resource.');
     }
 
     public function test_storing_pivot_fields_works(): void

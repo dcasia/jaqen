@@ -13,6 +13,7 @@ use DigitalCreative\Dashboard\Resources\AbstractResource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 
 class FieldsCollection extends Collection
 {
@@ -40,6 +41,11 @@ class FieldsCollection extends Collection
         });
     }
 
+    /**
+     * @param BaseRequest $request
+     * @return array
+     * @throws ValidationException
+     */
     public function validate(BaseRequest $request): array
     {
         $rules = $this->mapWithKeys(fn(AbstractField $field) => [ $field->attribute => $field->resolveRules($request) ])
