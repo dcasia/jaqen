@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8a9c83b0b0bd7a1f3d92a91afa7e72fb",
+    "content-hash": "34ba4f70d4fe2772527a8cee5b327662",
     "packages": [
         {
             "name": "spatie/once",

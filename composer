@@ -1,1 +1,1 @@
-docker exec -it --user composer --env COMPOSER_MEMORY_LIMIT=-1 php composer $@
+docker exec -it --user composer --env COMPOSER_MEMORY_LIMIT=-1 "${PWD##*/}"_php_1 composer $@
