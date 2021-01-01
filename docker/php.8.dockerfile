@@ -1,4 +1,4 @@
-FROM php:7.4.11-fpm-alpine
+FROM php:8.0-fpm-alpine
 
 RUN apk add --no-cache curl git libzip-dev libpng-dev
 
