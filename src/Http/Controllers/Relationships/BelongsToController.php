@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Controllers\Relationships;
+namespace DigitalCreative\Jaqen\Http\Controllers\Relationships;
 
-use DigitalCreative\Dashboard\Fields\Relationships\BelongsToField;
-use DigitalCreative\Dashboard\Http\Requests\BelongsToResourceRequest;
+use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
+use DigitalCreative\Jaqen\Http\Requests\BelongsToResourceRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;

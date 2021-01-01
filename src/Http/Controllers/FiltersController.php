@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Controllers;
+namespace DigitalCreative\Jaqen\Http\Controllers;
 
-use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
+use DigitalCreative\Jaqen\Http\Requests\IndexResourceRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 

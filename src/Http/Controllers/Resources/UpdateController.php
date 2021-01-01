@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Controllers\Resources;
+namespace DigitalCreative\Jaqen\Http\Controllers\Resources;
 
-use DigitalCreative\Dashboard\Fields\AbstractField;
-use DigitalCreative\Dashboard\FieldsCollection;
-use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
+use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\FieldsCollection;
+use DigitalCreative\Jaqen\Http\Requests\UpdateResourceRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 

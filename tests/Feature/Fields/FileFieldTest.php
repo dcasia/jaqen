@@ -2,16 +2,16 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Feature\Fields;
+namespace DigitalCreative\Jaqen\Tests\Feature\Fields;
 
-use DigitalCreative\Dashboard\Fields\FileField;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
-use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
-use DigitalCreative\Dashboard\Tests\TestCase;
-use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
-use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
+use DigitalCreative\Jaqen\Fields\FileField;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Jaqen\Tests\TestCase;
+use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
+use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 

@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Fixtures\Resources;
+namespace DigitalCreative\Jaqen\Tests\Fixtures\Resources;
 
-use DigitalCreative\Dashboard\Fields\PasswordField;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
-use DigitalCreative\Dashboard\Tests\Fixtures\Filters\FilterWithRequiredFields;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Jaqen\Fields\PasswordField;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Tests\Fixtures\Filters\FilterWithRequiredFields;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Model;
 
 class ResourceWithRequiredFilters extends AbstractResource

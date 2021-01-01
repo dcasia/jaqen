@@ -2,14 +2,14 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Fields;
+namespace DigitalCreative\Jaqen\Fields;
 
-use DigitalCreative\Dashboard\AbstractFilter;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
-use DigitalCreative\Dashboard\Traits\MakeableTrait;
-use DigitalCreative\Dashboard\Traits\ResolveRulesTrait;
-use DigitalCreative\Dashboard\Traits\ResolveValueTrait;
+use DigitalCreative\Jaqen\AbstractFilter;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Traits\MakeableTrait;
+use DigitalCreative\Jaqen\Traits\ResolveRulesTrait;
+use DigitalCreative\Jaqen\Traits\ResolveValueTrait;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Str;

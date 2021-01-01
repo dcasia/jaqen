@@ -1,14 +1,14 @@
 <?php
 
-use DigitalCreative\Dashboard\Http\Controllers\FiltersController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\DeleteController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\DetailController;
-use DigitalCreative\Dashboard\Http\Controllers\FieldsController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\IndexController;
-use DigitalCreative\Dashboard\Http\Controllers\Relationships\BelongsToController;
-use DigitalCreative\Dashboard\Http\Controllers\ResourceController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\StoreController;
-use DigitalCreative\Dashboard\Http\Controllers\Resources\UpdateController;
+use DigitalCreative\Jaqen\Http\Controllers\FiltersController;
+use DigitalCreative\Jaqen\Http\Controllers\Resources\DeleteController;
+use DigitalCreative\Jaqen\Http\Controllers\Resources\DetailController;
+use DigitalCreative\Jaqen\Http\Controllers\FieldsController;
+use DigitalCreative\Jaqen\Http\Controllers\Resources\IndexController;
+use DigitalCreative\Jaqen\Http\Controllers\Relationships\BelongsToController;
+use DigitalCreative\Jaqen\Http\Controllers\ResourceController;
+use DigitalCreative\Jaqen\Http\Controllers\Resources\StoreController;
+use DigitalCreative\Jaqen\Http\Controllers\Resources\UpdateController;
 use Illuminate\Support\Facades\Route;
 
 /**

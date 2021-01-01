@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Factories;
+namespace DigitalCreative\Jaqen\Tests\Factories;
 
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;

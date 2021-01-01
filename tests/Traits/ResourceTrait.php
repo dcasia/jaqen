@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Traits;
+namespace DigitalCreative\Jaqen\Tests\Traits;
 
-use DigitalCreative\Dashboard\Dashboard;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Jaqen\Jaqen;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Model;
 
 trait ResourceTrait
@@ -38,7 +38,7 @@ trait ResourceTrait
 
     private function registerResource(AbstractResource $resource): void
     {
-        Dashboard::getInstance()->setResources([ $resource ]);
+        Jaqen::getInstance()->setResources([ $resource ]);
     }
 
 }

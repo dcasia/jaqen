@@ -2,15 +2,15 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Controllers\Resources;
+namespace DigitalCreative\Jaqen\Tests\Controllers\Resources;
 
-use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Repository\Repository;
-use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
-use DigitalCreative\Dashboard\Tests\TestCase;
-use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
-use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
+use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Repository\Repository;
+use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Jaqen\Tests\TestCase;
+use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
+use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use Mockery\MockInterface;
 
 class StoreControllerTest extends TestCase

@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Controllers;
+namespace DigitalCreative\Jaqen\Tests\Controllers;
 
-use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
-use DigitalCreative\Dashboard\Tests\TestCase;
+use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
+use DigitalCreative\Jaqen\Tests\TestCase;
 
 class ResourceControllerTest extends TestCase
 {
@@ -15,7 +15,7 @@ class ResourceControllerTest extends TestCase
 
         UserFactory::new()->create();
 
-        $response = $this->getJson('/dashboard-api/resources')
+        $response = $this->getJson('/jaqen-api/resources')
                          ->assertStatus(200);
 
         $response->assertJsonStructure([

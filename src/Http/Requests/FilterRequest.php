@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Requests;
+namespace DigitalCreative\Jaqen\Http\Requests;
 
-use DigitalCreative\Dashboard\FilterCollection;
+use DigitalCreative\Jaqen\FilterCollection;
 
 class FilterRequest extends BaseRequest
 {

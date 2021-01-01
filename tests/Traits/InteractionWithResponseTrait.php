@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Traits;
+namespace DigitalCreative\Jaqen\Tests\Traits;
 
 use JsonException;
 

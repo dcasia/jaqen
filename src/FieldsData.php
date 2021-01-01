@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard;
+namespace DigitalCreative\Jaqen;
 
 use Illuminate\Support\Fluent;
 

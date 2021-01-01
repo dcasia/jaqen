@@ -2,20 +2,20 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Feature;
+namespace DigitalCreative\Jaqen\Tests\Feature;
 
-use DigitalCreative\Dashboard\Concerns\WithCustomStore;
-use DigitalCreative\Dashboard\Concerns\WithCustomUpdate;
-use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
-use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
-use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
-use DigitalCreative\Dashboard\Tests\Fixtures\Fields\Invokable\SampleInvokable;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
-use DigitalCreative\Dashboard\Tests\TestCase;
-use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
-use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
+use DigitalCreative\Jaqen\Concerns\WithCustomStore;
+use DigitalCreative\Jaqen\Concerns\WithCustomUpdate;
+use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Http\Requests\StoreResourceRequest;
+use DigitalCreative\Jaqen\Http\Requests\UpdateResourceRequest;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
+use DigitalCreative\Jaqen\Tests\Fixtures\Fields\Invokable\SampleInvokable;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Jaqen\Tests\TestCase;
+use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
+use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class ResourceTest extends TestCase

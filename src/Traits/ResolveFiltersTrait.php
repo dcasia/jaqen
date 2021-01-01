@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Traits;
+namespace DigitalCreative\Jaqen\Traits;
 
-use DigitalCreative\Dashboard\AbstractFilter;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\AbstractFilter;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use Illuminate\Support\Collection;
 
 /**

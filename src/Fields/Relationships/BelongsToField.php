@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Fields\Relationships;
+namespace DigitalCreative\Jaqen\Fields\Relationships;
 
-use DigitalCreative\Dashboard\Fields\AbstractField;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;

@@ -2,14 +2,14 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests;
+namespace DigitalCreative\Jaqen\Tests;
 
-use DigitalCreative\Dashboard\DashboardServiceProvider;
-use DigitalCreative\Dashboard\Tests\Fixtures\Resources\Article;
-use DigitalCreative\Dashboard\Tests\Fixtures\Resources\ResourceWithRequiredFilters;
-use DigitalCreative\Dashboard\Tests\Fixtures\Resources\User;
+use DigitalCreative\Jaqen\JaqenServiceProvider;
+use DigitalCreative\Jaqen\Tests\Fixtures\Resources\Article;
+use DigitalCreative\Jaqen\Tests\Fixtures\Resources\ResourceWithRequiredFilters;
+use DigitalCreative\Jaqen\Tests\Fixtures\Resources\User;
 
-class TestServiceProvider extends DashboardServiceProvider
+class TestServiceProvider extends JaqenServiceProvider
 {
     public function resources(): array
     {

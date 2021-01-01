@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Controllers\Resources;
+namespace DigitalCreative\Jaqen\Http\Controllers\Resources;
 
-use DigitalCreative\Dashboard\Fields\AbstractField;
-use DigitalCreative\Dashboard\FilterCollection;
-use DigitalCreative\Dashboard\Http\Requests\IndexResourceRequest;
+use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\FilterCollection;
+use DigitalCreative\Jaqen\Http\Requests\IndexResourceRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;

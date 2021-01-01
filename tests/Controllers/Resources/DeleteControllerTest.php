@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Controllers\Resources;
+namespace DigitalCreative\Jaqen\Tests\Controllers\Resources;
 
-use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
-use DigitalCreative\Dashboard\Tests\TestCase;
+use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
+use DigitalCreative\Jaqen\Tests\TestCase;
 
 class DeleteControllerTest extends TestCase
 {
@@ -19,7 +19,7 @@ class DeleteControllerTest extends TestCase
 
         UserFactory::new()->create($data);
 
-        $this->deleteJson('/dashboard-api/users', [ 'ids' => [ 1 ] ])
+        $this->deleteJson('/jaqen-api/users', [ 'ids' => [ 1 ] ])
              ->assertStatus(204);
 
         $this->assertDatabaseMissing('users', $data);
@@ -31,7 +31,7 @@ class DeleteControllerTest extends TestCase
 
         UserFactory::new()->create();
 
-        $this->deleteJson('/dashboard-api/users', [ 'ids' => $users->pluck('id') ])
+        $this->deleteJson('/jaqen-api/users', [ 'ids' => $users->pluck('id') ])
              ->assertStatus(204);
 
         $this->assertDatabaseCount('users', 1);

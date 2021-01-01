@@ -2,14 +2,14 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Traits;
+namespace DigitalCreative\Jaqen\Traits;
 
-use DigitalCreative\Dashboard\Concerns\BehaveAsPanel;
-use DigitalCreative\Dashboard\Fields\AbstractField;
-use DigitalCreative\Dashboard\Fields\Relationships\BelongsToField;
-use DigitalCreative\Dashboard\FieldsCollection;
-use DigitalCreative\Dashboard\FieldsData;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Concerns\BehaveAsPanel;
+use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
+use DigitalCreative\Jaqen\FieldsCollection;
+use DigitalCreative\Jaqen\FieldsData;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use LogicException;

@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Traits;
+namespace DigitalCreative\Jaqen\Traits;
 
 use Illuminate\Support\Str;
 

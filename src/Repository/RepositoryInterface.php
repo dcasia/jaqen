@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Repository;
+namespace DigitalCreative\Jaqen\Repository;
 
-use DigitalCreative\Dashboard\FilterCollection;
+use DigitalCreative\Jaqen\FilterCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 

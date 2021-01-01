@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard;
+namespace DigitalCreative\Jaqen;
 
-use DigitalCreative\Dashboard\Exceptions\FilterValidationException;
+use DigitalCreative\Jaqen\Exceptions\FilterValidationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;

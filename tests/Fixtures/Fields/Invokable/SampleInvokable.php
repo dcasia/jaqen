@@ -1,11 +1,11 @@
 <?php
 
-namespace DigitalCreative\Dashboard\Tests\Fixtures\Fields\Invokable;
+namespace DigitalCreative\Jaqen\Tests\Fixtures\Fields\Invokable;
 
 use App\Dashboard\Resources\BlogResource;
 use App\Dashboard\Resources\UserResource;
 use App\Models\User;
-use DigitalCreative\Dashboard\Fields\EditableField;
+use DigitalCreative\Jaqen\Fields\EditableField;
 
 class SampleInvokable
 {

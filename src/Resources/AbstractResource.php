@@ -2,17 +2,17 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Resources;
+namespace DigitalCreative\Jaqen\Resources;
 
-use DigitalCreative\Dashboard\Concerns\WithEvents;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Repository\Repository;
-use DigitalCreative\Dashboard\Repository\RepositoryInterface;
-use DigitalCreative\Dashboard\Traits\EventsTrait;
-use DigitalCreative\Dashboard\Traits\MakeableTrait;
-use DigitalCreative\Dashboard\Traits\ResolveFieldsTrait;
-use DigitalCreative\Dashboard\Traits\ResolveFiltersTrait;
-use DigitalCreative\Dashboard\Traits\ResolveUriKey;
+use DigitalCreative\Jaqen\Concerns\WithEvents;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Repository\Repository;
+use DigitalCreative\Jaqen\Repository\RepositoryInterface;
+use DigitalCreative\Jaqen\Traits\EventsTrait;
+use DigitalCreative\Jaqen\Traits\MakeableTrait;
+use DigitalCreative\Jaqen\Traits\ResolveFieldsTrait;
+use DigitalCreative\Jaqen\Traits\ResolveFiltersTrait;
+use DigitalCreative\Jaqen\Traits\ResolveUriKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 

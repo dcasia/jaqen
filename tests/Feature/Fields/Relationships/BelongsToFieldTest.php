@@ -2,25 +2,25 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Feature\Fields\Relationships;
+namespace DigitalCreative\Jaqen\Tests\Feature\Fields\Relationships;
 
-use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Fields\ReadOnlyField;
-use DigitalCreative\Dashboard\Fields\Relationships\BelongsToField;
-use DigitalCreative\Dashboard\Http\Controllers\Relationships\BelongsToController;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Repository\Repository;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
-use DigitalCreative\Dashboard\Tests\Factories\ArticleFactory;
-use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article as ArticleModel;
-use DigitalCreative\Dashboard\Tests\Fixtures\Resources\MinimalUserResource;
-use DigitalCreative\Dashboard\Tests\TestCase;
-use DigitalCreative\Dashboard\Tests\Traits\InteractionWithResponseTrait;
-use DigitalCreative\Dashboard\Tests\Traits\RelationshipRequestTrait;
-use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
-use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
+use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Fields\ReadOnlyField;
+use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
+use DigitalCreative\Jaqen\Http\Controllers\Relationships\BelongsToController;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Repository\Repository;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Tests\Factories\ArticleFactory;
+use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article as ArticleModel;
+use DigitalCreative\Jaqen\Tests\Fixtures\Resources\MinimalUserResource;
+use DigitalCreative\Jaqen\Tests\TestCase;
+use DigitalCreative\Jaqen\Tests\Traits\InteractionWithResponseTrait;
+use DigitalCreative\Jaqen\Tests\Traits\RelationshipRequestTrait;
+use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
+use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Mockery\MockInterface;

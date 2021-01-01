@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Concerns;
+namespace DigitalCreative\Jaqen\Concerns;
 
-use DigitalCreative\Dashboard\Http\Requests\UpdateResourceRequest;
+use DigitalCreative\Jaqen\Http\Requests\UpdateResourceRequest;
 use Illuminate\Database\Eloquent\Model;
 
 interface WithCustomUpdate

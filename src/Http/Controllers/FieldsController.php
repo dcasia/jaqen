@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Controllers;
+namespace DigitalCreative\Jaqen\Http\Controllers;
 
-use DigitalCreative\Dashboard\Http\Requests\FieldsResourceRequest;
+use DigitalCreative\Jaqen\Http\Requests\FieldsResourceRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Controller;

@@ -2,14 +2,14 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard;
+namespace DigitalCreative\Jaqen;
 
-use DigitalCreative\Dashboard\Concerns\WithCustomStore;
-use DigitalCreative\Dashboard\Concerns\WithCustomUpdate;
-use DigitalCreative\Dashboard\Concerns\WithEvents;
-use DigitalCreative\Dashboard\Fields\AbstractField;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Concerns\WithCustomStore;
+use DigitalCreative\Jaqen\Concerns\WithCustomUpdate;
+use DigitalCreative\Jaqen\Concerns\WithEvents;
+use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;

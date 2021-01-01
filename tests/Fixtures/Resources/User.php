@@ -2,15 +2,15 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Fixtures\Resources;
+namespace DigitalCreative\Jaqen\Tests\Fixtures\Resources;
 
-use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Fields\PasswordField;
-use DigitalCreative\Dashboard\Fields\ReadOnlyField;
-use DigitalCreative\Dashboard\Fields\SelectField;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
-use DigitalCreative\Dashboard\Tests\Fixtures\Filters\GenderFilter;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Fields\PasswordField;
+use DigitalCreative\Jaqen\Fields\ReadOnlyField;
+use DigitalCreative\Jaqen\Fields\SelectField;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Tests\Fixtures\Filters\GenderFilter;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends AbstractResource

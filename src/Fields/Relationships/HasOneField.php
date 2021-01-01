@@ -2,13 +2,13 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Fields\Relationships;
+namespace DigitalCreative\Jaqen\Fields\Relationships;
 
-use DigitalCreative\Dashboard\Concerns\WithEvents;
-use DigitalCreative\Dashboard\Fields\AbstractField;
-use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Traits\EventsTrait;
+use DigitalCreative\Jaqen\Concerns\WithEvents;
+use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class HasOneField extends BelongsToField implements WithEvents

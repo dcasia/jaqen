@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Fields;
+namespace DigitalCreative\Jaqen\Fields;
 
 class SelectField extends AbstractField
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace DigitalCreative\Dashboard\Tests\Fixtures\Filters;
+namespace DigitalCreative\Jaqen\Tests\Fixtures\Filters;
 
-use DigitalCreative\Dashboard\AbstractFilter;
-use DigitalCreative\Dashboard\Fields\SelectField;
-use DigitalCreative\Dashboard\FieldsData;
+use DigitalCreative\Jaqen\AbstractFilter;
+use DigitalCreative\Jaqen\Fields\SelectField;
+use DigitalCreative\Jaqen\FieldsData;
 use Illuminate\Database\Eloquent\Builder;
 
 class GenderFilter extends AbstractFilter

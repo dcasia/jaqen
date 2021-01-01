@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Fields\Relationships;
+namespace DigitalCreative\Jaqen\Fields\Relationships;
 
-use DigitalCreative\Dashboard\Fields\AbstractField;
+use DigitalCreative\Jaqen\Fields\AbstractField;
 
 abstract class Relationship extends AbstractField
 {

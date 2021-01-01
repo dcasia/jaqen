@@ -2,13 +2,13 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard;
+namespace DigitalCreative\Jaqen;
 
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
 use Illuminate\Support\Collection;
 
-class Dashboard
+class Jaqen
 {
 
     private Collection $resources;
@@ -21,7 +21,7 @@ class Dashboard
         return $this;
     }
 
-    public static function getInstance(): Dashboard
+    public static function getInstance(): Jaqen
     {
         return app(__CLASS__);
     }
@@ -38,7 +38,7 @@ class Dashboard
 
     public function resourceForRequest(BaseRequest $request): AbstractResource
     {
-        return once(function() use ($request) {
+        return once(function () use ($request) {
 
             if ($resource = $this->resources->get($request->route('resource'))) {
 

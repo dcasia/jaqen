@@ -2,13 +2,13 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Fixtures\Resources;
+namespace DigitalCreative\Jaqen\Tests\Fixtures\Resources;
 
-use DigitalCreative\Dashboard\Fields\Relationships\BelongsToField;
-use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Fields\ReadOnlyField;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\Article as ArticleModel;
+use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
+use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Fields\ReadOnlyField;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article as ArticleModel;
 use Illuminate\Database\Eloquent\Model;
 
 class Article extends AbstractResource

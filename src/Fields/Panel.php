@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Fields;
+namespace DigitalCreative\Jaqen\Fields;
 
-use DigitalCreative\Dashboard\Concerns\BehaveAsPanel;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Concerns\BehaveAsPanel;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 
 class Panel extends AbstractField implements BehaveAsPanel
 {

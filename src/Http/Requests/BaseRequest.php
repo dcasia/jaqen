@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Requests;
+namespace DigitalCreative\Jaqen\Http\Requests;
 
-use DigitalCreative\Dashboard\Dashboard;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Jaqen;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BaseRequest extends FormRequest
@@ -23,7 +23,7 @@ class BaseRequest extends FormRequest
 
     public function resourceInstance(): AbstractResource
     {
-        return Dashboard::getInstance()->resourceForRequest($this);
+        return Jaqen::getInstance()->resourceForRequest($this);
     }
 
     public function isCreate(): bool

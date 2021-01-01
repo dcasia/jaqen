@@ -1,8 +1,8 @@
 <?php
 
-namespace DigitalCreative\Dashboard\Tests\Fixtures\Filters;
+namespace DigitalCreative\Jaqen\Tests\Fixtures\Filters;
 
-use DigitalCreative\Dashboard\Fields\EditableField;
+use DigitalCreative\Jaqen\Fields\EditableField;
 
 class FilterWithRequiredFields extends SampleFilter
 {

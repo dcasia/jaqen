@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Traits;
+namespace DigitalCreative\Jaqen\Tests\Traits;
 
-use DigitalCreative\Dashboard\Fields\Relationships\BelongsToField;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Http\Requests\BelongsToResourceRequest;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Http\Requests\BelongsToResourceRequest;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
 
 trait RelationshipRequestTrait
 {

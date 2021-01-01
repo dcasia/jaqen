@@ -13,18 +13,18 @@
     },
     "autoload": {
         "psr-4": {
-            "DigitalCreative\\Dashboard\\": "src/"
+            "DigitalCreative\\Jaqen\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "DigitalCreative\\Dashboard\\Tests\\": "tests/"
+            "DigitalCreative\\Jaqen\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-              "DigitalCreative\\Dashboard\\CoreDashboardServiceProvider"
+                "DigitalCreative\\Jaqen\\CoreJaqenServiceProvider"
             ]
         }
     },

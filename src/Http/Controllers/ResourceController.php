@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Controllers;
+namespace DigitalCreative\Jaqen\Http\Controllers;
 
-use DigitalCreative\Dashboard\Dashboard;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Jaqen;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 
@@ -21,9 +21,9 @@ class ResourceController extends Controller
      */
     public function resources(BaseRequest $request): Collection
     {
-        return Dashboard::getInstance()
-                        ->allAuthorizedResources($request)
-                        ->map(fn(AbstractResource $resource) => $resource->getDescriptor());
+        return Jaqen::getInstance()
+                    ->allAuthorizedResources($request)
+                    ->map(fn(AbstractResource $resource) => $resource->getDescriptor());
     }
 
 }

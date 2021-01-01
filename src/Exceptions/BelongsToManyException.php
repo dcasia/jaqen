@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Exceptions;
+namespace DigitalCreative\Jaqen\Exceptions;
 
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;

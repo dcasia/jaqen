@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Controllers\Resources;
+namespace DigitalCreative\Jaqen\Tests\Controllers\Resources;
 
-use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
-use DigitalCreative\Dashboard\Tests\TestCase;
+use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
+use DigitalCreative\Jaqen\Tests\TestCase;
 
 class UpdateControllerTest extends TestCase
 {
@@ -20,7 +20,7 @@ class UpdateControllerTest extends TestCase
             'email' => 'email@email.com',
         ];
 
-        $this->patchJson('/dashboard-api/users/1', $data)
+        $this->patchJson('/jaqen-api/users/1', $data)
              ->assertStatus(200);
 
         $this->assertDatabaseHas('users', $data);
@@ -32,7 +32,7 @@ class UpdateControllerTest extends TestCase
 
         $user = UserFactory::new()->create();
 
-        $this->patchJson('/dashboard-api/users/1', [ 'id' => 2 ])
+        $this->patchJson('/jaqen-api/users/1', [ 'id' => 2 ])
              ->assertStatus(200);
 
         $this->assertDatabaseHas('users', [

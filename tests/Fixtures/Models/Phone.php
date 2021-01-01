@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Fixtures\Models;
+namespace DigitalCreative\Jaqen\Tests\Fixtures\Models;
 
 /**
  * @property int number

@@ -2,15 +2,15 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Fields\Relationships;
+namespace DigitalCreative\Jaqen\Fields\Relationships;
 
-use DigitalCreative\Dashboard\Concerns\WithEvents;
-use DigitalCreative\Dashboard\Exceptions\BelongsToManyException;
-use DigitalCreative\Dashboard\Fields\AbstractField;
-use DigitalCreative\Dashboard\FieldsCollection;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Resources\AbstractResource;
-use DigitalCreative\Dashboard\Traits\EventsTrait;
+use DigitalCreative\Jaqen\Concerns\WithEvents;
+use DigitalCreative\Jaqen\Exceptions\BelongsToManyException;
+use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\FieldsCollection;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;

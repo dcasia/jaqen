@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Http\Requests\Relationship;
+namespace DigitalCreative\Jaqen\Http\Requests\Relationship;
 
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 
 class BelongsToResourceRequest extends BaseRequest
 {

@@ -2,21 +2,21 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Feature\Fields\Relationships;
+namespace DigitalCreative\Jaqen\Tests\Feature\Fields\Relationships;
 
-use DigitalCreative\Dashboard\Exceptions\BelongsToManyException;
-use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\Fields\Relationships\BelongsToManyField;
-use DigitalCreative\Dashboard\Tests\Factories\RoleFactory;
-use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
-use DigitalCreative\Dashboard\Tests\Fixtures\Resources\RoleResource;
-use DigitalCreative\Dashboard\Tests\TestCase;
-use DigitalCreative\Dashboard\Tests\Traits\InteractionWithResponseTrait;
-use DigitalCreative\Dashboard\Tests\Traits\RelationshipRequestTrait;
-use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
-use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
+use DigitalCreative\Jaqen\Exceptions\BelongsToManyException;
+use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Fields\Relationships\BelongsToManyField;
+use DigitalCreative\Jaqen\Tests\Factories\RoleFactory;
+use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Jaqen\Tests\Fixtures\Resources\RoleResource;
+use DigitalCreative\Jaqen\Tests\TestCase;
+use DigitalCreative\Jaqen\Tests\Traits\InteractionWithResponseTrait;
+use DigitalCreative\Jaqen\Tests\Traits\RelationshipRequestTrait;
+use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
+use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use Illuminate\Database\Eloquent\RelationNotFoundException;
 use Illuminate\Validation\ValidationException;
 

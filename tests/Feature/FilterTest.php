@@ -2,18 +2,18 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Tests\Feature;
+namespace DigitalCreative\Jaqen\Tests\Feature;
 
-use DigitalCreative\Dashboard\Exceptions\FilterValidationException;
-use DigitalCreative\Dashboard\Fields\EditableField;
-use DigitalCreative\Dashboard\FieldsData;
-use DigitalCreative\Dashboard\FilterCollection;
-use DigitalCreative\Dashboard\Tests\Factories\UserFactory;
-use DigitalCreative\Dashboard\Tests\Fixtures\Filters\SampleFilter;
-use DigitalCreative\Dashboard\Tests\Fixtures\Models\User as UserModel;
-use DigitalCreative\Dashboard\Tests\TestCase;
-use DigitalCreative\Dashboard\Tests\Traits\RequestTrait;
-use DigitalCreative\Dashboard\Tests\Traits\ResourceTrait;
+use DigitalCreative\Jaqen\Exceptions\FilterValidationException;
+use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\FieldsData;
+use DigitalCreative\Jaqen\FilterCollection;
+use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
+use DigitalCreative\Jaqen\Tests\Fixtures\Filters\SampleFilter;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
+use DigitalCreative\Jaqen\Tests\TestCase;
+use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
+use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use Illuminate\Database\Eloquent\Builder;
 
 class FilterTest extends TestCase

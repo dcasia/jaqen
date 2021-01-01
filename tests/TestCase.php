@@ -1,9 +1,8 @@
 <?php
 
-namespace DigitalCreative\Dashboard\Tests;
+namespace DigitalCreative\Jaqen\Tests;
 
-use DigitalCreative\Dashboard\CoreDashboardServiceProvider;
-use JohnDoe\BlogPackage\BlogPackageServiceProvider;
+use DigitalCreative\Jaqen\CoreJaqenServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -19,7 +18,7 @@ class TestCase extends BaseTestCase
     protected function getPackageProviders($app): array
     {
         return [
-            CoreDashboardServiceProvider::class,
+            CoreJaqenServiceProvider::class,
             TestServiceProvider::class
         ];
     }

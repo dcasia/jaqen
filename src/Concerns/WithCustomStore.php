@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Concerns;
+namespace DigitalCreative\Jaqen\Concerns;
 
-use DigitalCreative\Dashboard\Http\Requests\StoreResourceRequest;
+use DigitalCreative\Jaqen\Http\Requests\StoreResourceRequest;
 
 interface WithCustomStore
 {

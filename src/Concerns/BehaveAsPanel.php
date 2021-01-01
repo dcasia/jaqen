@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Concerns;
+namespace DigitalCreative\Jaqen\Concerns;
 
 interface BehaveAsPanel
 {

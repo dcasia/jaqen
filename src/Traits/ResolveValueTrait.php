@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Traits;
+namespace DigitalCreative\Jaqen\Traits;
 
-use DigitalCreative\Dashboard\Fields\AbstractField;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Model;
 
 trait ResolveValueTrait

@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard;
+namespace DigitalCreative\Jaqen;
 
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
-use DigitalCreative\Dashboard\Http\Requests\FilterRequest;
-use DigitalCreative\Dashboard\Traits\ResolveFieldsTrait;
-use DigitalCreative\Dashboard\Traits\ResolveUriKey;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Http\Requests\FilterRequest;
+use DigitalCreative\Jaqen\Traits\ResolveFieldsTrait;
+use DigitalCreative\Jaqen\Traits\ResolveUriKey;
 use Illuminate\Database\Eloquent\Builder;
 use JsonSerializable;
 

@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Dashboard\Repository;
+namespace DigitalCreative\Jaqen\Repository;
 
-use DigitalCreative\Dashboard\FilterCollection;
-use DigitalCreative\Dashboard\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\FilterCollection;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
