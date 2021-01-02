@@ -6,6 +6,8 @@ namespace DigitalCreative\Jaqen\Http\Requests;
 
 use DigitalCreative\Jaqen\Jaqen;
 use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Services\Crud\Http\Requests\StoreResourceRequest;
+use DigitalCreative\Jaqen\Services\Crud\Http\Requests\UpdateResourceRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BaseRequest extends FormRequest

@@ -20,7 +20,7 @@ class UpdateControllerTest extends TestCase
             'email' => 'email@email.com',
         ];
 
-        $this->patchJson('/jaqen-api/users/1', $data)
+        $this->patchJson('/jaqen-api/crud/users/1', $data)
              ->assertStatus(200);
 
         $this->assertDatabaseHas('users', $data);
@@ -32,7 +32,7 @@ class UpdateControllerTest extends TestCase
 
         $user = UserFactory::new()->create();
 
-        $this->patchJson('/jaqen-api/users/1', [ 'id' => 2 ])
+        $this->patchJson('/jaqen-api/crud/users/1', [ 'id' => 2 ])
              ->assertStatus(200);
 
         $this->assertDatabaseHas('users', [

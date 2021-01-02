@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Http\Controllers\Resources;
+namespace DigitalCreative\Jaqen\Services\Crud\Http\Controllers;
 
 use DigitalCreative\Jaqen\Concerns\WithEvents;
 use DigitalCreative\Jaqen\Fields\AbstractField;
-use DigitalCreative\Jaqen\Http\Requests\DeleteResourceRequest;
+use DigitalCreative\Jaqen\Services\Crud\Http\Requests\DeleteResourceRequest;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use RuntimeException;

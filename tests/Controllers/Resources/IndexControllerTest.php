@@ -19,7 +19,7 @@ class IndexControllerTest extends TestCase
 
         UserFactory::new()->create();
 
-        $response = $this->getJson('/jaqen-api/users')
+        $response = $this->getJson('/jaqen-api/crud/users')
                          ->assertStatus(200);
 
         $response->assertJsonStructure([
@@ -54,7 +54,7 @@ class IndexControllerTest extends TestCase
             ],
         ]);
 
-        $this->getJson('/jaqen-api/users?filters=' . $filters)
+        $this->getJson('/jaqen-api/crud/users?filters=' . $filters)
              ->assertStatus(200)
              ->assertJsonCount(5, 'resources')
              ->assertJsonFragment([
@@ -75,7 +75,7 @@ class IndexControllerTest extends TestCase
             ],
         ]);
 
-        $this->getJson("/jaqen-api/$resourceUriKey?filters=$filters")
+        $this->getJson("/jaqen-api/crud/$resourceUriKey?filters=$filters")
              ->assertStatus(422)
              ->assertJsonFragment([
                  'errors' => [
@@ -94,7 +94,7 @@ class IndexControllerTest extends TestCase
 
         $user = UserFactory::new()->create();
 
-        $response = $this->getJson('/jaqen-api/users?fieldsFor=index')
+        $response = $this->getJson('/jaqen-api/crud/users?fieldsFor=index')
                          ->assertStatus(200);
 
         $response->assertJsonFragment([
@@ -122,7 +122,7 @@ class IndexControllerTest extends TestCase
 
         $users = UserFactory::new()->count(2)->create();
 
-        $this->getJson('/jaqen-api/users?fieldsFor=index')
+        $this->getJson('/jaqen-api/crud/users?fieldsFor=index')
              ->assertStatus(200)
              ->assertJsonPath('resources.0.fields.0.value', $users->first()->id)
              ->assertJsonPath('resources.1.fields.0.value', $users->last()->id);
@@ -134,7 +134,7 @@ class IndexControllerTest extends TestCase
 
         UserFactory::new()->count(30)->create();
 
-        $this->getJson('/jaqen-api/users?page=2')
+        $this->getJson('/jaqen-api/crud/users?page=2')
              ->assertStatus(200)
              ->assertJsonFragment([
                  'total' => 30,

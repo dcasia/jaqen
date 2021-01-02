@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Http\Controllers;
 
-use DigitalCreative\Jaqen\Http\Requests\IndexResourceRequest;
+use DigitalCreative\Jaqen\Services\Crud\Http\Requests\IndexResourceRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 

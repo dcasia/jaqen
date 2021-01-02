@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Concerns;
 
-use DigitalCreative\Jaqen\Http\Requests\StoreResourceRequest;
+use DigitalCreative\Jaqen\Services\Crud\Http\Requests\StoreResourceRequest;
 
 interface WithCustomStore
 {

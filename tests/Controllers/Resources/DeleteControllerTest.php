@@ -19,7 +19,7 @@ class DeleteControllerTest extends TestCase
 
         UserFactory::new()->create($data);
 
-        $this->deleteJson('/jaqen-api/users', [ 'ids' => [ 1 ] ])
+        $this->deleteJson('/jaqen-api/crud/users', [ 'ids' => [ 1 ] ])
              ->assertStatus(204);
 
         $this->assertDatabaseMissing('users', $data);
@@ -31,7 +31,7 @@ class DeleteControllerTest extends TestCase
 
         UserFactory::new()->create();
 
-        $this->deleteJson('/jaqen-api/users', [ 'ids' => $users->pluck('id') ])
+        $this->deleteJson('/jaqen-api/crud/users', [ 'ids' => $users->pluck('id') ])
              ->assertStatus(204);
 
         $this->assertDatabaseCount('users', 1);

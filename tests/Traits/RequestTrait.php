@@ -5,19 +5,19 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Tests\Traits;
 
 use DigitalCreative\Jaqen\Http\Controllers\FieldsController;
-use DigitalCreative\Jaqen\Http\Controllers\Resources\DeleteController;
-use DigitalCreative\Jaqen\Http\Controllers\Resources\DetailController;
-use DigitalCreative\Jaqen\Http\Controllers\Resources\IndexController;
-use DigitalCreative\Jaqen\Http\Controllers\Resources\StoreController;
-use DigitalCreative\Jaqen\Http\Controllers\Resources\UpdateController;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
-use DigitalCreative\Jaqen\Http\Requests\DeleteResourceRequest;
-use DigitalCreative\Jaqen\Http\Requests\DetailResourceRequest;
+use DigitalCreative\Jaqen\Services\Crud\Http\Requests\DeleteResourceRequest;
+use DigitalCreative\Jaqen\Services\Crud\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Jaqen\Http\Requests\FieldsResourceRequest;
-use DigitalCreative\Jaqen\Http\Requests\IndexResourceRequest;
-use DigitalCreative\Jaqen\Http\Requests\StoreResourceRequest;
-use DigitalCreative\Jaqen\Http\Requests\UpdateResourceRequest;
+use DigitalCreative\Jaqen\Services\Crud\Http\Requests\IndexResourceRequest;
+use DigitalCreative\Jaqen\Services\Crud\Http\Requests\StoreResourceRequest;
+use DigitalCreative\Jaqen\Services\Crud\Http\Requests\UpdateResourceRequest;
 use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Services\Crud\Http\Controllers\DeleteController;
+use DigitalCreative\Jaqen\Services\Crud\Http\Controllers\DetailController;
+use DigitalCreative\Jaqen\Services\Crud\Http\Controllers\IndexController;
+use DigitalCreative\Jaqen\Services\Crud\Http\Controllers\StoreController;
+use DigitalCreative\Jaqen\Services\Crud\Http\Controllers\UpdateController;
 use Illuminate\Routing\Route;
 use Illuminate\Testing\TestResponse;
 
@@ -129,7 +129,7 @@ trait RequestTrait
             $query = "?$query";
         }
 
-        return $this->postJson("/jaqen-api/{$resourceUriKey}{$query}", $data);
+        return $this->postJson("/jaqen-api/crud/{$resourceUriKey}{$query}", $data);
     }
 
     public function indexResponse(AbstractResource $resource, array $data = [], array $query = []): array

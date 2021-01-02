@@ -22,12 +22,3 @@ Route::get('/resources', [ ResourceController::class, 'resources' ]);
  * Relationship
  */
 Route::get('/belongs-to/{resource}/{field}', [ BelongsToController::class, 'searchBelongsTo' ]);
-
-/**
- * CRUD
- */
-Route::get('/{resource}/{key}', [ DetailController::class, 'handle' ]);
-Route::patch('/{resource}/{key}', [ UpdateController::class, 'handle' ]);
-Route::delete('/{resource}', [ DeleteController::class, 'handle' ]);
-Route::post('/{resource}', [ StoreController::class, 'handle' ]);
-Route::get('/{resource}', [ IndexController::class, 'handle' ]);

@@ -58,7 +58,7 @@ abstract class AbstractResource implements WithEvents
 
                 } else {
 
-                    $this->with[$relationKey] = $item;
+                    $this->with[ $relationKey ] = $item;
 
                 }
 

@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Http\Controllers\Resources;
+namespace DigitalCreative\Jaqen\Services\Crud\Http\Controllers;
 
 use DigitalCreative\Jaqen\Fields\AbstractField;
-use DigitalCreative\Jaqen\Http\Requests\StoreResourceRequest;
+use DigitalCreative\Jaqen\Services\Crud\Http\Requests\StoreResourceRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;

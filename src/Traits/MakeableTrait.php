@@ -6,12 +6,7 @@ namespace DigitalCreative\Jaqen\Traits;
 
 trait MakeableTrait
 {
-    /**
-     * @param mixed ...$arguments
-     *
-     * @return static
-     */
-    public static function make(...$arguments): self
+    public static function make(...$arguments): static
     {
         return new static(...$arguments);
     }

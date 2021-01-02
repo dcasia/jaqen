@@ -13,6 +13,24 @@ class Jaqen
 
     private Collection $resources;
 
+    private static array $services = [];
+
+    private JaqenServiceProvider $provider;
+
+    public function __construct(JaqenServiceProvider $provider)
+    {
+        $this->provider = $provider;
+    }
+
+    public function invokeProviderMethod(string $method)
+    {
+        if (method_exists($this->provider, $method)) {
+            return $this->provider->$method();
+        }
+
+        return null;
+    }
+
     public function setResources(array $resources): self
     {
         $this->resources = collect($resources)

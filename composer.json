@@ -1,10 +1,7 @@
 {
     "name": "dcasia/jaqen",
-    "description": "A Laravel Nova card.",
-    "keywords": [
-        "laravel",
-        "nova"
-    ],
+    "description": "Jaqen",
+    "keywords": [],
     "license": "MIT",
     "require": {
         "php": ">=8.0",

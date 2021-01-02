@@ -2,7 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Http\Requests;
+namespace DigitalCreative\Jaqen\Services\Crud\Http\Requests;
+
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 
 class DeleteResourceRequest extends BaseRequest
 {
