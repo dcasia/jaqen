@@ -15,7 +15,7 @@ class DetailControllerTest extends TestCase
 
         UserFactory::new()->create();
 
-        $response = $this->getJson('/jaqen-api/crud/users/1')
+        $response = $this->getJson('/jaqen-api/resource/users/1')
                          ->assertStatus(200);
 
         $response->assertJsonStructure([

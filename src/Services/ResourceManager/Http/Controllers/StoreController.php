@@ -2,12 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Services\Crud\Http\Controllers;
+namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers;
 
 use DigitalCreative\Jaqen\Fields\AbstractField;
-use DigitalCreative\Jaqen\Services\Crud\Http\Requests\StoreResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\StoreResourceRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 
 class StoreController extends Controller
@@ -16,7 +15,7 @@ class StoreController extends Controller
     public function handle(StoreResourceRequest $request): JsonResponse
     {
 
-        $resource = $request->resourceInstance();
+        $resource = $this->resourceManager->resourceForRequest($request);
 
         /**
          * Validate all fields and throw validation exception in case of invalid data

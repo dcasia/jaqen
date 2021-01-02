@@ -6,7 +6,7 @@ namespace DigitalCreative\Jaqen\Fields;
 
 use DigitalCreative\Jaqen\AbstractFilter;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
-use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Traits\MakeableTrait;
 use DigitalCreative\Jaqen\Traits\ResolveRulesTrait;
 use DigitalCreative\Jaqen\Traits\ResolveValueTrait;

@@ -9,7 +9,7 @@ use DigitalCreative\Jaqen\Concerns\WithCustomUpdate;
 use DigitalCreative\Jaqen\Concerns\WithEvents;
 use DigitalCreative\Jaqen\Fields\AbstractField;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
-use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;

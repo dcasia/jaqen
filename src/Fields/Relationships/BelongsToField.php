@@ -6,7 +6,7 @@ namespace DigitalCreative\Jaqen\Fields\Relationships;
 
 use DigitalCreative\Jaqen\Fields\AbstractField;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
-use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;

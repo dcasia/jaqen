@@ -7,7 +7,7 @@ namespace DigitalCreative\Jaqen\Tests\Fixtures\Resources;
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
 use DigitalCreative\Jaqen\Fields\EditableField;
 use DigitalCreative\Jaqen\Fields\ReadOnlyField;
-use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article as ArticleModel;
 use Illuminate\Database\Eloquent\Model;
 

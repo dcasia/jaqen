@@ -2,13 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Services\Crud\Http\Controllers;
+namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers;
 
 use DigitalCreative\Jaqen\Concerns\WithEvents;
 use DigitalCreative\Jaqen\Fields\AbstractField;
-use DigitalCreative\Jaqen\Services\Crud\Http\Requests\DeleteResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\DeleteResourceRequest;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
 use RuntimeException;
 
 class DeleteController extends Controller
@@ -18,7 +17,7 @@ class DeleteController extends Controller
     {
 
         $ids = $request->input('ids');
-        $resource = $request->resourceInstance();
+        $resource = $this->resourceManager->resourceForRequest($request);
         $repository = $resource->repository();
 
         $items = $repository->findByKeys($ids);

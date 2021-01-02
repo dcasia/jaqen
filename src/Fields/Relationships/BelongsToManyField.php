@@ -9,7 +9,7 @@ use DigitalCreative\Jaqen\Exceptions\BelongsToManyException;
 use DigitalCreative\Jaqen\Fields\AbstractField;
 use DigitalCreative\Jaqen\FieldsCollection;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
-use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;

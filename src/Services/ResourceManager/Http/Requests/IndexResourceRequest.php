@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Services\Crud\Http\Requests;
+namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests;
 
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 

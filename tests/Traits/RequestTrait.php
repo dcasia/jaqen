@@ -6,18 +6,18 @@ namespace DigitalCreative\Jaqen\Tests\Traits;
 
 use DigitalCreative\Jaqen\Http\Controllers\FieldsController;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
-use DigitalCreative\Jaqen\Services\Crud\Http\Requests\DeleteResourceRequest;
-use DigitalCreative\Jaqen\Services\Crud\Http\Requests\DetailResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\DeleteResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Jaqen\Http\Requests\FieldsResourceRequest;
-use DigitalCreative\Jaqen\Services\Crud\Http\Requests\IndexResourceRequest;
-use DigitalCreative\Jaqen\Services\Crud\Http\Requests\StoreResourceRequest;
-use DigitalCreative\Jaqen\Services\Crud\Http\Requests\UpdateResourceRequest;
-use DigitalCreative\Jaqen\Resources\AbstractResource;
-use DigitalCreative\Jaqen\Services\Crud\Http\Controllers\DeleteController;
-use DigitalCreative\Jaqen\Services\Crud\Http\Controllers\DetailController;
-use DigitalCreative\Jaqen\Services\Crud\Http\Controllers\IndexController;
-use DigitalCreative\Jaqen\Services\Crud\Http\Controllers\StoreController;
-use DigitalCreative\Jaqen\Services\Crud\Http\Controllers\UpdateController;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\IndexResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\StoreResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\UpdateResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\DeleteController;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\DetailController;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\IndexController;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\StoreController;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\UpdateController;
 use Illuminate\Routing\Route;
 use Illuminate\Testing\TestResponse;
 
@@ -129,7 +129,7 @@ trait RequestTrait
             $query = "?$query";
         }
 
-        return $this->postJson("/jaqen-api/crud/{$resourceUriKey}{$query}", $data);
+        return $this->postJson("/jaqen-api/resource/{$resourceUriKey}{$query}", $data);
     }
 
     public function indexResponse(AbstractResource $resource, array $data = [], array $query = []): array

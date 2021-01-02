@@ -2,13 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Services\Crud\Http\Controllers;
+namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers;
 
 use DigitalCreative\Jaqen\FilterCollection;
-use DigitalCreative\Jaqen\Services\Crud\Http\Requests\IndexResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\IndexResourceRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 
 class IndexController extends Controller
@@ -20,7 +19,7 @@ class IndexController extends Controller
     public function handle(IndexResourceRequest $request): JsonResponse
     {
 
-        $resource = $request->resourceInstance();
+        $resource = $this->resourceManager->resourceForRequest($request);
 
         $fields = $resource->resolveFields($request);
 

@@ -8,7 +8,7 @@ use DigitalCreative\Jaqen\Fields\EditableField;
 use DigitalCreative\Jaqen\Fields\PasswordField;
 use DigitalCreative\Jaqen\Fields\ReadOnlyField;
 use DigitalCreative\Jaqen\Fields\SelectField;
-use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Fixtures\Filters\GenderFilter;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Model;

@@ -2,18 +2,17 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Services\Crud\Http\Controllers;
+namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers;
 
-use DigitalCreative\Jaqen\Services\Crud\Http\Requests\DetailResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\DetailResourceRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controller;
 
 class DetailController extends Controller
 {
 
     public function handle(DetailResourceRequest $request): JsonResponse
     {
-        $resource = $request->resourceInstance();
+        $resource = $this->resourceManager->resourceForRequest($request);
 
         $model = $resource->repository()->findByKey($request->route('key'), $resource->with);
 

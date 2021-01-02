@@ -6,9 +6,9 @@ namespace DigitalCreative\Jaqen\Http\Controllers\Relationships;
 
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
 use DigitalCreative\Jaqen\Http\Requests\BelongsToResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 
 class BelongsToController extends Controller
@@ -16,7 +16,7 @@ class BelongsToController extends Controller
 
     public function searchBelongsTo(BelongsToResourceRequest $request): JsonResponse
     {
-        $resource = $request->resourceInstance();
+        $resource = $this->resourceManager->resourceForRequest($request);
 
         $fieldAttribute = Str::of($request->route('field'))->before('_id')->__toString();
 
@@ -29,7 +29,7 @@ class BelongsToController extends Controller
 
             $models = $repository->searchForRelatedEntries($field->resolveSearchCallback(), $request);
 
-            $response = $models->map(function(Model $model) use ($resource, $request) {
+            $response = $models->map(function (Model $model) use ($resource, $request) {
                 return [
                     'key' => $model->getKey(),
                     'fields' => $resource->resolveFieldsUsingModel($model, $request),

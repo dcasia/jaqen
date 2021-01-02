@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Resources;
+namespace DigitalCreative\Jaqen\Services\ResourceManager;
 
 use DigitalCreative\Jaqen\Concerns\WithEvents;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;

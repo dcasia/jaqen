@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Tests\Fixtures\Resources;
 
 use DigitalCreative\Jaqen\Fields\EditableField;
-use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\Role as RoleModel;
 use Illuminate\Database\Eloquent\Model;
 

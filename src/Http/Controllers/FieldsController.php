@@ -5,9 +5,8 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Http\Controllers;
 
 use DigitalCreative\Jaqen\Http\Requests\FieldsResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Routing\Controller;
 
 class FieldsController extends Controller
 {
@@ -21,7 +20,7 @@ class FieldsController extends Controller
     public function fields(FieldsResourceRequest $request): JsonResponse
     {
         return response()->json(
-            $request->resourceInstance()->resolveFields($request)
+            $this->resourceManager->resourceForRequest($request)->resolveFields($request)
         );
     }
 }

@@ -4,12 +4,9 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Services\Scaffold;
 
-use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Traits\AuthorizableTrait;
 use DigitalCreative\Jaqen\Traits\MakeableTrait;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Support\Collection;
-use JetBrains\PhpStorm\ArrayShape;
 
 class ExternalLink extends ResourceLink
 {

@@ -7,7 +7,7 @@ namespace DigitalCreative\Jaqen\Tests\Traits;
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Http\Requests\BelongsToResourceRequest;
-use DigitalCreative\Jaqen\Resources\AbstractResource;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 
 trait RelationshipRequestTrait
 {
