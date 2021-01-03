@@ -35,6 +35,7 @@
             label: { type: String, required: true },
             attribute: { type: String, required: true },
             value: { type: String, required: true },
+            additionalInformation: { type: Object, required: true },
             error: { type: Object, required: true }
         },
         setup(props) {

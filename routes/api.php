@@ -1,6 +1,6 @@
 <?php
 
-use DigitalCreative\Jaqen\Http\Controllers\FiltersController;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\FiltersController;
 use DigitalCreative\Jaqen\Http\Controllers\Resources\DeleteController;
 use DigitalCreative\Jaqen\Http\Controllers\Resources\DetailController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\FieldsController;
@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 /**
  * Filters
  */
-Route::get('/{resource}/filters', [ FiltersController::class, 'filters' ]);
 Route::get('/resources', [ ResourceController::class, 'resources' ]);
 
 /**

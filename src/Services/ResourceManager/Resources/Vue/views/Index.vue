@@ -84,7 +84,7 @@
 
 <script lang="ts">
 
-    import { defineComponent, ref, watchEffect, computed } from 'vue'
+    import { computed, defineComponent, ref, watchEffect } from 'vue'
     import { useRoute, useRouter } from 'vue-router'
     import FilterPanel from '../components/FilterPanel.vue'
     import DeleteIcon from '../components/Icons/DeleteIcon.vue'
@@ -105,9 +105,9 @@
             const errorsBag = ref<any>({})
             const currentPage = ref(1)
 
-            watchEffect(async () => {
+            function fetchResourceIndex() {
 
-                await api.getIndex(route.params.uriKey as string, currentFilter.value, currentPage.value)
+                api.getIndex(route.params.uriKey as string, currentFilter.value, currentPage.value)
                     .then(data => {
 
                         indexData.value = data
@@ -135,7 +135,9 @@
 
                     })
 
-            })
+            }
+
+            watchEffect(() => fetchResourceIndex())
 
             return {
                 indexData,
@@ -185,7 +187,8 @@
                 async deleteResource(key: string) {
 
                     await api.deleteResource(route.params.uriKey as string, key)
-                    await router.go(0)
+
+                    fetchResourceIndex()
 
                 }
             }

@@ -2,12 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen;
+namespace DigitalCreative\Jaqen\Services\Fields;
 
 use DigitalCreative\Jaqen\Concerns\WithCustomStore;
 use DigitalCreative\Jaqen\Concerns\WithCustomUpdate;
 use DigitalCreative\Jaqen\Concerns\WithEvents;
-use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use Illuminate\Database\Eloquent\Model;
@@ -36,16 +35,11 @@ class FieldsCollection extends Collection
 
     public function getResolvedFieldsData(Model $model, BaseRequest $request): self
     {
-        return $this->map(function(AbstractField $field) use ($model, $request) {
+        return $this->map(function (AbstractField $field) use ($model, $request) {
             return $field->resolveValueFromModel($model, $request)->toArray();
         });
     }
 
-    /**
-     * @param BaseRequest $request
-     * @return array
-     * @throws ValidationException
-     */
     public function validate(BaseRequest $request): array
     {
         $rules = $this->mapWithKeys(fn(AbstractField $field) => [ $field->attribute => $field->resolveRules($request) ])
@@ -64,7 +58,7 @@ class FieldsCollection extends Collection
          * Before Update
          */
         $fieldsWithEvents = $this->getFieldsWithEvents();
-        $fieldsWithEvents->each(function(WithEvents $field) use ($model, &$data) {
+        $fieldsWithEvents->each(function (WithEvents $field) use ($model, &$data) {
             $data = $field->runBeforeUpdate($model, $data);
         });
 
@@ -101,7 +95,7 @@ class FieldsCollection extends Collection
         /**
          * Before Create
          */
-        $fieldsWithEvents->each(function(WithEvents $field) use (&$data) {
+        $fieldsWithEvents->each(function (WithEvents $field) use (&$data) {
             $data = $field->runBeforeCreate($data);
         });
 

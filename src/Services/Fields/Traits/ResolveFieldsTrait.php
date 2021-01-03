@@ -2,13 +2,13 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Traits;
+namespace DigitalCreative\Jaqen\Services\Fields\Traits;
 
 use DigitalCreative\Jaqen\Concerns\BehaveAsPanel;
 use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
-use DigitalCreative\Jaqen\FieldsCollection;
-use DigitalCreative\Jaqen\FieldsData;
+use DigitalCreative\Jaqen\Services\Fields\FieldsCollection;
+use DigitalCreative\Jaqen\Services\Fields\FieldsData;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Services\ResourceManager;
 
 use Carbon\Laravel\ServiceProvider;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\FiltersController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\FieldsController;
 use DigitalCreative\Jaqen\Jaqen;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\DeleteController;
@@ -31,6 +32,7 @@ class ResourceManagerServiceProvider extends ServiceProvider implements Deferrab
 
         Route::group([ 'prefix' => '/jaqen-api' ], function (Router $router) {
 
+            $router->get('/resource/{resource}/filters', [ FiltersController::class, 'filters' ]);
             $router->get('/resource/{resource}/fields', [ FieldsController::class, 'fields' ]);
 
             $router->get('/resource/{resource}/{key}', [ DetailController::class, 'handle' ]);

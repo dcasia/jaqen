@@ -64,6 +64,7 @@ export default {
             body: JSON.stringify({ _method: 'DELETE', ids: [ key ] }),
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json',
                 Accept: 'application/json'
             }
         })

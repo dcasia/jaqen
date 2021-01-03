@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers;
 
-use DigitalCreative\Jaqen\FilterCollection;
+use DigitalCreative\Jaqen\Services\ResourceManager\FilterCollection;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\IndexResourceRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;

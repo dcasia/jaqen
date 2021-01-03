@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen;
+namespace DigitalCreative\Jaqen\Services\ResourceManager;
 
 use DigitalCreative\Jaqen\Exceptions\FilterValidationException;
 use Illuminate\Database\Eloquent\Builder;
@@ -68,8 +68,9 @@ class FilterCollection extends Collection
 
     /**
      * @param Builder $builder
-     * @return Builder
+     *
      * @throws FilterValidationException
+     * @return Builder
      */
     public function applyOnQuery(Builder $builder): Builder
     {
@@ -95,7 +96,7 @@ class FilterCollection extends Collection
 
                     } catch (ValidationException $exception) {
 
-                        $exceptions[$filter::uriKey()] = $exception;
+                        $exceptions[ $filter::uriKey() ] = $exception;
 
                     }
 

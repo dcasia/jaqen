@@ -4,11 +4,11 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Services\Fields;
 
-use DigitalCreative\Jaqen\AbstractFilter;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractFilter;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Traits\MakeableTrait;
-use DigitalCreative\Jaqen\Traits\ResolveRulesTrait;
+use DigitalCreative\Jaqen\Services\Fields\Traits\ResolveRulesTrait;
 use DigitalCreative\Jaqen\Traits\ResolveValueTrait;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Resources\PotentiallyMissing;

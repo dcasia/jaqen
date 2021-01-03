@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Http\Requests;
 
-use DigitalCreative\Jaqen\FilterCollection;
+use DigitalCreative\Jaqen\Services\ResourceManager\FilterCollection;
 
 class FilterRequest extends BaseRequest
 {

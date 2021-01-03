@@ -12,7 +12,7 @@ class FiltersControllerTest extends TestCase
     public function test_resource_filters_works(): void
     {
 
-        $this->getJson('/jaqen-api/users/filters')
+        $this->getJson('/jaqen-api/resource/users/filters')
              ->assertStatus(200)
              ->assertJsonStructure([
                  [

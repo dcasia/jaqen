@@ -6,8 +6,8 @@ namespace DigitalCreative\Jaqen\Tests\Feature;
 
 use DigitalCreative\Jaqen\Exceptions\FilterValidationException;
 use DigitalCreative\Jaqen\Services\Fields\EditableField;
-use DigitalCreative\Jaqen\FieldsData;
-use DigitalCreative\Jaqen\FilterCollection;
+use DigitalCreative\Jaqen\Services\Fields\FieldsData;
+use DigitalCreative\Jaqen\Services\ResourceManager\FilterCollection;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Filters\SampleFilter;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;

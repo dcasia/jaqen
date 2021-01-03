@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen;
+namespace DigitalCreative\Jaqen\Services\Fields;
 
 use Illuminate\Support\Fluent;
 

@@ -11,7 +11,7 @@ class DeleteResourceRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'ids' => 'required|array',
+            'ids' => [ 'required', 'array' ],
         ];
     }
 }

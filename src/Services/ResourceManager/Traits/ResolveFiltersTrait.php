@@ -2,18 +2,14 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Traits;
+namespace DigitalCreative\Jaqen\Services\ResourceManager\Traits;
 
-use DigitalCreative\Jaqen\AbstractFilter;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractFilter;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use Illuminate\Support\Collection;
 
 /**
- * Trait ResolveFiltersTrait
- *
  * @property BaseRequest $request
- *
- * @package DigitalCreative\Dashboard\Traits
  */
 trait ResolveFiltersTrait
 {

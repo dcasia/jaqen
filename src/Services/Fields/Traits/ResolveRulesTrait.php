@@ -2,10 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Traits;
+namespace DigitalCreative\Jaqen\Services\Fields\Traits;
 
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
-use DigitalCreative\Jaqen\Services\Fields\PasswordField;
 
 trait ResolveRulesTrait
 {

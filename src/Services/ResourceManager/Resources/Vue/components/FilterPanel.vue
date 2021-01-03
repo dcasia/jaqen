@@ -38,8 +38,6 @@
         emits: [ 'on-change' ],
         setup(props, { emit }) {
 
-            console.log(props.errors)
-
             const route = useRoute()
             const filters = ref<FiltersResponseInterface[]>([])
 
