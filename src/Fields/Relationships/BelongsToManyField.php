@@ -6,7 +6,7 @@ namespace DigitalCreative\Jaqen\Fields\Relationships;
 
 use DigitalCreative\Jaqen\Concerns\WithEvents;
 use DigitalCreative\Jaqen\Exceptions\BelongsToManyException;
-use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\FieldsCollection;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;

@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers;
 
 use DigitalCreative\Jaqen\Concerns\WithEvents;
-use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\DeleteResourceRequest;
 use Illuminate\Http\Response;
 use RuntimeException;

@@ -40,7 +40,7 @@ class CoreJaqenServiceProvider extends ServiceProvider
             return;
         }
 
-        Route::prefix('jaqen-ui')
+        Route::prefix('jaqen')
              ->get('/{view?}', [ MainController::class, 'index' ])
              ->where('view', '.*');
     }

@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Fixtures\Resources;
 
-use DigitalCreative\Jaqen\Fields\PasswordField;
+use DigitalCreative\Jaqen\Services\Fields\PasswordField;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Fixtures\Filters\FilterWithRequiredFields;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;

@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Tests\Feature\Fields\Relationships;
 
 use DigitalCreative\Jaqen\Exceptions\BelongsToManyException;
-use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToManyField;
 use DigitalCreative\Jaqen\Tests\Factories\RoleFactory;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;

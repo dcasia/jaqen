@@ -7,7 +7,7 @@ namespace DigitalCreative\Jaqen;
 use DigitalCreative\Jaqen\Concerns\WithCustomStore;
 use DigitalCreative\Jaqen\Concerns\WithCustomUpdate;
 use DigitalCreative\Jaqen\Concerns\WithEvents;
-use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use Illuminate\Database\Eloquent\Model;

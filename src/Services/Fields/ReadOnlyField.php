@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Fields;
+namespace DigitalCreative\Jaqen\Services\Fields;
 
 class ReadOnlyField extends AbstractField
 {

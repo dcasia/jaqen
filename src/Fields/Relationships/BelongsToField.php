@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Fields\Relationships;
 
-use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use Illuminate\Database\Eloquent\Builder;

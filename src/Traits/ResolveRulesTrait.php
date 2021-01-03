@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Traits;
 
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Services\Fields\PasswordField;
 
 trait ResolveRulesTrait
 {
@@ -72,7 +73,7 @@ trait ResolveRulesTrait
                 $rules = $this->updateRules ?? $this->rules;
             }
 
-            return is_callable($rules) ? $rules($request) : (array) $rules;
+            return (array) value($rules);
 
         });
     }

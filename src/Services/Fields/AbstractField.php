@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Fields;
+namespace DigitalCreative\Jaqen\Services\Fields;
 
 use DigitalCreative\Jaqen\AbstractFilter;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
@@ -80,7 +80,18 @@ abstract class AbstractField implements JsonSerializable, Arrayable, Potentially
 
     public function isRequired(BaseRequest $request): bool
     {
-        return in_array('required', $this->resolveRules($request), true);
+        $rules = $this->resolveRules($request);
+
+        /**
+         * @todo handle conditional values https://laravel.com/docs/8.x/validation#conditionally-adding-rules
+         */
+        if ((in_array('sometimes', $rules, true) && in_array('required', $rules, true))) {
+
+            return $request->has($this->attribute);
+
+        }
+
+        return in_array('required', $rules, true);
     }
 
     protected function resolveAdditionalInformation(): ?array

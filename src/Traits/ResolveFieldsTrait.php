@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Traits;
 
 use DigitalCreative\Jaqen\Concerns\BehaveAsPanel;
-use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
 use DigitalCreative\Jaqen\FieldsCollection;
 use DigitalCreative\Jaqen\FieldsData;

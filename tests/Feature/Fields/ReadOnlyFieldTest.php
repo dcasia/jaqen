@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Feature\Fields;
 
-use DigitalCreative\Jaqen\Fields\EditableField;
-use DigitalCreative\Jaqen\Fields\ReadOnlyField;
+use DigitalCreative\Jaqen\Services\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\ReadOnlyField;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\TestCase;
 use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;

@@ -15,7 +15,7 @@ class FieldsControllerTest extends TestCase
 
         UserFactory::new()->create();
 
-        $this->get('/jaqen-api/users/fields?fieldsFor=index')
+        $this->get('/jaqen-api/resource/users/fields?fieldsFor=index')
              ->assertStatus(200)
              ->assertJsonFragment([
                  [

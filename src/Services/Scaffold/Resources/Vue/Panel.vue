@@ -17,7 +17,7 @@
 
                 <RouterLink v-for="(item, index) of item.items"
                             :key="index"
-                            :to="item.route || { path: '/' }"
+                            :to="item.route"
                             class="flex items-center px-4 py-2 ml-2 transition-colors duration-75 rounded-l-full cursor-pointer md:py-1 hover:bg-primary hover:font-medium hover:text-white">
 
                     <component v-if="item.icon" :is="item.icon" size="100%" class="w-5 h-5 mr-2 md:h-4 md:w-4"/>
@@ -34,10 +34,9 @@
 
             <div class="flex items-center h-16">
 
-                <RightC
-                    theme="filled"
-                    :class="{ 'rotate-180': subPanelOpen }"
-                    class="transition-transform duration-150 transform"/>
+                <RightC theme="filled"
+                        :class="{ 'rotate-180': subPanelOpen }"
+                        class="transition-transform duration-150 transform"/>
 
             </div>
 

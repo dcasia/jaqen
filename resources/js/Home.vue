@@ -1,6 +1,5 @@
 <template>
     {{ $route.name }}
-    <RouterView name="blog"/>
 </template>
 
 <script lang="ts">

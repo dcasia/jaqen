@@ -2,7 +2,7 @@
 
 namespace DigitalCreative\Jaqen\Tests\Fixtures\Filters;
 
-use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\EditableField;
 
 class FilterWithRequiredFields extends SampleFilter
 {

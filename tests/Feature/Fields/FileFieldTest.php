@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Feature\Fields;
 
-use DigitalCreative\Jaqen\Fields\FileField;
+use DigitalCreative\Jaqen\Services\Fields\FileField;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User;

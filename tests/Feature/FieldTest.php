@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Feature;
 
-use DigitalCreative\Jaqen\Fields\AbstractField;
-use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;

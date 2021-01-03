@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Feature\Fields;
 
-use DigitalCreative\Jaqen\Fields\SelectField;
+use DigitalCreative\Jaqen\Services\Fields\SelectField;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\User as UserResource;
 use DigitalCreative\Jaqen\Tests\TestCase;

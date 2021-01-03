@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Tests\Feature;
 
 use DigitalCreative\Jaqen\Exceptions\FilterValidationException;
-use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\FieldsData;
 use DigitalCreative\Jaqen\FilterCollection;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;

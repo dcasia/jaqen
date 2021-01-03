@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Fields;
+namespace DigitalCreative\Jaqen\Services\Fields;
 
 use DigitalCreative\Jaqen\Concerns\WithEvents;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
@@ -62,7 +62,7 @@ class FileField extends AbstractField implements WithEvents
     {
         $this->pruneFile = $prune;
 
-        $this->beforeDelete(function(Model $model) {
+        $this->beforeDelete(function (Model $model) {
             $this->unlinkAsset($model->getAttribute($this->attribute));
         });
 

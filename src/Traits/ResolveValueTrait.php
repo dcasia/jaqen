@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Traits;
 
-use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Model;
 

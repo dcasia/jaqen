@@ -60,7 +60,7 @@
 
             </div>
 
-            <div class="flex-1 bg-gray-100">
+            <div class="flex-1 bg-gray-100 p-8">
 
                 <slot name="body">
 
@@ -98,36 +98,34 @@
         setup() {
 
             const menu = ref<MenuItemInterface[]>([])
+            const currentRoute = useRoute()
+            const activeItem = ref<MenuItemInterface>()
+            const computedActiveItem = computed(() => {
+                return menu.value.find(item => {
+                    return activeItem.value ? item === activeItem.value : false
+                })
+            })
 
             Api.fetchSidebar().then(result => {
 
                 if (result) {
+
                     menu.value = result
+
+                    /**
+                     * Set initial menu item once menu is loaded
+                     */
+                    activeItem.value = menu.value.find((item: MenuItemInterface) => {
+                        return item.route?.name === currentRoute.name
+                            || item.entries.find(
+                                item => item.items.find(item => item.route?.name === currentRoute.name)
+                            )
+                    })
+
                 }
 
             })
 
-            const currentRoute = useRoute()
-            const activeItem = computed<MenuItemInterface | undefined>(() => {
-
-                return menu.value.find((item: MenuItemInterface) => {
-                    return item.route?.name === currentRoute.name
-                        || item.entries.find(
-                            item => item.items.find(item => item.route?.name === currentRoute.name)
-                        )
-                })
-
-            })
-
-            const computedActiveItem = computed(() => menu.value.find(({ label }) => {
-
-                if (activeItem.value) {
-                    return label === activeItem.value.label
-                }
-
-                return false
-
-            }))
 
             const collapsed = ref(true)
             const isMenuOpen = ref(false)

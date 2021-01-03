@@ -14,15 +14,16 @@ class ResourceLink implements SidebarInterface
     use AuthorizableTrait;
 
     private string $title;
-    private AbstractResource $resource;
+    private string $resource;
     private ?string $icon = null;
     private bool $fixed = false;
+    private bool $topLevel = false;
     private array $entries = [];
 
     public function __construct(string $title, string $resource)
     {
         $this->title = $title;
-        $this->resource = resolve($resource);
+        $this->resource = $resource;
     }
 
     public function icon(string $icon): self
@@ -35,6 +36,13 @@ class ResourceLink implements SidebarInterface
     public function fixed(bool $fixed = true): self
     {
         $this->fixed = $fixed;
+
+        return $this;
+    }
+
+    public function topLevel()
+    {
+        $this->topLevel = true;
 
         return $this;
     }
@@ -54,7 +62,12 @@ class ResourceLink implements SidebarInterface
             'label' => $this->title,
             'icon' => $this->icon,
             'fixed' => $this->fixed,
-            'route' => [ 'name' => 'home' ],
+            'route' => $this->topLevel ? null : [
+                'name' => 'ResourceIndex',
+                'params' => [
+                    'uriKey' => $this->resource::uriKey(),
+                ],
+            ],
             'entries' => $this->entries,
         ];
     }

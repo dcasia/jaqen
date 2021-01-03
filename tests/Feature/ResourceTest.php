@@ -6,7 +6,7 @@ namespace DigitalCreative\Jaqen\Tests\Feature;
 
 use DigitalCreative\Jaqen\Concerns\WithCustomStore;
 use DigitalCreative\Jaqen\Concerns\WithCustomUpdate;
-use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\UpdateResourceRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;

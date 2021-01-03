@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers;
 
-use DigitalCreative\Jaqen\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\FieldsCollection;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\UpdateResourceRequest;
 use Illuminate\Http\JsonResponse;
@@ -41,7 +41,7 @@ class UpdateController extends Controller
                 return $field->isRequired($request) || $field->isDirty();
             });
 
-        return response()->json($fields->update($resource, $model, $request), 200);
+        return response()->json($fields->update($resource, $model, $request));
 
     }
 

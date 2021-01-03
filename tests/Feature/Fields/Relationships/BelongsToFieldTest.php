@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Feature\Fields\Relationships;
 
-use DigitalCreative\Jaqen\Fields\EditableField;
-use DigitalCreative\Jaqen\Fields\ReadOnlyField;
+use DigitalCreative\Jaqen\Services\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\ReadOnlyField;
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
 use DigitalCreative\Jaqen\Http\Controllers\Relationships\BelongsToController;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;

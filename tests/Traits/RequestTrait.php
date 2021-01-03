@@ -4,20 +4,21 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Traits;
 
-use DigitalCreative\Jaqen\Http\Controllers\FieldsController;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\DeleteResourceRequest;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Jaqen\Http\Requests\FieldsResourceRequest;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\IndexResourceRequest;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\StoreResourceRequest;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\UpdateResourceRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\DeleteController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\DetailController;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\FieldsController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\IndexController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\StoreController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\UpdateController;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\DeleteResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\DetailResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\IndexResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\StoreResourceRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\UpdateResourceRequest;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Route;
 use Illuminate\Testing\TestResponse;
 
@@ -39,7 +40,7 @@ trait RequestTrait
         if (is_array($uri)) {
 
             $route = array_key_first($uri);
-            $uri = $uri[$route];
+            $uri = $uri[ $route ];
 
         }
 
@@ -61,7 +62,7 @@ trait RequestTrait
          */
         if (isset($route)) {
 
-            $request->setRouteResolver(static function() use ($route, $method, $request) {
+            $request->setRouteResolver(static function () use ($route, $method, $request) {
                 return (new Route($method, $route, []))->bind($request);
             });
 
@@ -130,6 +131,18 @@ trait RequestTrait
         }
 
         return $this->postJson("/jaqen-api/resource/{$resourceUriKey}{$query}", $data);
+    }
+
+    protected function callUpdate(AbstractResource $resource, Model $model, array $data = [], array $query = []): TestResponse
+    {
+        $query = http_build_query($query);
+        $resourceUriKey = $resource::uriKey();
+
+        if (filled($query)) {
+            $query = "?$query";
+        }
+
+        return $this->patchJson("/jaqen-api/resource/{$resourceUriKey}/{$model->getKey()}{$query}", $data);
     }
 
     public function indexResponse(AbstractResource $resource, array $data = [], array $query = []): array

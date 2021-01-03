@@ -4,7 +4,9 @@ import Home from './Home.vue'
 import './scss/tailwind.scss'
 import 'typeface-roboto'
 
-import Scaffold from '../../src/Services/Scaffold/Resources/Vue/Boostrap'
+import Scaffold from '../../src/Services/Scaffold/Resources/Vue/Bootstrap'
+import ResourceManager from '../../src/Services/ResourceManager/Resources/Vue/Bootstrap'
+import Fields from '../../src/Services/Fields/Resources/Vue/Bootstrap'
 
 const coreDefinition = serviceDefinition({
     routes: [
@@ -18,5 +20,7 @@ const coreDefinition = serviceDefinition({
 
 export default [
     coreDefinition,
-    Scaffold
+    Scaffold,
+    ResourceManager,
+    Fields
 ]

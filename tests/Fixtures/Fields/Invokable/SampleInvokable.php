@@ -5,7 +5,7 @@ namespace DigitalCreative\Jaqen\Tests\Fixtures\Fields\Invokable;
 use App\Dashboard\Resources\BlogResource;
 use App\Dashboard\Resources\UserResource;
 use App\Models\User;
-use DigitalCreative\Jaqen\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\EditableField;
 
 class SampleInvokable
 {

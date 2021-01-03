@@ -2,10 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Http\Controllers;
+namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers;
 
 use DigitalCreative\Jaqen\Http\Requests\FieldsResourceRequest;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 
 class FieldsController extends Controller
