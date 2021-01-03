@@ -33,10 +33,10 @@
         extends: EditableField,
         setup(props, context) {
 
-            const model = ref('')
+            const model = ref(props.value ?? '')
 
             return {
-                ...EditableField.setup(props, context),
+                ...EditableField.setup!(props, context),
                 model,
                 getValue() {
                     return model.value

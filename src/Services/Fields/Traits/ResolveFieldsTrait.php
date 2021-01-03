@@ -68,8 +68,8 @@ trait ResolveFieldsTrait
 
             $for = $for ?? Str::camel($request->input('fieldsFor', 'fields'));
 
-            $only = $request->input('only', null);
-            $except = $request->input('except', null);
+            $only = $request->input('only');
+            $except = $request->input('except');
 
             /**
              * If fields has been set through ->fieldsFor()

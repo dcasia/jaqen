@@ -33,11 +33,11 @@ abstract class AbstractFilter implements JsonSerializable
         );
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'uriKey' => static::uriKey(),
-            'fields' => $this->resolveFields(app(BaseRequest::class)),
+            'fields' => $this->resolveFields($this->getRequest()),
         ];
     }
 

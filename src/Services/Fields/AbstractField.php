@@ -50,7 +50,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable, Potentially
         if ($resource instanceof AbstractResource) {
             $this->setParentResource($resource);
         } else if ($resource instanceof AbstractFilter) {
-            //
+            $this->resolveValueFromArray([ $this->attribute => $this->defaultCallback ], $request);
         }
     }
 

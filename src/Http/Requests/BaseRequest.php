@@ -36,7 +36,8 @@ class BaseRequest extends FormRequest
 
     public function isSchemaFetching(): bool
     {
-        return $this instanceof FieldsResourceRequest;
+        return $this instanceof FieldsResourceRequest
+            || $this instanceof FilterRequest;
     }
 
     public function isStoringResourceToDatabase(): bool

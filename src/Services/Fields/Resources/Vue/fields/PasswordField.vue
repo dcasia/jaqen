@@ -8,7 +8,7 @@
         extends: EditableField,
         setup(...data) {
             return {
-                ...EditableField.setup(...data),
+                ...EditableField.setup!(...data),
                 includeIfNull: false,
                 type: 'password'
             }

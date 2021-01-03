@@ -74,6 +74,7 @@ trait ResolveValueTrait
      *
      * @param array $data
      * @param BaseRequest $request
+     *
      * @return $this
      */
     public function hydrateFromArray(array $data, BaseRequest $request): self
