@@ -7,20 +7,12 @@ namespace DigitalCreative\Jaqen\Tests\Traits;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Http\Requests\FieldsResourceRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\DeleteController;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\DetailController;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\FieldsController;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\IndexController;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\StoreController;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\UpdateController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\DeleteResourceRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\DetailResourceRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\IndexResourceRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\StoreResourceRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\UpdateResourceRequest;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Route;
-use Illuminate\Testing\TestResponse;
 
 trait RequestTrait
 {
@@ -116,36 +108,6 @@ trait RequestTrait
     protected function blankRequest(array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest('/', 'GET', $data, $query, BaseRequest::class);
-    }
-
-    public function indexResponse(AbstractResource $resource, array $data = [], array $query = []): array
-    {
-        return (new IndexController())->handle($this->indexRequest($resource, $data, $query))->getData(true);
-    }
-
-    public function storeResponse(AbstractResource $resource, array $data = [], array $query = []): array
-    {
-        return (new StoreController())->handle($this->storeRequest($resource, $data, $query))->getData(true);
-    }
-
-    public function updateResponse(AbstractResource $resource, int $key, array $data = [], array $query = []): bool
-    {
-        return (new UpdateController())->handle($this->updateRequest($resource, $key, $data, $query))->getData(true);
-    }
-
-    public function detailResponse(AbstractResource $resource, int $key, array $data = [], array $query = []): array
-    {
-        return (new DetailController())->handle($this->detailRequest($resource, $key, $data, $query))->getData(true);
-    }
-
-    public function deleteResponse(AbstractResource $resource, array $keys, array $data = [], array $query = []): void
-    {
-        (new DeleteController())->handle($this->deleteRequest($resource, $keys, $data, $query));
-    }
-
-    public function fieldsResponse(AbstractResource $resource, array $data = [], array $query = []): array
-    {
-        return (new FieldsController())->fields($this->fieldsRequest($resource, $data, $query))->getData(true);
     }
 
 }

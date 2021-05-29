@@ -10,13 +10,10 @@ use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article as ArticleModel;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\MinimalUserResource;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\PhoneResource;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\RelationshipRequestTrait;
 use Illuminate\Validation\ValidationException;
 
 class HasOneFieldTest extends TestCase
 {
-
-    use RelationshipRequestTrait;
 
     public function test_it_create_related_resource_correctly(): void
     {
@@ -27,7 +24,7 @@ class HasOneFieldTest extends TestCase
                          );
 
         $this->resourceStoreApi($resource, [ 'phone' => [ 'number' => 123456 ] ])
-             ->assertStatus(201)
+             ->assertCreated()
              ->assertJson([
                  'id' => 1,
                  'phone' => [
@@ -50,7 +47,7 @@ class HasOneFieldTest extends TestCase
                          );
 
         $this->resourceIndexApi($resource)
-             ->assertStatus(200)
+             ->assertOk()
              ->assertJsonPath('resources.0.key', $user->id)
              ->assertJsonPath('resources.0.fields.0.value', $user->phone->id)
              ->assertJsonPath('resources.0.fields.0.relatedResource.fields.0.value', $user->phone->number);
@@ -83,7 +80,7 @@ class HasOneFieldTest extends TestCase
                          );
 
         $this->resourceFieldsApi($resource)
-             ->assertStatus(200)
+             ->assertOk()
              ->assertJson([
                  [
                      'label' => 'User',

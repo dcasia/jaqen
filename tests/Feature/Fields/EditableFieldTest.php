@@ -29,7 +29,7 @@ class EditableFieldTest extends TestCase
                              EditableField::make('Password')->rulesForCreate('required'),
                          );
 
-        $this->storeResponse($resource, $data);
+        $this->resourceStoreApi($resource, $data)->assertCreated();
 
         $this->assertDatabaseHas('users', $data);
 
@@ -47,7 +47,8 @@ class EditableFieldTest extends TestCase
                              new EditableField('Gender'),
                          );
 
-        $this->updateResponse($resource, $user->id, [ 'name' => 'updated' ]);
+        $this->resourceUpdateApi($resource, key: $user->id, data: [ 'name' => 'updated' ])
+             ->assertOk();
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,

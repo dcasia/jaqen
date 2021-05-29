@@ -19,14 +19,16 @@ class FieldTest extends TestCase
     public function test_field_validation_on_create_works(): void
     {
 
+        $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
         $resource = $this->makeResource()
                          ->addDefaultFields(
-                             (new EditableField('name'))->rulesForCreate('required')
+                             EditableField::make('Name')->rulesForCreate('required')
                          );
 
-        $this->storeResponse($resource, [ 'name' => null ]);
+        $this->resourceStoreApi($resource, [ 'name' => null ])
+             ->assertCreated();
 
     }
 
@@ -35,28 +37,30 @@ class FieldTest extends TestCase
 
         $user = UserFactory::new()->create();
 
-        $this->expectException(ValidationException::class);
-
         $resource = $this->makeResource()
                          ->addDefaultFields(
-                             (new EditableField('name'))->rulesForUpdate('required')
+                             EditableField::make('name')->rulesForUpdate('required')
                          );
 
-        $this->updateResponse($resource, $user->id, [ 'name' => null ]);
+        $this->withoutExceptionHandling();
+        $this->expectException(ValidationException::class);
+
+        $this->resourceUpdateApi($resource, key: $user->id, data: [ 'name' => null ]);
 
     }
 
     public function test_fields_are_validate_even_if_they_are_not_sent_on_the_request(): void
     {
 
+        $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
         $resource = $this->makeResource()
                          ->addDefaultFields(
-                             (new EditableField('name'))->rulesForCreate('required')
+                             EditableField::make('Name')->rulesForCreate('required')
                          );
 
-        $this->storeResponse($resource);
+        $this->resourceStoreApi($resource);
 
     }
 
@@ -65,15 +69,16 @@ class FieldTest extends TestCase
 
         $user = UserFactory::new()->create();
 
+        $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
         $resource = $this->makeResource()
                          ->addDefaultFields(
-                             (new EditableField('name'))->rulesForUpdate('required'),
-                             (new EditableField('email'))->rulesForUpdate('required')
+                             EditableField::make('Name')->rulesForUpdate('required'),
+                             EditableField::make('email')->rulesForUpdate('required')
                          );
 
-        $this->updateResponse($resource, $user->id, [ 'name' => 'Test' ]);
+        $this->resourceUpdateApi($resource, $user->id, [ 'name' => 'Test' ]);
 
     }
 
@@ -83,22 +88,20 @@ class FieldTest extends TestCase
         $resource = $this->makeResource()
                          ->fieldsFor('index-listing', function () {
                              return [
-                                 new EditableField('name'),
+                                 EditableField::make('Name'),
                              ];
                          });
 
-        $request = $this->fieldsRequest($resource, [ 'fieldsFor' => 'index-listing' ]);
-        $response = $resource->resolveFields($request)->toArray();
-
-        $this->assertEquals([
-            [
-                'label' => 'name',
-                'attribute' => 'name',
-                'value' => null,
-                'component' => 'editable-field',
-                'additionalInformation' => null,
-            ],
-        ], $response);
+        $this->resourceFieldsApi($resource, fieldsFor: 'index-listing')
+             ->assertJson([
+                 [
+                     'label' => 'Name',
+                     'attribute' => 'name',
+                     'value' => null,
+                     'component' => 'editable-field',
+                     'additionalInformation' => null,
+                 ],
+             ]);
 
     }
 
@@ -115,7 +118,7 @@ class FieldTest extends TestCase
             public function fieldsForDemo(): array
             {
                 return [
-                    new EditableField('name'),
+                    EditableField::make('Name'),
                 ];
             }
 
@@ -126,7 +129,7 @@ class FieldTest extends TestCase
 
         $this->assertEquals([
             [
-                'label' => 'name',
+                'label' => 'Name',
                 'attribute' => 'name',
                 'value' => null,
                 'component' => 'editable-field',

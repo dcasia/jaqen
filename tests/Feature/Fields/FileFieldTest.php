@@ -45,7 +45,8 @@ class FileFieldTest extends TestCase
          */
         $user = UserModel::first();
 
-        $this->updateResponse($resource, $user->id, [ 'name' => $user->name ]);
+        $this->resourceUpdateApi($resource, $user->id, [ 'name' => $user->name ])
+             ->assertOk();
 
         $this->assertStringEndsWith('.bin', $user->fresh()->name);
 
@@ -69,7 +70,8 @@ class FileFieldTest extends TestCase
         $this->assertStringEndsWith('.bin', $user->name);
         $storage->assertExists($user->name);
 
-        $this->updateResponse($resource, $user->id, [ 'name' => null ]);
+        $this->resourceUpdateApi($resource, $user->id, [ 'name' => null ])
+             ->assertOk();
 
         /**
          * Ensure file got removed
@@ -98,7 +100,8 @@ class FileFieldTest extends TestCase
 
         $storage->assertMissing($user->name);
 
-        $this->deleteResponse($resource, [ $user->id ]);
+        $this->resourceDestroyApi($resource, ids: [ $user->id ])
+             ->assertNoContent();
 
         $storage->assertMissing($user->name);
         $this->assertNull($user->fresh());
@@ -115,7 +118,8 @@ class FileFieldTest extends TestCase
                                       ->pruneFile()
                          );
 
-        $this->storeResponse($resource, [ 'name' => UploadedFile::fake()->image('name') ]);
+        $this->resourceStoreApi($resource, [ 'name' => UploadedFile::fake()->image('name') ])
+             ->assertCreated();
 
         return $resource;
 

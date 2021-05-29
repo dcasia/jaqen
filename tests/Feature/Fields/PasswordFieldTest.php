@@ -19,9 +19,9 @@ class PasswordFieldTest extends TestCase
         $resource = $this->makeResource()
                          ->addDefaultFields(PasswordField::make('Password'));
 
-        $response = $this->updateResponse($resource, $user->id);
-
-        $this->assertNull(data_get($response, 'fields.0.value'));
+        $this->resourceUpdateApi($resource, $user->id)
+             ->assertOk()
+             ->assertJsonPath('fields.0.value', null);
 
     }
 

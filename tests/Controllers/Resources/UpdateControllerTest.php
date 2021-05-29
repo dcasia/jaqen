@@ -26,7 +26,7 @@ class UpdateControllerTest extends TestCase
 
         $this->registerResource(User::class);
         $this->resourceUpdateApi(User::class, key: $user->id, data: $data)
-             ->assertStatus(200);
+             ->assertOk();
 
         $this->assertDatabaseHas('users', $data);
 
@@ -39,7 +39,7 @@ class UpdateControllerTest extends TestCase
 
         $this->registerResource(User::class);
         $this->resourceUpdateApi(User::class, key: $user->id, data: [ 'id' => 2 ])
-             ->assertStatus(200);
+             ->assertOk();
 
         $this->assertDatabaseHas('users', [
             'id' => 1,
@@ -64,7 +64,7 @@ class UpdateControllerTest extends TestCase
             'title' => 'Avoid updating the content intentionally, as it has `sometimes` rules.',
         ];
 
-        $this->resourceUpdateApi($resource, key: $article->id, data: $data)->assertStatus(200);
+        $this->resourceUpdateApi($resource, key: $article->id, data: $data)->assertOk();
 
         /**
          * Try to update again but now sending a content key with null value

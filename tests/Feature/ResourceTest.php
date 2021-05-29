@@ -59,9 +59,9 @@ class ResourceTest extends TestCase
 
         $this->registerResource($resource);
 
-        $response = $this->storeResponse($resource, [ 'name' => 'test' ]);
-
-        $this->assertEquals([ 'test' => 123 ], $response);
+        $this->resourceStoreApi($resource, [ 'name' => 'test' ])
+             ->assertCreated()
+             ->assertJson([ 'test' => 123 ]);
     }
 
     public function test_custom_update_works(): void
@@ -98,9 +98,9 @@ class ResourceTest extends TestCase
 
         $user = UserFactory::new()->create();
 
-        $response = $this->updateResponse($resource, $user->getKey(), [ 'name' => 'test' ]);
+        $this->resourceUpdateApi($resource, $user->getKey(), [ 'name' => 'test' ])
+             ->assertOk();
 
-        $this->assertTrue($response);
     }
 
 }

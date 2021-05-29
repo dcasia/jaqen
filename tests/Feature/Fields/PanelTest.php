@@ -43,18 +43,18 @@ class PanelTest extends TestCase
         /**
          * Index Controller
          */
-        $indexResponse = $this->indexResponse($resource);
+        $indexResponse = $this->resourceIndexApi($resource);
 
-        $this->assertEquals('panel', data_get($indexResponse, 'resources.0.fields.0.component'));
-        $this->assertEquals('hello world', data_get($indexResponse, 'resources.0.fields.0.value.0.value'));
+        $indexResponse->assertJsonPath('resources.0.fields.0.component', 'panel');
+        $indexResponse->assertJsonPath('resources.0.fields.0.value.0.value', 'hello world');
 
         /**
          * Detail Controller
          */
-        $detailResponse = $this->detailResponse($resource, $user->getKey());
+        $detailResponse = $this->resourceShowApi($resource, $user->getKey());
 
-        $this->assertEquals('panel', data_get($detailResponse, 'fields.0.component'));
-        $this->assertEquals('hello world', data_get($detailResponse, 'fields.0.value.0.value'));
+        $detailResponse->assertJsonPath('fields.0.component', 'panel');
+        $detailResponse->assertJsonPath('fields.0.value.0.value', 'hello world');
 
     }
 
@@ -78,7 +78,7 @@ class PanelTest extends TestCase
                              ])
                          );
 
-        $this->storeResponse($resource, $data);
+        $this->resourceStoreApi($resource, $data)->assertCreated();
 
         $this->assertDatabaseHas('users', $data);
 
@@ -100,7 +100,7 @@ class PanelTest extends TestCase
                              ])
                          );
 
-        $this->updateResponse($resource, $user->getKey(), $data);
+        $this->resourceUpdateApi($resource, $user->getKey(), $data)->assertOk();
 
         $this->assertDatabaseHas('users', $data);
 

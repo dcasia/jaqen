@@ -32,7 +32,7 @@ class StoreControllerTest extends TestCase
                          );
 
         $this->resourceStoreApi($resource, $data)
-             ->assertStatus(201)
+             ->assertCreated()
              ->assertJson($data);
 
         $this->assertDatabaseHas('users', $data);
@@ -52,7 +52,7 @@ class StoreControllerTest extends TestCase
                          ->useRepository($repository);
 
         $this->resourceStoreApi($resource)
-             ->assertStatus(201)
+             ->assertCreated()
              ->assertJsonFragment([ 'id' => $user->id ]);
 
     }

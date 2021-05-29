@@ -22,7 +22,7 @@ class DeleteControllerTest extends TestCase
 
         $this->registerResource(UserResource::class);
         $this->resourceDestroyApi(UserResource::class, ids: [ $user->id ])
-             ->assertStatus(204);
+             ->assertNoContent();
 
         $this->assertDatabaseMissing('users', $data);
     }
@@ -35,7 +35,7 @@ class DeleteControllerTest extends TestCase
 
         $this->registerResource(UserResource::class);
         $this->resourceDestroyApi(UserResource::class, ids: $users->pluck('id')->toArray())
-             ->assertStatus(204);
+             ->assertNoContent();
 
         $this->assertDatabaseCount('users', 1);
     }

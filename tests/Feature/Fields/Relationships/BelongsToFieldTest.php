@@ -16,15 +16,12 @@ use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article as ArticleModel;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\MinimalUserResource;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\RelationshipRequestTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Mockery\MockInterface;
 
 class BelongsToFieldTest extends TestCase
 {
-
-    use RelationshipRequestTrait;
 
     public function test_index_listing_works(): void
     {
@@ -122,7 +119,7 @@ class BelongsToFieldTest extends TestCase
                          ->addDefaultFields(BelongsToField::make('User'));
 
         $this->resourceUpdateApi($resource, key: $article->id, data: [ 'user_id' => $user->id ])
-             ->assertStatus(200);
+             ->assertOk();
 
         $this->assertDatabaseHas('articles', [
             'id' => $article->id,
@@ -243,7 +240,7 @@ class BelongsToFieldTest extends TestCase
                          ->addDefaultFields($field);
 
         $this->belongsToSearchApi($resource, $field, [ 'id' => $user->id ])
-             ->assertStatus(404);
+             ->assertNotFound();
 
     }
 
@@ -286,7 +283,7 @@ class BelongsToFieldTest extends TestCase
                          ->with($with)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        $this->resourceShowApi($resource, $article->id)->assertStatus(200);
+        $this->resourceShowApi($resource, $article->id)->assertOk();
 
     }
 
@@ -308,7 +305,7 @@ class BelongsToFieldTest extends TestCase
                          ->with($with)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        $this->resourceShowApi($resource, $article->id)->assertStatus(200);
+        $this->resourceShowApi($resource, $article->id)->assertOk();
 
     }
 

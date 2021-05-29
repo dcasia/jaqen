@@ -16,7 +16,7 @@ class FiltersControllerTest extends TestCase
         $this->registerResource(UserResource::class);
 
         $this->resourceFiltersApi(UserResource::class)
-             ->assertStatus(200)
+             ->assertOk()
              ->assertJsonStructure([
                  [
                      'uriKey',

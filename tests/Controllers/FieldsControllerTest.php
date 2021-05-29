@@ -16,7 +16,7 @@ class FieldsControllerTest extends TestCase
         $this->registerResource(User::class);
 
         $this->resourceFieldsApi(User::class, fieldsFor: 'index')
-             ->assertStatus(200)
+             ->assertOk()
              ->assertJsonCount(1)
              ->assertJsonFragment([
                  [

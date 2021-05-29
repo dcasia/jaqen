@@ -21,7 +21,7 @@ class ResourceControllerTest extends TestCase
         $this->registerResource(UserResource::class);
 
         $this->resourcesApi()
-             ->assertStatus(200)
+             ->assertOk()
              ->assertJson([
                  [
                      'name' => 'User',
@@ -58,7 +58,7 @@ class ResourceControllerTest extends TestCase
         });
 
         $this->resourcesApi()
-             ->assertStatus(200)
+             ->assertOk()
              ->assertJson([
                  [
                      'name' => 'sample-name',

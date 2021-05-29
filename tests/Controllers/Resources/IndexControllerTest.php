@@ -56,7 +56,7 @@ class IndexControllerTest extends TestCase
         $this->registerResource(User::class);
 
         $this->resourceIndexApi(User::class, filters: $filters)
-             ->assertStatus(200)
+             ->assertOk()
              ->assertJsonCount(5, 'resources')
              ->assertJsonFragment([
                  'total' => 5,
@@ -94,7 +94,7 @@ class IndexControllerTest extends TestCase
         $this->registerResource(User::class);
 
         $this->resourceIndexApi(User::class, fieldsFor: 'index')
-             ->assertStatus(200)
+             ->assertOk()
              ->assertJsonFragment([
                  'total' => 1,
                  'resources' => [
@@ -123,7 +123,7 @@ class IndexControllerTest extends TestCase
         $this->registerResource(User::class);
 
         $this->resourceIndexApi(User::class, fieldsFor: 'index')
-             ->assertStatus(200)
+             ->assertOk()
              ->assertJsonPath('resources.0.fields.0.value', $users->first()->id)
              ->assertJsonPath('resources.1.fields.0.value', $users->last()->id);
 
@@ -137,7 +137,7 @@ class IndexControllerTest extends TestCase
         $this->registerResource(User::class);
 
         $this->resourceIndexApi(User::class, page: 2)
-             ->assertStatus(200)
+             ->assertOk()
              ->assertJsonFragment([
                  'total' => 30,
                  'from' => 16,

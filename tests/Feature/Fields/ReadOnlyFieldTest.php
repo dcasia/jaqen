@@ -24,7 +24,8 @@ class ReadOnlyFieldTest extends TestCase
                              ReadOnlyField::make('Gender'),
                          );
 
-        $this->updateResponse($resource, $user->id, [ 'name' => 'updated' ]);
+        $this->resourceUpdateApi($resource, $user->id, [ 'name' => 'updated' ])
+             ->assertOk();
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,

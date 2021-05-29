@@ -23,7 +23,8 @@ class ResourceEventTest extends TestCase
                              return [ 'name' => 'hello' ];
                          });
 
-        $this->storeResponse($resource, [ 'name' => 'ignored' ]);
+        $this->resourceStoreApi($resource, [ 'name' => 'ignored' ])
+             ->assertCreated();
 
         $this->assertDatabaseHas('users', [ 'name' => 'hello' ]);
 
@@ -39,9 +40,9 @@ class ResourceEventTest extends TestCase
                              return [ 'success' => true ];
                          });
 
-        $response = $this->storeResponse($resource, [ 'name' => 'ignored' ]);
-
-        $this->assertEquals([ 'success' => true ], $response);
+        $this->resourceStoreApi($resource, [ 'name' => 'ignored' ])
+             ->assertCreated()
+             ->assertJson([ 'success' => true ]);
 
     }
 
@@ -60,9 +61,9 @@ class ResourceEventTest extends TestCase
                              return array_merge($data, [ 'appended' => true ]);
                          });
 
-        $response = $this->storeResponse($resource, [ 'name' => 'ignored' ]);
-
-        $this->assertEquals([ 'success' => true, 'appended' => true ], $response);
+        $this->resourceStoreApi($resource, [ 'name' => 'ignored' ])
+             ->assertCreated()
+             ->assertJson([ 'success' => true, 'appended' => true ]);
 
     }
 
@@ -79,7 +80,8 @@ class ResourceEventTest extends TestCase
                              return [ 'name' => 'hello' ];
                          });
 
-        $this->updateResponse($resource, $user->id, [ 'name' => 'ignored' ]);
+        $this->resourceUpdateApi($resource, $user->id, [ 'name' => 'ignored' ])
+             ->assertOk();
 
         $this->assertDatabaseHas('users', [ 'name' => 'hello' ]);
 
@@ -95,7 +97,8 @@ class ResourceEventTest extends TestCase
                              $this->assertEquals($user->getKey(), $model->getKey());
                          });
 
-        $this->updateResponse($resource, $user->id, [ 'name' => 'ignored' ]);
+        $this->resourceUpdateApi($resource, $user->id, [ 'name' => 'ignored' ])
+             ->assertOk();
 
     }
 
@@ -109,7 +112,8 @@ class ResourceEventTest extends TestCase
                              $this->assertEquals($user->getKey(), $model->getKey());
                          });
 
-        $this->deleteResponse($resource, [ $user->id ]);
+        $this->resourceDestroyApi($resource, [ $user->id ])
+             ->assertNoContent();
 
     }
 
@@ -124,13 +128,14 @@ class ResourceEventTest extends TestCase
                              $this->assertFalse($model->exists);
                          });
 
-        $this->deleteResponse($resource, [ $user->id ]);
+        $this->resourceDestroyApi($resource, [ $user->id ])
+             ->assertNoContent();
 
     }
 
     private function getPreConfiguredResource(): AbstractResource
     {
-        return $this->makeResource()->addDefaultFields(new EditableField('Name'));
+        return $this->makeResource()->addDefaultFields(EditableField::make('Name'));
     }
 
 }

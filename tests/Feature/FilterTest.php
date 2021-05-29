@@ -36,11 +36,10 @@ class FilterTest extends TestCase
                          ->addDefaultFields(new EditableField('name'))
                          ->addFilters($filter);
 
-        $response = $this->indexResponse($resource, [], [ 'filters' => FilterCollection::fake([ $filter::uriKey() => null ]) ]);
-
-        $this->assertSame(data_get($response, 'total'), 1);
-        $this->assertEquals($user->id, data_get($response, 'resources.0.key'));
-        $this->assertEquals($user->name, data_get($response, 'resources.0.fields.0.value'));
+        $this->resourceIndexApi($resource, filters: FilterCollection::fake([ $filter::uriKey() => null ]))
+             ->assertJsonPath('total', 1)
+             ->assertJsonPath('resources.0.key', $user->id)
+             ->assertJsonPath('resources.0.fields.0.value', $user->name);
 
     }
 
@@ -65,10 +64,11 @@ class FilterTest extends TestCase
 
         $resource = $this->makeResource()->addFilters($filter);
 
+        $this->withoutExceptionHandling();
         $this->expectException(FilterValidationException::class);
 
-        $this->indexResponse(
-            $resource, [], [ 'filters' => FilterCollection::fake([ $filter::uriKey() => null ]) ]
+        $this->resourceIndexApi(
+            $resource, filters: FilterCollection::fake([ $filter::uriKey() => null ])
         );
 
     }
@@ -105,9 +105,10 @@ class FilterTest extends TestCase
 
         $resource = $this->makeResource()->addFilters($filter1, $filter2);
 
+        $this->withoutExceptionHandling();
         $this->expectException(FilterValidationException::class);
 
-        $this->indexResponse($resource, [], [ 'filters' => $filters ]);
+        $this->resourceIndexApi($resource, filters: $filters);
 
     }
 
@@ -156,7 +157,8 @@ class FilterTest extends TestCase
 
         $resource = $this->makeResource()->addFilters($filter);
 
-        $this->indexResponse($resource, [ 'filters' => $filters ]);
+        $this->resourceIndexApi($resource, filters: $filters)
+             ->assertOk();
 
     }
 

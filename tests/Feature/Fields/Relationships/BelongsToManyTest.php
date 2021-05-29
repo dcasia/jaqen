@@ -10,14 +10,11 @@ use DigitalCreative\Jaqen\Tests\Factories\RoleFactory;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\RoleResource;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\RelationshipRequestTrait;
 use Illuminate\Database\Eloquent\RelationNotFoundException;
 use Illuminate\Validation\ValidationException;
 
 class BelongsToManyTest extends TestCase
 {
-
-    use RelationshipRequestTrait;
 
     public function test_it_returns_correct_data_on_fields_api(): void
     {
@@ -530,7 +527,7 @@ class BelongsToManyTest extends TestCase
             ],
         ];
 
-        $this->resourceUpdateApi($resource, $user->id, $updatedData)->assertStatus(200);
+        $this->resourceUpdateApi($resource, $user->id, $updatedData)->assertOk();
 
         $this->assertDatabaseHas('roles', [ 'id' => 1, 'name' => 'admin-a' ]);
         $this->assertDatabaseHas('roles', [ 'id' => 2, 'name' => 'admin-b' ]);

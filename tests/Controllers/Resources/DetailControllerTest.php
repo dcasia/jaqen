@@ -19,7 +19,7 @@ class DetailControllerTest extends TestCase
         $this->registerResource(User::class);
 
         $this->resourceShowApi(User::class, key: $user->id)
-             ->assertStatus(200)
+             ->assertOk()
              ->assertJsonStructure([
                  'key',
                  'fields' => [
