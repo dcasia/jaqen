@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Services\Fields;
+namespace DigitalCreative\Jaqen\Services\Fields\Fields;
 
 use DigitalCreative\Jaqen\Concerns\WithCustomStore;
 use DigitalCreative\Jaqen\Concerns\WithCustomUpdate;
@@ -12,10 +12,10 @@ use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
-use Illuminate\Validation\ValidationException;
 
 class FieldsCollection extends Collection
 {
+
     public function resolveData(): array
     {
         return $this->filter(fn(PotentiallyMissing $field) => !$field->isMissing())

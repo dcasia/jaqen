@@ -6,7 +6,7 @@ namespace DigitalCreative\Jaqen\Tests\Feature\Fields\Relationships;
 
 use DigitalCreative\Jaqen\Exceptions\BelongsToManyException;
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToManyField;
-use DigitalCreative\Jaqen\Services\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\EditableField;
 use DigitalCreative\Jaqen\Tests\Factories\RoleFactory;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\RoleResource;

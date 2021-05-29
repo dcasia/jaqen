@@ -5,11 +5,11 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Services\Fields\Traits;
 
 use DigitalCreative\Jaqen\Concerns\BehaveAsPanel;
-use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
-use DigitalCreative\Jaqen\Services\Fields\FieldsCollection;
-use DigitalCreative\Jaqen\Services\Fields\FieldsData;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\FieldsCollection;
+use DigitalCreative\Jaqen\Services\Fields\FieldsData;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use LogicException;
@@ -60,11 +60,12 @@ trait ResolveFieldsTrait
      *
      * @param BaseRequest $request
      * @param string|null $for
+     *
      * @return FieldsCollection
      */
     public function resolveFields(BaseRequest $request, ?string $for = null): FieldsCollection
     {
-        return once(function() use ($request, $for) {
+        return once(function () use ($request, $for) {
 
             $for = $for ?? Str::camel($request->input('fieldsFor', 'fields'));
 
@@ -125,9 +126,9 @@ trait ResolveFieldsTrait
             }
 
             return (new FieldsCollection($fields))
-                ->when($request->isStoringResourceToDatabase(), function(FieldsCollection $fields) {
+                ->when($request->isStoringResourceToDatabase(), function (FieldsCollection $fields) {
 
-                    return $fields->flatMap(function(AbstractField $field) {
+                    return $fields->flatMap(function (AbstractField $field) {
 
                         if ($field instanceof BehaveAsPanel) {
 
@@ -140,12 +141,12 @@ trait ResolveFieldsTrait
                     });
 
                 })
-                ->when($only, function(FieldsCollection $fields, string $only) {
+                ->when($only, function (FieldsCollection $fields, string $only) {
                     return $fields->filter(
                         fn(AbstractField $field) => $this->stringContains($only, $field->attribute)
                     );
                 })
-                ->when($except, function(FieldsCollection $fields, string $except) {
+                ->when($except, function (FieldsCollection $fields, string $except) {
                     return $fields->filter(
                         fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
                     );
@@ -219,7 +220,7 @@ trait ResolveFieldsTrait
     public function findFieldByAttribute(BaseRequest $request, string $attribute): ?AbstractField
     {
         return $this->resolveFields($request)
-                    ->first(function(AbstractField $field) use ($attribute) {
+                    ->first(function (AbstractField $field) use ($attribute) {
 
                         if ($field instanceof BelongsToField) {
 

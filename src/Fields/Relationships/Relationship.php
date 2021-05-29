@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Fields\Relationships;
 
-use DigitalCreative\Jaqen\Services\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
 
 abstract class Relationship extends AbstractField
 {

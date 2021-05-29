@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Tests\Controllers\Resources;
 
 use DigitalCreative\Jaqen\Repository\Repository;
-use DigitalCreative\Jaqen\Services\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\EditableField;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\TestCase;
 use Mockery\MockInterface;

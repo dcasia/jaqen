@@ -12,9 +12,16 @@ class ResourceManager
 
     private Collection $resources;
 
+    public function __construct()
+    {
+        $this->resources = collect();
+    }
+
     public function setResources(array $resources): self
     {
-        $this->resources = collect($resources)->mapWithKeys(fn($resource) => [ $resource::uriKey() => $resource ]);
+        $this->resources = $this->resources
+            ->merge($resources)
+            ->mapWithKeys(fn($resource) => [ $resource::uriKey() => $resource ]);
 
         return $this;
     }

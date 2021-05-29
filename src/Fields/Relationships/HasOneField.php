@@ -5,8 +5,8 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Fields\Relationships;
 
 use DigitalCreative\Jaqen\Concerns\WithEvents;
-use DigitalCreative\Jaqen\Services\Fields\AbstractField;
-use DigitalCreative\Jaqen\Services\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\EditableField;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;

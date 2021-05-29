@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Http\Controllers\Relationships;
+namespace DigitalCreative\Jaqen\Services\Fields\Http\Controllers;
 
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
 use DigitalCreative\Jaqen\Http\Requests\BelongsToResourceRequest;
@@ -16,6 +16,7 @@ class BelongsToController extends Controller
 
     public function searchBelongsTo(BelongsToResourceRequest $request): JsonResponse
     {
+
         $resource = $this->resourceManager->resourceForRequest($request);
 
         $fieldAttribute = Str::of($request->route('field'))->before('_id')->__toString();

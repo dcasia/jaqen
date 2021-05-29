@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Traits;
 
+use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use Illuminate\Testing\TestResponse;
 
@@ -79,6 +80,13 @@ trait ApiTrait
     public function resourcesApi(): TestResponse
     {
         return $this->getJson(route('jaqen.resources'));
+    }
+
+    public function belongsToSearchApi(AbstractResource|string $resource, BelongsToField $field, array $data): TestResponse
+    {
+        return $this->getJson(
+            route('jaqen.fields.belongs-to', [ 'resource' => $resource::uriKey(), 'field' => $field->getRelationAttribute() ] + $data),
+        );
     }
 
 }

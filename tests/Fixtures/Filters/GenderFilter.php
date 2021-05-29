@@ -3,7 +3,7 @@
 namespace DigitalCreative\Jaqen\Tests\Fixtures\Filters;
 
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractFilter;
-use DigitalCreative\Jaqen\Services\Fields\SelectField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\SelectField;
 use DigitalCreative\Jaqen\Services\Fields\FieldsData;
 use Illuminate\Database\Eloquent\Builder;
 

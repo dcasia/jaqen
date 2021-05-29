@@ -6,8 +6,8 @@ namespace DigitalCreative\Jaqen\Fields\Relationships;
 
 use DigitalCreative\Jaqen\Concerns\WithEvents;
 use DigitalCreative\Jaqen\Exceptions\BelongsToManyException;
-use DigitalCreative\Jaqen\Services\Fields\AbstractField;
-use DigitalCreative\Jaqen\Services\Fields\FieldsCollection;
+use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\FieldsCollection;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Traits\EventsTrait;

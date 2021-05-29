@@ -6,7 +6,7 @@ namespace DigitalCreative\Jaqen\Fields;
 
 use DigitalCreative\Jaqen\Concerns\BehaveAsPanel;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
-use DigitalCreative\Jaqen\Services\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
 
 class Panel extends AbstractField implements BehaveAsPanel
 {

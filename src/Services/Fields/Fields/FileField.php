@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace DigitalCreative\Jaqen\Services\Fields;
+namespace DigitalCreative\Jaqen\Services\Fields\Fields;
 
 use DigitalCreative\Jaqen\Concerns\WithEvents;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;

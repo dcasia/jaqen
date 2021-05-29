@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Fields\Relationships;
 
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
-use DigitalCreative\Jaqen\Services\Fields\AbstractField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -139,21 +139,21 @@ class BelongsToField extends Relationship
 
         /**
          * @todo try to abstract this call to the repository
-         * @todo instance of $request->query('id') try $request->query(RelatedModel::getKeyName()) in case user dont call the key as ID
+         * @todo instead of $request->query('id') try $request->query(RelatedModel::getKeyName()) in case user dont call the key as ID
          */
         return static function (Builder $builder, BaseRequest $request): Builder {
+
             return $builder->when($request->query('id'), fn(Builder $builder, string $search) => $builder->whereKey($search))
                            ->limit(10);
+
         };
 
     }
 
     /**
-     * @param callable|bool $callback
-     *
-     * @return $this
+     * @todo An idea here could be if we also could pass an array like: [ name, age ] which we could use as the fields to search for using the default search callback
      */
-    public function searchable($callback = true): self
+    public function searchable(callable|bool $callback = true): self
     {
         $this->searchableCallback = $callback;
 

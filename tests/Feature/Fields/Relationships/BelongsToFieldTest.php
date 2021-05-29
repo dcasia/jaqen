@@ -5,11 +5,10 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Tests\Feature\Fields\Relationships;
 
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
-use DigitalCreative\Jaqen\Http\Controllers\Relationships\BelongsToController;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Repository\Repository;
-use DigitalCreative\Jaqen\Services\Fields\EditableField;
-use DigitalCreative\Jaqen\Services\Fields\ReadOnlyField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\ReadOnlyField;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Factories\ArticleFactory;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
@@ -21,7 +20,6 @@ use DigitalCreative\Jaqen\Tests\Traits\RelationshipRequestTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Mockery\MockInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BelongsToFieldTest extends TestCase
 {
@@ -39,44 +37,43 @@ class BelongsToFieldTest extends TestCase
                                            ->setRelatedResource(MinimalUserResource::class)
                          );
 
-        $response = $this->indexResponse($resource);
-
-        $this->assertEquals($response, [
-            'total' => 1,
-            'from' => 1,
-            'to' => 1,
-            'currentPage' => 1,
-            'lastPage' => 1,
-            'resources' => [
-                [
-                    'key' => $article->id,
-                    'fields' => [
-                        [
-                            'label' => 'User',
-                            'attribute' => 'user_id',
-                            'value' => $article->user->id,
-                            'component' => 'belongs-to-field',
-                            'additionalInformation' => null,
-                            'searchable' => false,
-                            'relatedResource' => [
-                                'name' => 'Minimal User Resource',
-                                'label' => 'Minimal User Resources',
-                                'uriKey' => 'minimal-user-resources',
-                                'fields' => [
-                                    [
-                                        'label' => 'Name',
-                                        'attribute' => 'name',
-                                        'value' => $article->user->name,
-                                        'component' => 'editable-field',
-                                        'additionalInformation' => null,
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        $this->resourceIndexApi($resource)
+             ->assertJson([
+                 'total' => 1,
+                 'from' => 1,
+                 'to' => 1,
+                 'currentPage' => 1,
+                 'lastPage' => 1,
+                 'resources' => [
+                     [
+                         'key' => $article->id,
+                         'fields' => [
+                             [
+                                 'label' => 'User',
+                                 'attribute' => 'user_id',
+                                 'value' => $article->user->id,
+                                 'component' => 'belongs-to-field',
+                                 'additionalInformation' => null,
+                                 'searchable' => false,
+                                 'relatedResource' => [
+                                     'name' => 'Minimal User Resource',
+                                     'label' => 'Minimal User Resources',
+                                     'uriKey' => 'minimal-user-resources',
+                                     'fields' => [
+                                         [
+                                             'label' => 'Name',
+                                             'attribute' => 'name',
+                                             'value' => $article->user->name,
+                                             'component' => 'editable-field',
+                                             'additionalInformation' => null,
+                                         ],
+                                     ],
+                                 ],
+                             ],
+                         ],
+                     ],
+                 ],
+             ]);
 
     }
 
@@ -108,11 +105,10 @@ class BelongsToFieldTest extends TestCase
                                            ->setRelatedResourceFieldsFor('test'),
                          );
 
-        $response = $this->indexResponse($resource);
+        $attribute = $this->resourceIndexApi($resource)
+                          ->json('resources.0.fields.0.relatedResource.fields.0.attribute');
 
-        $this->assertEquals(
-            'custom_field_name', data_get($response, 'resources.0.fields.0.relatedResource.fields.0.attribute')
-        );
+        $this->assertEquals('custom_field_name', $attribute);
 
     }
 
@@ -125,9 +121,8 @@ class BelongsToFieldTest extends TestCase
         $resource = $this->makeResource(ArticleModel::class)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        $response = $this->updateResponse($resource, $article->id, [ 'user_id' => $user->id ]);
-
-        $this->assertTrue($response);
+        $this->resourceUpdateApi($resource, key: $article->id, data: [ 'user_id' => $user->id ])
+             ->assertStatus(200);
 
         $this->assertDatabaseHas('articles', [
             'id' => $article->id,
@@ -154,21 +149,20 @@ class BelongsToFieldTest extends TestCase
                              BelongsToField::make('User'),
                          );
 
-        $this->storeResponse($resource, $data);
+        $this->resourceStoreApi($resource, $data);
 
         $this->assertDatabaseHas('articles', $data);
 
     }
 
-    /**
-     * Searchable
-     */
     public function test_searchable_belongs_to_field_works(): void
     {
 
         ArticleFactory::new()->create();
 
         $user = UserFactory::new()->create([ 'name' => 'random' ]);
+
+        UserFactory::new()->count(5)->create();
 
         $resource = $this->makeResource(ArticleModel::class);
 
@@ -184,26 +178,24 @@ class BelongsToFieldTest extends TestCase
 
                                });
 
-        $request = $this->belongsToSearchRequest($resource, $field, [ 'search' => 'random' ]);
-
         $resource->addDefaultFields($field);
 
-        $response = (new BelongsToController())->searchBelongsTo($request);
-
-        $this->assertSame([
-            [
-                'key' => $user->id,
-                'fields' => [
-                    [
-                        'label' => 'Name',
-                        'attribute' => 'name',
-                        'value' => $user->name,
-                        'component' => 'editable-field',
-                        'additionalInformation' => null,
-                    ],
-                ],
-            ],
-        ], $response->getData(true));
+        $this->belongsToSearchApi($resource, $field, [ 'search' => 'random' ])
+             ->assertJsonCount(1)
+             ->assertJson([
+                 [
+                     'key' => $user->id,
+                     'fields' => [
+                         [
+                             'label' => 'Name',
+                             'attribute' => 'name',
+                             'value' => $user->name,
+                             'component' => 'editable-field',
+                             'additionalInformation' => null,
+                         ],
+                     ],
+                 ],
+             ]);
 
     }
 
@@ -219,26 +211,23 @@ class BelongsToFieldTest extends TestCase
                                ->searchable()
                                ->setRelatedResource(MinimalUserResource::class);
 
-        $request = $this->belongsToSearchRequest($resource, $field, [ 'id' => $user->id ]);
-
         $resource->addDefaultFields($field);
 
-        $response = (new BelongsToController())->searchBelongsTo($request);
-
-        $this->assertSame([
-            [
-                'key' => $user->id,
-                'fields' => [
-                    [
-                        'label' => 'Name',
-                        'attribute' => 'name',
-                        'value' => $user->name,
-                        'component' => 'editable-field',
-                        'additionalInformation' => null,
-                    ],
-                ],
-            ],
-        ], $response->getData(true));
+        $this->belongsToSearchApi($resource, $field, [ 'id' => $user->id ])
+             ->assertJson([
+                 [
+                     'key' => $user->id,
+                     'fields' => [
+                         [
+                             'label' => 'Name',
+                             'attribute' => 'name',
+                             'value' => $user->name,
+                             'component' => 'editable-field',
+                             'additionalInformation' => null,
+                         ],
+                     ],
+                 ],
+             ]);
 
     }
 
@@ -250,14 +239,11 @@ class BelongsToFieldTest extends TestCase
         $user = UserFactory::new()->create();
         $field = BelongsToField::make('User');
 
-        $this->expectException(NotFoundHttpException::class);
-
         $resource = $this->makeResource(ArticleModel::class)
                          ->addDefaultFields($field);
 
-        $request = $this->belongsToSearchRequest($resource, $field, [ 'id' => $user->id ]);
-
-        (new BelongsToController())->searchBelongsTo($request);
+        $this->belongsToSearchApi($resource, $field, [ 'id' => $user->id ])
+             ->assertStatus(404);
 
     }
 
@@ -272,9 +258,9 @@ class BelongsToFieldTest extends TestCase
                                            ->setRelatedResource(MinimalUserResource::class),
                          );
 
-        $response = $this->detailResponse($resource, $article->id);
-
-        $this->assertIsArray($response);
+        $this->resourceShowApi($resource, $article->id)
+             ->assertJsonPath('fields.0.attribute', 'user_id')
+             ->assertJsonPath('fields.0.value', null);
 
     }
 
@@ -287,7 +273,8 @@ class BelongsToFieldTest extends TestCase
          * User defined relationships shouldn't be replaced
          */
         $with = [
-            'demo', 'user' => fn(Builder $builder) => $builder,
+            'demo',
+            'user' => fn(Builder $builder) => $builder,
         ];
 
         $repository = $this->mock(Repository::class, function (MockInterface $mock) use ($article, $with) {
@@ -299,7 +286,7 @@ class BelongsToFieldTest extends TestCase
                          ->with($with)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        $this->detailResponse($resource, $article->id);
+        $this->resourceShowApi($resource, $article->id)->assertStatus(200);
 
     }
 
@@ -321,7 +308,7 @@ class BelongsToFieldTest extends TestCase
                          ->with($with)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        $this->detailResponse($resource, $article->id);
+        $this->resourceShowApi($resource, $article->id)->assertStatus(200);
 
     }
 
@@ -333,32 +320,31 @@ class BelongsToFieldTest extends TestCase
                              BelongsToField::make('User')->setRelatedResource(MinimalUserResource::class),
                          );
 
-        $response = $this->fieldsResponse($resource);
-
-        $this->assertEquals([
-            [
-                'label' => 'User',
-                'attribute' => 'user_id',
-                'value' => null,
-                'component' => 'belongs-to-field',
-                'additionalInformation' => null,
-                'searchable' => false,
-                'relatedResource' => [
-                    'name' => 'Minimal User Resource',
-                    'label' => 'Minimal User Resources',
-                    'uriKey' => 'minimal-user-resources',
-                    'fields' => [
-                        [
-                            'label' => 'Name',
-                            'attribute' => 'name',
-                            'value' => null,
-                            'component' => 'editable-field',
-                            'additionalInformation' => null,
-                        ],
-                    ],
-                ],
-            ],
-        ], $response);
+        $this->resourceFieldsApi($resource)
+             ->assertJson([
+                 [
+                     'label' => 'User',
+                     'attribute' => 'user_id',
+                     'value' => null,
+                     'component' => 'belongs-to-field',
+                     'additionalInformation' => null,
+                     'searchable' => false,
+                     'relatedResource' => [
+                         'name' => 'Minimal User Resource',
+                         'label' => 'Minimal User Resources',
+                         'uriKey' => 'minimal-user-resources',
+                         'fields' => [
+                             [
+                                 'label' => 'Name',
+                                 'attribute' => 'name',
+                                 'value' => null,
+                                 'component' => 'editable-field',
+                                 'additionalInformation' => null,
+                             ],
+                         ],
+                     ],
+                 ],
+             ]);
 
     }
 
