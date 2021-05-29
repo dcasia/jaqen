@@ -9,6 +9,7 @@ use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Filters\FilterWithRequiredFields;
 use DigitalCreative\Jaqen\Tests\Fixtures\Filters\GenderFilter;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\ResourceWithRequiredFilters;
+use DigitalCreative\Jaqen\Tests\Fixtures\Resources\User;
 use DigitalCreative\Jaqen\Tests\TestCase;
 
 class IndexControllerTest extends TestCase
@@ -19,26 +20,26 @@ class IndexControllerTest extends TestCase
 
         UserFactory::new()->create();
 
-        $response = $this->getJson('/jaqen-api/resource/users')
-                         ->assertStatus(200);
+        $this->registerResource(User::class);
 
-        $response->assertJsonStructure([
-            'total',
-            'resources' => [
-                [
-                    'key',
-                    'fields' => [
-                        [
-                            'label',
-                            'attribute',
-                            'value',
-                            'component',
-                            'additionalInformation',
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        $this->resourceIndexApi(User::class)
+             ->assertJsonStructure([
+                 'total',
+                 'resources' => [
+                     [
+                         'key',
+                         'fields' => [
+                             [
+                                 'label',
+                                 'attribute',
+                                 'value',
+                                 'component',
+                                 'additionalInformation',
+                             ],
+                         ],
+                     ],
+                 ],
+             ]);
 
     }
 
@@ -48,13 +49,13 @@ class IndexControllerTest extends TestCase
         UserFactory::new()->count(5)->create([ 'gender' => 'male' ]);
         UserFactory::new()->count(5)->create([ 'gender' => 'female' ]);
 
-        $filters = FilterCollection::test([
-            GenderFilter::uriKey() => [
-                'gender' => 'male',
-            ],
+        $filters = FilterCollection::fake([
+            GenderFilter::uriKey() => [ 'gender' => 'male' ],
         ]);
 
-        $this->getJson('/jaqen-api/resource/users?filters=' . $filters)
+        $this->registerResource(User::class);
+
+        $this->resourceIndexApi(User::class, filters: $filters)
              ->assertStatus(200)
              ->assertJsonCount(5, 'resources')
              ->assertJsonFragment([
@@ -66,16 +67,13 @@ class IndexControllerTest extends TestCase
     public function test_filters_validation_works(): void
     {
 
-        $resourceUriKey = ResourceWithRequiredFilters::uriKey();
+        $this->registerResource(ResourceWithRequiredFilters::class);
+
         $filterUriKey = FilterWithRequiredFields::uriKey();
 
-        $filters = FilterCollection::test([
-            $filterUriKey => [
-                'name' => '',
-            ],
-        ]);
+        $filters = FilterCollection::fake([ $filterUriKey => [ 'name' => '' ] ]);
 
-        $this->getJson("/jaqen-api/resource/$resourceUriKey?filters=$filters")
+        $this->resourceIndexApi(ResourceWithRequiredFilters::class, filters: $filters)
              ->assertStatus(422)
              ->assertJsonFragment([
                  'errors' => [
@@ -93,27 +91,27 @@ class IndexControllerTest extends TestCase
     {
 
         $user = UserFactory::new()->create();
+        $this->registerResource(User::class);
 
-        $response = $this->getJson('/jaqen-api/resource/users?fieldsFor=index')
-                         ->assertStatus(200);
-
-        $response->assertJsonFragment([
-            'total' => 1,
-            'resources' => [
-                [
-                    'key' => 1,
-                    'fields' => [
-                        [
-                            'label' => 'id',
-                            'attribute' => 'id',
-                            'value' => $user->id,
-                            'component' => 'read-only-field',
-                            'additionalInformation' => null,
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        $this->resourceIndexApi(User::class, fieldsFor: 'index')
+             ->assertStatus(200)
+             ->assertJsonFragment([
+                 'total' => 1,
+                 'resources' => [
+                     [
+                         'key' => 1,
+                         'fields' => [
+                             [
+                                 'label' => 'id',
+                                 'attribute' => 'id',
+                                 'value' => $user->id,
+                                 'component' => 'read-only-field',
+                                 'additionalInformation' => null,
+                             ],
+                         ],
+                     ],
+                 ],
+             ]);
 
     }
 
@@ -122,7 +120,9 @@ class IndexControllerTest extends TestCase
 
         $users = UserFactory::new()->count(2)->create();
 
-        $this->getJson('/jaqen-api/resource/users?fieldsFor=index')
+        $this->registerResource(User::class);
+
+        $this->resourceIndexApi(User::class, fieldsFor: 'index')
              ->assertStatus(200)
              ->assertJsonPath('resources.0.fields.0.value', $users->first()->id)
              ->assertJsonPath('resources.1.fields.0.value', $users->last()->id);
@@ -134,7 +134,9 @@ class IndexControllerTest extends TestCase
 
         UserFactory::new()->count(30)->create();
 
-        $this->getJson('/jaqen-api/resource/users?page=2')
+        $this->registerResource(User::class);
+
+        $this->resourceIndexApi(User::class, page: 2)
              ->assertStatus(200)
              ->assertJsonFragment([
                  'total' => 30,

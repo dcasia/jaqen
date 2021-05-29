@@ -10,17 +10,11 @@ use DigitalCreative\Jaqen\Services\Fields\FieldsData;
 use DigitalCreative\Jaqen\Services\ResourceManager\FilterCollection;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Filters\SampleFilter;
-use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use Illuminate\Database\Eloquent\Builder;
 
 class FilterTest extends TestCase
 {
-
-    use RequestTrait;
-    use ResourceTrait;
 
     public function test_filter_works(): void
     {
@@ -38,11 +32,11 @@ class FilterTest extends TestCase
 
         };
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(new EditableField('name'))
                          ->addFilters($filter);
 
-        $response = $this->indexResponse($resource, [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]);
+        $response = $this->indexResponse($resource, [], [ 'filters' => FilterCollection::fake([ $filter::uriKey() => null ]) ]);
 
         $this->assertSame(data_get($response, 'total'), 1);
         $this->assertEquals($user->id, data_get($response, 'resources.0.key'));
@@ -74,7 +68,7 @@ class FilterTest extends TestCase
         $this->expectException(FilterValidationException::class);
 
         $this->indexResponse(
-            $resource, [], [ 'filters' => FilterCollection::test([ $filter::uriKey() => null ]) ]
+            $resource, [], [ 'filters' => FilterCollection::fake([ $filter::uriKey() => null ]) ]
         );
 
     }
@@ -104,12 +98,12 @@ class FilterTest extends TestCase
 
         };
 
-        $filters = FilterCollection::test([
+        $filters = FilterCollection::fake([
             $filter1::uriKey() => [ 'name' => 'Demo' ],
             $filter2::uriKey() => [ 'gender' => null ],
         ]);
 
-        $resource = $this->makeResource(UserModel::class)->addFilters($filter1, $filter2);
+        $resource = $this->makeResource()->addFilters($filter1, $filter2);
 
         $this->expectException(FilterValidationException::class);
 
@@ -151,7 +145,7 @@ class FilterTest extends TestCase
 
         };
 
-        $filters = FilterCollection::test([
+        $filters = FilterCollection::fake([
             $filter::uriKey() => [
                 'array' => [ 'hello', 'world' ],
                 'string' => 'hello world',

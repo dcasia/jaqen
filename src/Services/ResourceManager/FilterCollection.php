@@ -13,26 +13,21 @@ use Throwable;
 
 class FilterCollection extends Collection
 {
+
     private array $rawEncodedString;
 
-    /**
-     * FilterCollection constructor.
-     *
-     * @param array $filters
-     * @param string|null $rawEncodedString
-     */
-    public function __construct($filters = [], ?string $rawEncodedString = null)
+    public function __construct(Collection|array $filters = [], ?string $rawEncodedString = null)
     {
         parent::__construct($filters);
 
         $this->rawEncodedString = array_keys(static::decode($rawEncodedString));
     }
 
-    public static function test(array $data): string
+    public static function fake(array $data): string
     {
         try {
             return base64_encode(json_encode($data, JSON_THROW_ON_ERROR));
-        } catch (JsonException $e) {
+        } catch (JsonException) {
             return '';
         }
     }
@@ -57,7 +52,7 @@ class FilterCollection extends Collection
 
                 return json_decode(base64_decode($filters), true, 512, JSON_THROW_ON_ERROR);
 
-            } catch (Throwable $exception) {
+            } catch (Throwable) {
 
                 return [];
 
@@ -67,10 +62,7 @@ class FilterCollection extends Collection
     }
 
     /**
-     * @param Builder $builder
-     *
      * @throws FilterValidationException
-     * @return Builder
      */
     public function applyOnQuery(Builder $builder): Builder
     {
@@ -96,7 +88,7 @@ class FilterCollection extends Collection
 
                     } catch (ValidationException $exception) {
 
-                        $exceptions[ $filter::uriKey() ] = $exception;
+                        $exceptions[$filter::uriKey()] = $exception;
 
                     }
 

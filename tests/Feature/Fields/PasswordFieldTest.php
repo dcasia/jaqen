@@ -7,14 +7,9 @@ namespace DigitalCreative\Jaqen\Tests\Feature\Fields;
 use DigitalCreative\Jaqen\Services\Fields\PasswordField;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 
 class PasswordFieldTest extends TestCase
 {
-
-    use RequestTrait;
-    use ResourceTrait;
 
     public function test_password_field_does_not_send_value_through_the_response(): void
     {

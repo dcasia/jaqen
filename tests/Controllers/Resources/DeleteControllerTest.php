@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Tests\Controllers\Resources;
 
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
+use DigitalCreative\Jaqen\Tests\Fixtures\Resources\User as UserResource;
 use DigitalCreative\Jaqen\Tests\TestCase;
 
 class DeleteControllerTest extends TestCase
@@ -17,9 +18,10 @@ class DeleteControllerTest extends TestCase
             'email' => 'email@email.com',
         ];
 
-        UserFactory::new()->create($data);
+        $user = UserFactory::new()->create($data);
 
-        $this->deleteJson('/jaqen-api/resource/users', [ 'ids' => [ 1 ] ])
+        $this->registerResource(UserResource::class);
+        $this->resourceDestroyApi(UserResource::class, ids: [ $user->id ])
              ->assertStatus(204);
 
         $this->assertDatabaseMissing('users', $data);
@@ -31,7 +33,8 @@ class DeleteControllerTest extends TestCase
 
         UserFactory::new()->create();
 
-        $this->deleteJson('/jaqen-api/resource/users', [ 'ids' => $users->pluck('id') ])
+        $this->registerResource(UserResource::class);
+        $this->resourceDestroyApi(UserResource::class, ids: $users->pluck('id')->toArray())
              ->assertStatus(204);
 
         $this->assertDatabaseCount('users', 1);

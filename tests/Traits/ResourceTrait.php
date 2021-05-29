@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Traits;
 
-use DigitalCreative\Jaqen\Jaqen;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Services\ResourceManager\ResourceManager;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
@@ -37,13 +36,15 @@ trait ResourceTrait
 
     }
 
-    private function registerResource(AbstractResource $resource): void
+    protected function registerResource(AbstractResource|string ...$resources): static
     {
         /**
-         * @var ResourceManager $crudInstance
+         * @var ResourceManager $resourceManager
          */
-        $crudInstance = app(ResourceManager::class);
-        $crudInstance->setResources([ $resource ]);
+        $resourceManager = resolve(ResourceManager::class);
+        $resourceManager->setResources($resources);
+
+        return $this;
     }
 
 }

@@ -16,18 +16,20 @@ abstract class JaqenServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-
         Route::group($this->routeConfiguration(), function () {
             $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
         });
 
-        $this->app->register(ScaffoldServiceProvider::class);
-        $this->app->register(ResourceManagerServiceProvider::class);
+        $services = [
+            ScaffoldServiceProvider::class,
+            ResourceManagerServiceProvider::class,
+        ];
 
-        $this->app->singleton(Jaqen::class, function () {
-            return new Jaqen($this);
-        });
+        foreach ($services as $service) {
+            $this->app->register($service);
+        }
 
+        $this->app->singleton(Jaqen::class, fn() => new Jaqen($this));
     }
 
     protected function routeConfiguration(): array
@@ -35,6 +37,11 @@ abstract class JaqenServiceProvider extends ServiceProvider
         return [
             'prefix' => 'jaqen-api',
         ];
+    }
+
+    public function resources(): array
+    {
+        return [];
     }
 
 }

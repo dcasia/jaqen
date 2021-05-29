@@ -4,22 +4,14 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Feature\Fields;
 
-use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Fields\Panel;
+use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
-use DigitalCreative\Jaqen\Tests\Fixtures\Models\User;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\InteractionWithResponseTrait;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 
 class PanelTest extends TestCase
 {
-
-    use RequestTrait;
-    use ResourceTrait;
-    use InteractionWithResponseTrait;
 
     public function test_panel_field_works_correctly(): void
     {
@@ -76,7 +68,7 @@ class PanelTest extends TestCase
             'password' => 123,
         ];
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              Panel::make('Personal Information', [
                                  EditableField::make('Name')->rules('required'),
@@ -101,7 +93,7 @@ class PanelTest extends TestCase
             'name' => 'Hello World',
         ];
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              Panel::make('Personal Information', [
                                  EditableField::make('Name'),

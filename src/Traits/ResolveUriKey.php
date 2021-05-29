@@ -11,8 +11,6 @@ trait ResolveUriKey
 
     /**
      * Get the URI key for the resource.
-     *
-     * @return string
      */
     public static function uriKey(): string
     {

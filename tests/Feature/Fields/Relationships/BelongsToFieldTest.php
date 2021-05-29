@@ -4,12 +4,12 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Feature\Fields\Relationships;
 
-use DigitalCreative\Jaqen\Services\Fields\EditableField;
-use DigitalCreative\Jaqen\Services\Fields\ReadOnlyField;
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
 use DigitalCreative\Jaqen\Http\Controllers\Relationships\BelongsToController;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Repository\Repository;
+use DigitalCreative\Jaqen\Services\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\ReadOnlyField;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Factories\ArticleFactory;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
@@ -17,10 +17,7 @@ use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article as ArticleModel;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\MinimalUserResource;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\InteractionWithResponseTrait;
 use DigitalCreative\Jaqen\Tests\Traits\RelationshipRequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Mockery\MockInterface;
@@ -29,10 +26,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class BelongsToFieldTest extends TestCase
 {
 
-    use RequestTrait;
     use RelationshipRequestTrait;
-    use ResourceTrait;
-    use InteractionWithResponseTrait;
 
     public function test_index_listing_works(): void
     {
@@ -180,7 +174,7 @@ class BelongsToFieldTest extends TestCase
 
         $field = BelongsToField::make('User')
                                ->setRelatedResource(MinimalUserResource::class)
-                               ->searchable(function(Builder $builder, BaseRequest $request): Builder {
+                               ->searchable(function (Builder $builder, BaseRequest $request): Builder {
 
                                    $search = $request->query('search');
 
@@ -296,7 +290,7 @@ class BelongsToFieldTest extends TestCase
             'demo', 'user' => fn(Builder $builder) => $builder,
         ];
 
-        $repository = $this->mock(Repository::class, function(MockInterface $mock) use ($article, $with) {
+        $repository = $this->mock(Repository::class, function (MockInterface $mock) use ($article, $with) {
             $mock->shouldReceive('findByKey')->with($article->id, $with)->andReturn($article);
         });
 
@@ -316,7 +310,7 @@ class BelongsToFieldTest extends TestCase
 
         $with = [ 'demo' ];
 
-        $repository = $this->mock(Repository::class, function(MockInterface $mock) use ($article, $with) {
+        $repository = $this->mock(Repository::class, function (MockInterface $mock) use ($article, $with) {
             $mock->shouldReceive('findByKey')
                  ->with($article->id, array_merge($with, [ 'user' ]))
                  ->andReturn($article);

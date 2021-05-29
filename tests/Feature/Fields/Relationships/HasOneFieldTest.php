@@ -7,28 +7,21 @@ namespace DigitalCreative\Jaqen\Tests\Feature\Fields\Relationships;
 use DigitalCreative\Jaqen\Fields\Relationships\HasOneField;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article as ArticleModel;
-use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\MinimalUserResource;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\PhoneResource;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\InteractionWithResponseTrait;
 use DigitalCreative\Jaqen\Tests\Traits\RelationshipRequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use Illuminate\Validation\ValidationException;
 
 class HasOneFieldTest extends TestCase
 {
 
-    use RequestTrait;
     use RelationshipRequestTrait;
-    use ResourceTrait;
-    use InteractionWithResponseTrait;
 
     public function test_it_create_related_resource_correctly(): void
     {
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
                          );
@@ -47,7 +40,7 @@ class HasOneFieldTest extends TestCase
 
         $user = UserFactory::new()->count(2)->withPhone()->create()->first();
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
                          );
@@ -65,7 +58,7 @@ class HasOneFieldTest extends TestCase
 
         $user = UserFactory::new()->count(2)->create()->first();
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
                          );
@@ -117,7 +110,7 @@ class HasOneFieldTest extends TestCase
     public function test_validation_works(): void
     {
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              HasOneField::make('Phone')
                                         ->setRelatedResource(PhoneResource::class, 'fieldsWithValidation'),

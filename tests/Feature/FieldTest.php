@@ -10,18 +10,11 @@ use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\InteractionWithResponseTrait;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
 
 class FieldTest extends TestCase
 {
-
-    use RequestTrait;
-    use ResourceTrait;
-    use InteractionWithResponseTrait;
 
     public function test_field_validation_on_create_works(): void
     {
@@ -88,7 +81,7 @@ class FieldTest extends TestCase
     {
 
         $resource = $this->makeResource()
-                         ->fieldsFor('index-listing', function() {
+                         ->fieldsFor('index-listing', function () {
                              return [
                                  new EditableField('name'),
                              ];
@@ -112,7 +105,7 @@ class FieldTest extends TestCase
     public function test_fields_is_resolved_from_method_if_exists(): void
     {
 
-        $resource = new class() extends AbstractResource {
+        $resource = new class extends AbstractResource {
 
             public function model(): Model
             {
@@ -125,6 +118,7 @@ class FieldTest extends TestCase
                     new EditableField('name'),
                 ];
             }
+
         };
 
         $request = $this->fieldsRequest($resource, [ 'fieldsFor' => 'demo' ]);
@@ -145,7 +139,7 @@ class FieldTest extends TestCase
     public function test_field_can_resolve_default_value(): void
     {
 
-        $resource = $this->makeResource(UserModel::class);
+        $resource = $this->makeResource();
 
         $request = $this->fieldsRequest($resource);
 
@@ -167,7 +161,7 @@ class FieldTest extends TestCase
     public function test_it_returns_only_the_specified_fields(): void
     {
 
-        $resource = $this->makeResource(UserModel::class);
+        $resource = $this->makeResource();
 
         $request = $this->fieldsRequest($resource, [ 'only' => 'first_name,last_name' ]);
 
@@ -190,7 +184,7 @@ class FieldTest extends TestCase
     public function test_only_fields_remove_empty_spaces_correctly(): void
     {
 
-        $resource = $this->makeResource(UserModel::class);
+        $resource = $this->makeResource();
 
         /**
          * Space between , will be trimmed
@@ -216,7 +210,7 @@ class FieldTest extends TestCase
     public function test_expect_fields_filter_works_correctly(): void
     {
 
-        $resource = $this->makeResource(UserModel::class);
+        $resource = $this->makeResource();
 
         $request = $this->fieldsRequest($resource, [ 'except' => 'first_name , last_name' ]);
 
@@ -254,7 +248,7 @@ class FieldTest extends TestCase
 
         $field = $this->spy(EditableField::class);
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields($field);
 
         $resource->resolveFields($this->fieldsRequest($resource));

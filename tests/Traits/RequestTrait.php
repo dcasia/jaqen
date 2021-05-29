@@ -25,22 +25,19 @@ use Illuminate\Testing\TestResponse;
 trait RequestTrait
 {
 
-    /**
-     * @param array|string $uri
-     * @param string $method
-     * @param array $parameters
-     * @param array $query
-     * @param string $request
-     *
-     * @return BaseRequest
-     */
-    protected function makeRequest($uri, string $method = 'GET', array $parameters = [], array $query = [], string $request = BaseRequest::class): BaseRequest
+    protected function makeRequest(
+        array|string $uri,
+        string $method = 'GET',
+        array $parameters = [],
+        array $query = [],
+        string $request = BaseRequest::class
+    ): BaseRequest
     {
 
         if (is_array($uri)) {
 
             $route = array_key_first($uri);
-            $uri = $uri[ $route ];
+            $uri = $uri[$route];
 
         }
 
@@ -119,30 +116,6 @@ trait RequestTrait
     protected function blankRequest(array $data = [], array $query = []): BaseRequest
     {
         return $this->makeRequest('/', 'GET', $data, $query, BaseRequest::class);
-    }
-
-    protected function callStore(AbstractResource $resource, array $data = [], array $query = []): TestResponse
-    {
-        $query = http_build_query($query);
-        $resourceUriKey = $resource::uriKey();
-
-        if (filled($query)) {
-            $query = "?$query";
-        }
-
-        return $this->postJson("/jaqen-api/resource/{$resourceUriKey}{$query}", $data);
-    }
-
-    protected function callUpdate(AbstractResource $resource, Model $model, array $data = [], array $query = []): TestResponse
-    {
-        $query = http_build_query($query);
-        $resourceUriKey = $resource::uriKey();
-
-        if (filled($query)) {
-            $query = "?$query";
-        }
-
-        return $this->patchJson("/jaqen-api/resource/{$resourceUriKey}/{$model->getKey()}{$query}", $data);
     }
 
     public function indexResponse(AbstractResource $resource, array $data = [], array $query = []): array

@@ -9,10 +9,12 @@ use Illuminate\Routing\Controller as BaseController;
 
 abstract class Controller extends BaseController
 {
+
     protected ResourceManager $resourceManager;
 
     public function __construct()
     {
-        $this->resourceManager = app(ResourceManager::class);
+        $this->resourceManager = resolve(ResourceManager::class);
     }
+
 }

@@ -8,10 +8,10 @@ use DigitalCreative\Jaqen\Concerns\WithEvents;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Repository\Repository;
 use DigitalCreative\Jaqen\Repository\RepositoryInterface;
-use DigitalCreative\Jaqen\Traits\EventsTrait;
-use DigitalCreative\Jaqen\Traits\MakeableTrait;
 use DigitalCreative\Jaqen\Services\Fields\Traits\ResolveFieldsTrait;
 use DigitalCreative\Jaqen\Services\ResourceManager\Traits\ResolveFiltersTrait;
+use DigitalCreative\Jaqen\Traits\EventsTrait;
+use DigitalCreative\Jaqen\Traits\MakeableTrait;
 use DigitalCreative\Jaqen\Traits\ResolveUriKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -58,7 +58,7 @@ abstract class AbstractResource implements WithEvents
 
                 } else {
 
-                    $this->with[ $relationKey ] = $item;
+                    $this->with[$relationKey] = $item;
 
                 }
 
@@ -84,8 +84,8 @@ abstract class AbstractResource implements WithEvents
     public function getDescriptor(): array
     {
         return [
-            'name' => $this->label(),
-            'label' => Str::plural($this->label()),
+            'name' => $this->name(),
+            'label' => $this->label(),
             'uriKey' => static::uriKey(),
         ];
     }
@@ -95,9 +95,20 @@ abstract class AbstractResource implements WithEvents
         return Str::title(Str::snake($value, ' '));
     }
 
+    /**
+     * Use the label to display the name of the resource on menus, page title or links.
+     */
     public function label(): string
     {
-        return static::humanize(class_basename(static::class));
+        return Str::plural(static::humanize(class_basename(static::class)));
+    }
+
+    /**
+     * Name is usually the singular representation of your resource.
+     */
+    public function name(): string
+    {
+        return Str::singular($this->label());
     }
 
     public function useRepository(RepositoryInterface $repository): self

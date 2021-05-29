@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Fields\Relationships;
 
-use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -65,7 +65,7 @@ class BelongsToField extends Relationship
 
     protected function resolveRelatedResource(): ?AbstractResource
     {
-        return once(function() {
+        return once(function () {
 
             if ($this->relatedResource) {
 
@@ -141,7 +141,7 @@ class BelongsToField extends Relationship
          * @todo try to abstract this call to the repository
          * @todo instance of $request->query('id') try $request->query(RelatedModel::getKeyName()) in case user dont call the key as ID
          */
-        return static function(Builder $builder, BaseRequest $request): Builder {
+        return static function (Builder $builder, BaseRequest $request): Builder {
             return $builder->when($request->query('id'), fn(Builder $builder, string $search) => $builder->whereKey($search))
                            ->limit(10);
         };

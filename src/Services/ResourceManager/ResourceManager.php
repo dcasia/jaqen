@@ -14,8 +14,7 @@ class ResourceManager
 
     public function setResources(array $resources): self
     {
-        $this->resources = collect($resources)
-            ->mapWithKeys(fn($resource) => [ $resource::uriKey() => $resource ]);
+        $this->resources = collect($resources)->mapWithKeys(fn($resource) => [ $resource::uriKey() => $resource ]);
 
         return $this;
     }

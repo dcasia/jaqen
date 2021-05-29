@@ -8,27 +8,24 @@ use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Tests\Factories\ArticleFactory;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article as ArticleModel;
+use DigitalCreative\Jaqen\Tests\Fixtures\Resources\User;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 
 class UpdateControllerTest extends TestCase
 {
 
-    use ResourceTrait;
-    use RequestTrait;
-
     public function test_resource_update(): void
     {
 
-        UserFactory::new()->create();
+        $user = UserFactory::new()->create();
 
         $data = [
             'name' => 'Demo',
             'email' => 'email@email.com',
         ];
 
-        $this->patchJson('/jaqen-api/resource/users/1', $data)
+        $this->registerResource(User::class);
+        $this->resourceUpdateApi(User::class, key: $user->id, data: $data)
              ->assertStatus(200);
 
         $this->assertDatabaseHas('users', $data);
@@ -40,7 +37,8 @@ class UpdateControllerTest extends TestCase
 
         $user = UserFactory::new()->create();
 
-        $this->patchJson('/jaqen-api/resource/users/1', [ 'id' => 2 ])
+        $this->registerResource(User::class);
+        $this->resourceUpdateApi(User::class, key: $user->id, data: [ 'id' => 2 ])
              ->assertStatus(200);
 
         $this->assertDatabaseHas('users', [
@@ -66,12 +64,12 @@ class UpdateControllerTest extends TestCase
             'title' => 'Avoid updating the content intentionally, as it has `sometimes` rules.',
         ];
 
-        $this->callUpdate($resource, $article, $data)->assertStatus(200);
+        $this->resourceUpdateApi($resource, key: $article->id, data: $data)->assertStatus(200);
 
         /**
          * Try to update again but now sending a content key with null value
          */
-        $this->callUpdate($resource, $article, $data + [ 'content' => null ])
+        $this->resourceUpdateApi($resource, key: $article->id, data: $data + [ 'content' => null ])
              ->assertStatus(422)
              ->assertJsonFragment([
                  'errors' => [

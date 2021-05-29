@@ -4,20 +4,14 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Controllers\Resources;
 
-use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Repository\Repository;
+use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
-use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use Mockery\MockInterface;
 
 class StoreControllerTest extends TestCase
 {
-
-    use ResourceTrait;
-    use RequestTrait;
 
     public function test_can_create_resources(): void
     {
@@ -29,7 +23,7 @@ class StoreControllerTest extends TestCase
             'password' => 123456,
         ];
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              EditableField::make('name'),
                              EditableField::make('email'),
@@ -37,25 +31,27 @@ class StoreControllerTest extends TestCase
                              EditableField::make('password'),
                          );
 
-        $this->callStore($resource, $data)->assertStatus(201);
+        $this->resourceStoreApi($resource, $data)
+             ->assertStatus(201)
+             ->assertJson($data);
 
         $this->assertDatabaseHas('users', $data);
 
     }
 
-    public function test_returning_a_custom_data_works_as_expected(): void
+    public function test_returning_custom_repository_works_as_expected(): void
     {
 
         $user = UserFactory::new()->create();
 
-        $repository = $this->mock(Repository::class, function(MockInterface $mock) use ($user) {
+        $repository = $this->mock(Repository::class, function (MockInterface $mock) use ($user) {
             $mock->shouldReceive('create')->andReturn($user);
         });
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->useRepository($repository);
 
-        $this->callStore($resource)
+        $this->resourceStoreApi($resource)
              ->assertStatus(201)
              ->assertJsonFragment([ 'id' => $user->id ]);
 

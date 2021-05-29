@@ -7,24 +7,19 @@ namespace DigitalCreative\Jaqen\Tests\Feature;
 use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
-use DigitalCreative\Jaqen\Tests\Fixtures\Models\User;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 
 class ResourceEventTest extends TestCase
 {
-
-    use ResourceTrait;
-    use RequestTrait;
 
     public function test_before_create_event_works(): void
     {
 
         $resource = $this->getPreConfiguredResource()
-                         ->beforeCreate(function(array $data) {
+                         ->beforeCreate(function (array $data) {
                              $this->assertEquals([ 'name' => 'ignored' ], $data);
+
                              return [ 'name' => 'hello' ];
                          });
 
@@ -38,8 +33,9 @@ class ResourceEventTest extends TestCase
     {
 
         $resource = $this->getPreConfiguredResource()
-                         ->afterCreate(function(UserModel $model) {
+                         ->afterCreate(function (UserModel $model) {
                              $this->assertInstanceOf(UserModel::class, $model);
+
                              return [ 'success' => true ];
                          });
 
@@ -53,12 +49,14 @@ class ResourceEventTest extends TestCase
     {
 
         $resource = $this->getPreConfiguredResource()
-                         ->afterCreate(function(UserModel $model) {
+                         ->afterCreate(function (UserModel $model) {
                              $this->assertInstanceOf(UserModel::class, $model);
+
                              return [ 'success' => true ];
                          })
-                         ->afterCreate(function(array $data) {
+                         ->afterCreate(function (array $data) {
                              $this->assertEquals([ 'success' => true ], $data);
+
                              return array_merge($data, [ 'appended' => true ]);
                          });
 
@@ -74,9 +72,10 @@ class ResourceEventTest extends TestCase
         $user = UserFactory::new()->create();
 
         $resource = $this->getPreConfiguredResource()
-                         ->beforeUpdate(function(UserModel $model, array $data) use ($user) {
+                         ->beforeUpdate(function (UserModel $model, array $data) use ($user) {
                              $this->assertEquals($user->getKey(), $model->getKey());
                              $this->assertSame([ 'name' => 'ignored' ], $data);
+
                              return [ 'name' => 'hello' ];
                          });
 
@@ -92,7 +91,7 @@ class ResourceEventTest extends TestCase
         $user = UserFactory::new()->create();
 
         $resource = $this->getPreConfiguredResource()
-                         ->afterUpdate(function(UserModel $model) use ($user) {
+                         ->afterUpdate(function (UserModel $model) use ($user) {
                              $this->assertEquals($user->getKey(), $model->getKey());
                          });
 
@@ -106,7 +105,7 @@ class ResourceEventTest extends TestCase
         $user = UserFactory::new()->create();
 
         $resource = $this->getPreConfiguredResource()
-                         ->beforeDelete(function(UserModel $model) use ($user) {
+                         ->beforeDelete(function (UserModel $model) use ($user) {
                              $this->assertEquals($user->getKey(), $model->getKey());
                          });
 
@@ -120,7 +119,7 @@ class ResourceEventTest extends TestCase
         $user = UserFactory::new()->create();
 
         $resource = $this->getPreConfiguredResource()
-                         ->afterDelete(function(UserModel $model) use ($user) {
+                         ->afterDelete(function (UserModel $model) use ($user) {
                              $this->assertEquals($user->getKey(), $model->getKey());
                              $this->assertFalse($model->exists);
                          });

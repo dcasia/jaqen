@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Controllers;
 
-use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
+use DigitalCreative\Jaqen\Tests\Fixtures\Resources\User;
 use DigitalCreative\Jaqen\Tests\TestCase;
 
 class FieldsControllerTest extends TestCase
@@ -13,10 +13,11 @@ class FieldsControllerTest extends TestCase
     public function test_fields_api_returns_correct_data(): void
     {
 
-        UserFactory::new()->create();
+        $this->registerResource(User::class);
 
-        $this->get('/jaqen-api/resource/users/fields?fieldsFor=index')
+        $this->resourceFieldsApi(User::class, fieldsFor: 'index')
              ->assertStatus(200)
+             ->assertJsonCount(1)
              ->assertJsonFragment([
                  [
                      'label' => 'id',

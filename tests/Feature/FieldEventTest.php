@@ -11,18 +11,11 @@ use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\InteractionWithResponseTrait;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use DigitalCreative\Jaqen\Traits\EventsTrait;
 use DigitalCreative\Jaqen\Traits\FieldsEvents;
 
 class FieldEventTest extends TestCase
 {
-
-    use RequestTrait;
-    use ResourceTrait;
-    use InteractionWithResponseTrait;
 
     public function test_before_create_event_works(): void
     {
@@ -33,7 +26,7 @@ class FieldEventTest extends TestCase
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
-        $field->beforeCreate(function(array $data) {
+        $field->beforeCreate(function (array $data) {
 
             $this->assertEquals([ 'name' => 'original' ], $data);
 
@@ -44,7 +37,7 @@ class FieldEventTest extends TestCase
 
         });
 
-        $this->storeResponse($resource, [ 'name' => 'original' ]);
+        $this->resourceStoreApi($resource, [ 'name' => 'original' ]);
 
         $this->assertDatabaseHas('users', [
             'name' => 'hello world',
@@ -62,11 +55,11 @@ class FieldEventTest extends TestCase
          */
         [ $resource, $field ] = $this->getPreConfiguredResource();
 
-        $field->afterCreate(function($model) {
+        $field->afterCreate(function ($model) {
             $this->assertInstanceOf(UserModel::class, $model);
         });
 
-        $this->storeResponse($resource);
+        $this->resourceStoreApi($resource);
 
     }
 
@@ -81,11 +74,11 @@ class FieldEventTest extends TestCase
 
         $user = UserFactory::new()->create();
 
-        $field->afterUpdate(function($model) use ($user) {
+        $field->afterUpdate(function ($model) use ($user) {
             $this->assertEquals($model->getKey(), $user->getKey());
         });
 
-        $this->updateResponse($resource, $user->id, [ 'name' => 'updated' ]);
+        $this->resourceUpdateApi($resource, key: $user->id, data: [ 'name' => 'updated' ]);
 
     }
 
@@ -100,7 +93,7 @@ class FieldEventTest extends TestCase
 
         $user = UserFactory::new()->create();
 
-        $field->beforeUpdate(function(UserModel $model, array $data) use ($user) {
+        $field->beforeUpdate(function (UserModel $model, array $data) use ($user) {
 
             $this->assertEquals([ 'name' => 'updated' ], $data);
             $this->assertEquals($model->getKey(), $user->getKey());
@@ -109,7 +102,7 @@ class FieldEventTest extends TestCase
 
         });
 
-        $this->updateResponse($resource, $user->id, [ 'name' => 'updated' ]);
+        $this->resourceUpdateApi($resource, key: $user->id, data: [ 'name' => 'updated' ]);
 
         $this->assertEquals('modified', $user->fresh()->name);
 
@@ -127,14 +120,14 @@ class FieldEventTest extends TestCase
         $called = false;
 
         $field
-            ->afterUpdate(function(UserModel $model) use (&$called) {
+            ->afterUpdate(function (UserModel $model) use (&$called) {
                 $called = true;
             })
-            ->beforeUpdate(function(UserModel $model, array $data) use (&$called) {
+            ->beforeUpdate(function (UserModel $model, array $data) use (&$called) {
                 $called = true;
             });
 
-        $this->updateResponse($resource, UserFactory::new()->create()->id);
+        $this->resourceUpdateApi($resource, UserFactory::new()->create()->id);
 
         $this->assertFalse($called);
 
@@ -156,16 +149,16 @@ class FieldEventTest extends TestCase
 
         $this->assertNull($field->value);
 
-        $field->beforeDelete(function(UserModel $model) use (&$beforeDelete, $field) {
+        $field->beforeDelete(function (UserModel $model) use (&$beforeDelete, $field) {
             $this->assertEquals($model->name, $field->value);
             $beforeDelete++;
         });
 
-        $field->afterDelete(function() use (&$afterDelete) {
+        $field->afterDelete(function () use (&$afterDelete) {
             $afterDelete++;
         });
 
-        $this->deleteResponse($resource, $users->pluck('id')->toArray());
+        $this->resourceDestroyApi($resource, ids: $users->pluck('id')->toArray());
 
         $this->assertEquals(5, $afterDelete);
         $this->assertEquals(5, $beforeDelete);

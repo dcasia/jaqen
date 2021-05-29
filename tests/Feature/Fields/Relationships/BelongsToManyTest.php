@@ -5,33 +5,25 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Tests\Feature\Fields\Relationships;
 
 use DigitalCreative\Jaqen\Exceptions\BelongsToManyException;
-use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToManyField;
+use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Tests\Factories\RoleFactory;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
-use DigitalCreative\Jaqen\Tests\Fixtures\Models\User;
-use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\RoleResource;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\InteractionWithResponseTrait;
 use DigitalCreative\Jaqen\Tests\Traits\RelationshipRequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 use Illuminate\Database\Eloquent\RelationNotFoundException;
 use Illuminate\Validation\ValidationException;
 
 class BelongsToManyTest extends TestCase
 {
 
-    use RequestTrait;
     use RelationshipRequestTrait;
-    use ResourceTrait;
-    use InteractionWithResponseTrait;
 
     public function test_it_returns_correct_data_on_fields_api(): void
     {
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles')
                                                ->setRelatedResource(RoleResource::class),
@@ -70,11 +62,11 @@ class BelongsToManyTest extends TestCase
     public function test_pivot_data_returns_correctly_on_fields_api(): void
     {
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles')
                                                ->setRelatedResource(RoleResource::class)
-                                               ->setPivotFields(function() {
+                                               ->setPivotFields(function () {
                                                    return [
                                                        new EditableField('Hello World'),
                                                    ];
@@ -98,7 +90,7 @@ class BelongsToManyTest extends TestCase
     public function test_storing_resource_works(): void
     {
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles')->setRelatedResource(RoleResource::class),
                          );
@@ -126,7 +118,7 @@ class BelongsToManyTest extends TestCase
     public function test_validation_works(): void
     {
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles')
                                                ->setRelatedResource(RoleResource::class)
@@ -142,7 +134,7 @@ class BelongsToManyTest extends TestCase
     public function test_resource_count_validation_works(): void
     {
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles')
                                                ->setRelatedResource(RoleResource::class)
@@ -163,7 +155,7 @@ class BelongsToManyTest extends TestCase
     public function test_related_resource_validation_works(): void
     {
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles')
                                                ->setRelatedResource(RoleResource::class)
@@ -184,7 +176,7 @@ class BelongsToManyTest extends TestCase
     public function test_validation_works_on_pivot_fields(): void
     {
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles')
                                                ->setRelatedResource(RoleResource::class)
@@ -207,7 +199,7 @@ class BelongsToManyTest extends TestCase
     public function test_validation_response_is_correctly_prefixed_with_field_name(): void
     {
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles')
                                                ->setRelatedResource(RoleResource::class, 'fieldsWithValidation')
@@ -216,7 +208,7 @@ class BelongsToManyTest extends TestCase
                                                ]),
                          );
 
-        $response = $this->callStore($resource, [
+        $response = $this->resourceStoreApi($resource, [
             'roles' => [
                 [ 'fields' => [ 'name' => null ] ],
             ],
@@ -241,7 +233,7 @@ class BelongsToManyTest extends TestCase
     public function test_it_works_correctly_simulating_a_real_call(): void
     {
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles')
                                                ->setRelatedResource(RoleResource::class, 'fieldsWithValidation')
@@ -250,7 +242,7 @@ class BelongsToManyTest extends TestCase
                                                ]),
                          );
 
-        $response = $this->callStore($resource, [
+        $response = $this->resourceStoreApi($resource, [
             'roles' => [
                 [
                     'fields' => [ 'name' => 'admin' ],
@@ -280,7 +272,7 @@ class BelongsToManyTest extends TestCase
     public function test_storing_pivot_fields_works(): void
     {
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles')
                                                ->setRelatedResource(RoleResource::class)
@@ -327,7 +319,7 @@ class BelongsToManyTest extends TestCase
                    ->hasAttached(RoleFactory::new()->state([ 'name' => 'user' ]), [ 'extra' => 'test' ])
                    ->create();
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles')
                                                ->setRelatedResource(RoleResource::class)
@@ -413,7 +405,7 @@ class BelongsToManyTest extends TestCase
 
         UserFactory::new()->hasAttached(RoleFactory::new(), [ 'extra' => 'sample-1' ])->create();
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles', 'rolesWithCustomAccessor')
                                                ->setRelatedResource(RoleResource::class)
@@ -443,7 +435,7 @@ class BelongsToManyTest extends TestCase
 
         UserFactory::new()->create();
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles', 'invalidRelation'),
                          );
@@ -459,7 +451,7 @@ class BelongsToManyTest extends TestCase
 
         UserFactory::new()->withPhone()->create();
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles', 'phone')
                                                ->setRelatedResource(RoleResource::class)
@@ -482,7 +474,7 @@ class BelongsToManyTest extends TestCase
                            ->hasAttached(RoleFactory::new()->state([ 'name' => 'admin-2' ]), [ 'extra' => 'sample-2' ])
                            ->create();
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              BelongsToManyField::make('Roles')
                                                ->setRelatedResource(RoleResource::class)

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Services\ResourceManager;
 
 use Carbon\Laravel\ServiceProvider;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\ResourceController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\FiltersController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\FieldsController;
 use DigitalCreative\Jaqen\Jaqen;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 class ResourceManagerServiceProvider extends ServiceProvider implements DeferrableProvider
 {
+
     public function boot(): void
     {
 
@@ -30,16 +32,18 @@ class ResourceManagerServiceProvider extends ServiceProvider implements Deferrab
 
         });
 
-        Route::group([ 'prefix' => '/jaqen-api' ], function (Router $router) {
+        Route::get('/jaqen-api/resources', [ ResourceController::class, 'resources' ])->name('jaqen.resources');
 
-            $router->get('/resource/{resource}/filters', [ FiltersController::class, 'filters' ]);
-            $router->get('/resource/{resource}/fields', [ FieldsController::class, 'fields' ]);
+        Route::group([ 'prefix' => '/jaqen-api', 'as' => 'jaqen.resource.' ], function (Router $router) {
 
-            $router->get('/resource/{resource}/{key}', [ DetailController::class, 'handle' ]);
-            $router->patch('/resource/{resource}/{key}', [ UpdateController::class, 'handle' ]);
-            $router->delete('/resource/{resource}', [ DeleteController::class, 'handle' ]);
-            $router->post('/resource/{resource}', [ StoreController::class, 'handle' ]);
-            $router->get('/resource/{resource}', [ IndexController::class, 'handle' ]);
+            $router->get('/resource/{resource}/filters', [ FiltersController::class, 'filters' ])->name('filters');
+            $router->get('/resource/{resource}/fields', [ FieldsController::class, 'fields' ])->name('fields');
+
+            $router->get('/resource/{resource}/{key}', [ DetailController::class, 'handle' ])->name('show');
+            $router->patch('/resource/{resource}/{key}', [ UpdateController::class, 'handle' ])->name('update');
+            $router->delete('/resource/{resource}', [ DeleteController::class, 'handle' ])->name('destroy');
+            $router->post('/resource/{resource}', [ StoreController::class, 'handle' ])->name('store');
+            $router->get('/resource/{resource}', [ IndexController::class, 'handle' ])->name('index');
 
         });
     }
@@ -50,4 +54,5 @@ class ResourceManagerServiceProvider extends ServiceProvider implements Deferrab
             ResourceManager::class,
         ];
     }
+
 }

@@ -4,13 +4,11 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Traits;
 
-use DigitalCreative\Jaqen\Services\Fields\AbstractField;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use Illuminate\Database\Eloquent\Model;
 
 trait ResolveValueTrait
 {
-
     /**
      * @var string|int|null
      */
@@ -28,22 +26,17 @@ trait ResolveValueTrait
         return $this->dirty;
     }
 
-    /**
-     * @param string|int|callable $value
-     *
-     * @return AbstractField
-     */
-    public function default($value): self
+    public function default(mixed $value): self
     {
         $this->defaultCallback = $value;
 
         return $this;
     }
 
-    public function setValue($value, BaseRequest $request): self
+    public function setValue(mixed $value, BaseRequest $request): self
     {
         if ($request->isSchemaFetching()) {
-            $value = value($this->defaultCallback);
+            $value = $value ?? value($this->defaultCallback);
         }
 
         $this->dirty = $this->value !== $value;
@@ -71,11 +64,6 @@ trait ResolveValueTrait
      * The value set from this method is intended to represent
      * the real value that is persisted already on a database
      * therefore it should never be considered as "dirty"
-     *
-     * @param array $data
-     * @param BaseRequest $request
-     *
-     * @return $this
      */
     public function hydrateFromArray(array $data, BaseRequest $request): self
     {
@@ -89,5 +77,4 @@ trait ResolveValueTrait
     {
         return $this->hydrateFromArray($model->toArray(), $request);
     }
-
 }

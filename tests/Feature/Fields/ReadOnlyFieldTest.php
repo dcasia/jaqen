@@ -8,14 +8,9 @@ use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Services\Fields\ReadOnlyField;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 
 class ReadOnlyFieldTest extends TestCase
 {
-
-    use RequestTrait;
-    use ResourceTrait;
 
     public function test_read_only_field_works(): void
     {

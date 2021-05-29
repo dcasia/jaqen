@@ -5,8 +5,12 @@
     "license": "MIT",
     "require": {
         "php": ">=8.0",
-        "spatie/once": "^3.0",
+        "spatie/once": "^3.0.0",
         "ext-json": "*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^v6.18.0",
+        "phpunit/phpunit": "^9.5.4"
     },
     "autoload": {
         "psr-4": {
@@ -30,10 +34,6 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "require-dev": {
-        "orchestra/testbench": "^6.7",
-        "phpunit/phpunit": "^9.5"
-    },
     "scripts": {
         "test": [
             "@php ./vendor/bin/phpunit"

@@ -6,16 +6,10 @@ namespace DigitalCreative\Jaqen\Tests\Feature\Fields;
 
 use DigitalCreative\Jaqen\Services\Fields\EditableField;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
-use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Jaqen\Tests\TestCase;
-use DigitalCreative\Jaqen\Tests\Traits\RequestTrait;
-use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
 
 class EditableFieldTest extends TestCase
 {
-
-    use RequestTrait;
-    use ResourceTrait;
 
     public function test_editable_field_works(): void
     {
@@ -46,7 +40,7 @@ class EditableFieldTest extends TestCase
 
         $user = UserFactory::new()->create();
 
-        $resource = $this->makeResource(UserModel::class)
+        $resource = $this->makeResource()
                          ->addDefaultFields(
                              new EditableField('Name'),
                              new EditableField('Email'),

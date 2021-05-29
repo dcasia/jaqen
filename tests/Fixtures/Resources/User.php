@@ -42,7 +42,7 @@ class User extends AbstractResource
     public function filters(): array
     {
         return [
-            new GenderFilter(),
+            GenderFilter::make(),
         ];
     }
 

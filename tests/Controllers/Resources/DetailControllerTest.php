@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Tests\Controllers\Resources;
 
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
+use DigitalCreative\Jaqen\Tests\Fixtures\Resources\User;
 use DigitalCreative\Jaqen\Tests\TestCase;
 
 class DetailControllerTest extends TestCase
@@ -13,23 +14,24 @@ class DetailControllerTest extends TestCase
     public function test_resource_detail(): void
     {
 
-        UserFactory::new()->create();
+        $user = UserFactory::new()->create();
 
-        $response = $this->getJson('/jaqen-api/resource/users/1')
-                         ->assertStatus(200);
+        $this->registerResource(User::class);
 
-        $response->assertJsonStructure([
-            'key',
-            'fields' => [
-                [
-                    'label',
-                    'attribute',
-                    'value',
-                    'component',
-                    'additionalInformation',
-                ],
-            ],
-        ]);
+        $this->resourceShowApi(User::class, key: $user->id)
+             ->assertStatus(200)
+             ->assertJsonStructure([
+                 'key',
+                 'fields' => [
+                     [
+                         'label',
+                         'attribute',
+                         'value',
+                         'component',
+                         'additionalInformation',
+                     ],
+                 ],
+             ]);
 
     }
 
