@@ -26,12 +26,16 @@ class HasOneFieldTest extends TestCase
                              HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
                          );
 
-        $response = $this->storeResponse($resource, [ 'phone' => [ 'number' => 123456 ] ]);
-
-        $this->assertEquals(123456, data_get($response, 'phone.number'));
-        $this->assertEquals(1, data_get($response, 'phone.user_id'));
-        $this->assertEquals(1, data_get($response, 'phone.id'));
-        $this->assertEquals(1, data_get($response, 'id'));
+        $this->resourceStoreApi($resource, [ 'phone' => [ 'number' => 123456 ] ])
+             ->assertStatus(201)
+             ->assertJson([
+                 'id' => 1,
+                 'phone' => [
+                     'id' => 1,
+                     'number' => 123456,
+                     'user_id' => 1,
+                 ],
+             ]);
 
     }
 
@@ -45,11 +49,11 @@ class HasOneFieldTest extends TestCase
                              HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
                          );
 
-        $response = $this->indexResponse($resource);
-
-        $this->assertEquals($user->id, data_get($response, 'resources.0.key'));
-        $this->assertEquals($user->phone->id, data_get($response, 'resources.0.fields.0.value'));
-        $this->assertEquals($user->phone->number, data_get($response, 'resources.0.fields.0.relatedResource.fields.0.value'));
+        $this->resourceIndexApi($resource)
+             ->assertStatus(200)
+             ->assertJsonPath('resources.0.key', $user->id)
+             ->assertJsonPath('resources.0.fields.0.value', $user->phone->id)
+             ->assertJsonPath('resources.0.fields.0.relatedResource.fields.0.value', $user->phone->number);
 
     }
 
@@ -63,11 +67,10 @@ class HasOneFieldTest extends TestCase
                              HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
                          );
 
-        $response = $this->indexResponse($resource);
-
-        $this->assertEquals($user->id, data_get($response, 'resources.0.key'));
-        $this->assertEquals(null, data_get($response, 'resources.0.fields.0.value'));
-        $this->assertEquals(null, data_get($response, 'resources.0.fields.0.relatedResource.fields.0.value'));
+        $this->resourceIndexApi($resource)
+             ->assertJsonPath('resources.0.key', $user->id)
+             ->assertJsonPath('resources.0.fields.0.value', null)
+             ->assertJsonPath('resources.0.fields.0.relatedResource.fields.0.value', null);
 
     }
 
@@ -79,31 +82,31 @@ class HasOneFieldTest extends TestCase
                              HasOneField::make('User')->setRelatedResource(MinimalUserResource::class),
                          );
 
-        $response = $this->fieldsResponse($resource);
-
-        $this->assertEquals([
-            [
-                'label' => 'User',
-                'attribute' => 'user',
-                'value' => null,
-                'component' => 'has-one-field',
-                'additionalInformation' => null,
-                'relatedResource' => [
-                    'name' => 'Minimal User Resource',
-                    'label' => 'Minimal User Resources',
-                    'uriKey' => 'minimal-user-resources',
-                    'fields' => [
-                        [
-                            'label' => 'Name',
-                            'attribute' => 'name',
-                            'value' => null,
-                            'component' => 'editable-field',
-                            'additionalInformation' => null,
-                        ],
-                    ],
-                ],
-            ],
-        ], $response);
+        $this->resourceFieldsApi($resource)
+             ->assertStatus(200)
+             ->assertJson([
+                 [
+                     'label' => 'User',
+                     'attribute' => 'user',
+                     'value' => null,
+                     'component' => 'has-one-field',
+                     'additionalInformation' => null,
+                     'relatedResource' => [
+                         'name' => 'Minimal User Resource',
+                         'label' => 'Minimal User Resources',
+                         'uriKey' => 'minimal-user-resources',
+                         'fields' => [
+                             [
+                                 'label' => 'Name',
+                                 'attribute' => 'name',
+                                 'value' => null,
+                                 'component' => 'editable-field',
+                                 'additionalInformation' => null,
+                             ],
+                         ],
+                     ],
+                 ],
+             ]);
 
     }
 
@@ -116,9 +119,11 @@ class HasOneFieldTest extends TestCase
                                         ->setRelatedResource(PhoneResource::class, 'fieldsWithValidation'),
                          );
 
+        $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
-        $this->storeResponse($resource, [ 'phone' => [ 'number' => 'abc' ] ]);
+        $this->resourceStoreApi($resource, [ 'phone' => [ 'number' => 'abc' ] ])
+             ->assertStatus(422);
 
     }
 

@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Feature\Fields\Relationships;
 
-use DigitalCreative\Jaqen\Exceptions\BelongsToManyException;
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToManyField;
 use DigitalCreative\Jaqen\Services\Fields\Fields\EditableField;
 use DigitalCreative\Jaqen\Tests\Factories\RoleFactory;
@@ -29,33 +28,32 @@ class BelongsToManyTest extends TestCase
                                                ->setRelatedResource(RoleResource::class),
                          );
 
-        $response = $this->fieldsResponse($resource);
-
-        $this->assertEquals([
-            [
-                'label' => 'Roles',
-                'attribute' => 'roles',
-                'value' => null,
-                'component' => 'belongs-to-many-field',
-                'additionalInformation' => null,
-                'searchable' => false,
-                'relatedResource' => [
-                    'name' => 'Role Resource',
-                    'label' => 'Role Resources',
-                    'uriKey' => 'role-resources',
-                    'pivotFields' => [],
-                    'fields' => [
-                        [
-                            'label' => 'Name',
-                            'attribute' => 'name',
-                            'value' => null,
-                            'component' => 'editable-field',
-                            'additionalInformation' => null,
-                        ],
-                    ],
-                ],
-            ],
-        ], $response);
+        $this->resourceFieldsApi($resource)
+             ->assertJson([
+                 [
+                     'label' => 'Roles',
+                     'attribute' => 'roles',
+                     'value' => null,
+                     'component' => 'belongs-to-many-field',
+                     'additionalInformation' => null,
+                     'searchable' => false,
+                     'relatedResource' => [
+                         'name' => 'Role Resource',
+                         'label' => 'Role Resources',
+                         'uriKey' => 'role-resources',
+                         'pivotFields' => [],
+                         'fields' => [
+                             [
+                                 'label' => 'Name',
+                                 'attribute' => 'name',
+                                 'value' => null,
+                                 'component' => 'editable-field',
+                                 'additionalInformation' => null,
+                             ],
+                         ],
+                     ],
+                 ],
+             ]);
 
     }
 
@@ -73,17 +71,16 @@ class BelongsToManyTest extends TestCase
                                                }),
                          );
 
-        $response = $this->fieldsResponse($resource);
-
-        $this->assertEquals([
-            [
-                'label' => 'Hello World',
-                'attribute' => 'hello_world',
-                'value' => null,
-                'component' => 'editable-field',
-                'additionalInformation' => null,
-            ],
-        ], data_get($response, '0.relatedResource.pivotFields'));
+        $this->resourceFieldsApi($resource)
+             ->assertJsonPath('0.relatedResource.pivotFields', [
+                 [
+                     'label' => 'Hello World',
+                     'attribute' => 'hello_world',
+                     'value' => null,
+                     'component' => 'editable-field',
+                     'additionalInformation' => null,
+                 ],
+             ]);
 
     }
 
@@ -95,20 +92,20 @@ class BelongsToManyTest extends TestCase
                              BelongsToManyField::make('Roles')->setRelatedResource(RoleResource::class),
                          );
 
-        $response = $this->storeResponse($resource, [
+        $response = $this->resourceStoreApi($resource, [
             'roles' => [
                 [ 'fields' => [ 'name' => 'Admin' ] ],
                 [ 'fields' => [ 'name' => 'Programmer' ] ],
             ],
         ]);
 
-        $this->assertEquals([
+        $response->assertJson([
             'id' => 1,
             'roles' => [
                 [ 'id' => 1, 'name' => 'Admin' ],
                 [ 'id' => 2, 'name' => 'Programmer' ],
             ],
-        ], $response);
+        ]);
 
         $this->assertDatabaseHas('role_user', [ 'user_id' => 1, 'role_id' => 1 ]);
         $this->assertDatabaseHas('role_user', [ 'user_id' => 1, 'role_id' => 2 ]);
@@ -125,9 +122,14 @@ class BelongsToManyTest extends TestCase
                                                ->rules('required'),
                          );
 
+        $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
-        $this->storeResponse($resource, [ 'roles' => null ]);
+        $this->resourceStoreApi($resource, [ 'roles' => null ])
+             ->assertStatus(422)
+             ->assertJsonFragment([
+                 'roles' => [ 'The roles field is required.' ],
+             ]);
 
     }
 
@@ -141,14 +143,20 @@ class BelongsToManyTest extends TestCase
                                                ->rules([ 'min:3' ]),
                          );
 
+        $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
-        $this->storeResponse($resource, [
+        $response = $this->resourceStoreApi($resource, [
             'roles' => [
                 [ 'fields' => [ 'name' => 1 ] ],
                 [ 'fields' => [ 'name' => 2 ] ],
             ],
         ]);
+
+        $response->assertStatus(422)
+                 ->assertJsonFragment([
+                     'message' => 'The given data was invalid.',
+                 ]);
 
     }
 
@@ -162,14 +170,24 @@ class BelongsToManyTest extends TestCase
                                                ->setRelatedResourceFieldsFor('fieldsWithValidation'),
                          );
 
-        $this->expectException(BelongsToManyException::class);
-
-        $this->storeResponse($resource, [
+        $response = $this->resourceStoreApi($resource, [
             'roles' => [
                 [ 'fields' => [ 'name' => null ] ],
                 [ 'fields' => [ 'name' => 'Programmer' ] ],
             ],
         ]);
+
+        $response->assertStatus(422)
+                 ->assertJson([
+                     'message' => 'The given data was invalid.',
+                     'errors' => [
+                         'roles' => [
+                             'fields' => [
+                                 'name' => [ 'The name field is required.' ],
+                             ],
+                         ],
+                     ],
+                 ]);
 
     }
 
@@ -185,14 +203,19 @@ class BelongsToManyTest extends TestCase
                                                ]),
                          );
 
-        $this->expectException(BelongsToManyException::class);
-
-        $this->storeResponse($resource, [
+        $response = $this->resourceStoreApi($resource, [
             'roles' => [
                 [ 'fields' => [ 'name' => 'Admin' ] ],
                 [ 'fields' => [ 'name' => 'Programmer' ] ],
             ],
         ]);
+
+        $response->assertStatus(422)
+                 ->assertJsonFragment([
+                     'pivotFields' => [
+                         'extra' => [ 'The extra field is required.' ],
+                     ],
+                 ]);
 
     }
 
@@ -281,7 +304,7 @@ class BelongsToManyTest extends TestCase
                                                ]),
                          );
 
-        $response = $this->storeResponse($resource, [
+        $response = $this->resourceStoreApi($resource, [
             'roles' => [
                 [
                     'fields' => [ 'name' => 'Admin' ],
@@ -294,13 +317,13 @@ class BelongsToManyTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals([
+        $response->assertJson([
             'id' => 1,
             'roles' => [
                 [ 'id' => 1, 'name' => 'Admin' ],
                 [ 'id' => 2, 'name' => 'Programmer' ],
             ],
-        ], $response);
+        ]);
 
         $this->assertDatabaseHas('role_user', [ 'user_id' => 1, 'role_id' => 1, 'extra' => 'sample' ]);
         $this->assertDatabaseHas('role_user', [ 'user_id' => 1, 'role_id' => 2, 'extra' => null ]);
@@ -328,7 +351,7 @@ class BelongsToManyTest extends TestCase
                                                ]),
                          );
 
-        $response = $this->indexResponse($resource);
+        $response = $this->resourceIndexApi($resource);
 
         $expectedData = [
             'key' => 1,
@@ -393,10 +416,9 @@ class BelongsToManyTest extends TestCase
             ],
         ];
 
-        $this->assertEquals($expectedData, data_get($response, 'resources.0'));
-
-        $this->assertEquals('user', data_get($response, 'resources.1.fields.0.relatedResource.resources.0.fields.0.value'));
-        $this->assertEquals('test', data_get($response, 'resources.1.fields.0.relatedResource.resources.0.pivotFields.0.value'));
+        $response->assertJsonPath('resources.0', $expectedData)
+                 ->assertJsonPath('resources.1.fields.0.relatedResource.resources.0.fields.0.value', 'user')
+                 ->assertJsonPath('resources.1.fields.0.relatedResource.resources.0.pivotFields.0.value', 'test');
 
     }
 
@@ -414,7 +436,7 @@ class BelongsToManyTest extends TestCase
                                                ]),
                          );
 
-        $response = $this->indexResponse($resource);
+        $response = $this->resourceIndexApi($resource);
 
         $expectedData = [
             [
@@ -426,7 +448,7 @@ class BelongsToManyTest extends TestCase
             ],
         ];
 
-        $this->assertEquals($expectedData, data_get($response, 'resources.0.fields.0.relatedResource.resources.0.pivotFields'));
+        $response->assertJsonPath('resources.0.fields.0.relatedResource.resources.0.pivotFields', $expectedData);
 
     }
 
@@ -440,9 +462,10 @@ class BelongsToManyTest extends TestCase
                              BelongsToManyField::make('Roles', 'invalidRelation'),
                          );
 
+        $this->withoutExceptionHandling();
         $this->expectException(RelationNotFoundException::class);
 
-        $this->indexResponse($resource);
+        $this->resourceIndexApi($resource)->assertStatus(500);
 
     }
 
@@ -460,9 +483,10 @@ class BelongsToManyTest extends TestCase
                                                ]),
                          );
 
+        $this->withoutExceptionHandling();
         $this->expectExceptionMessage('Invalid relationship type.');
 
-        $this->indexResponse($resource);
+        $this->resourceIndexApi($resource)->assertStatus(500);
 
     }
 
@@ -506,7 +530,7 @@ class BelongsToManyTest extends TestCase
             ],
         ];
 
-        $this->assertTrue($this->updateResponse($resource, $user->id, $updatedData));
+        $this->resourceUpdateApi($resource, $user->id, $updatedData)->assertStatus(200);
 
         $this->assertDatabaseHas('roles', [ 'id' => 1, 'name' => 'admin-a' ]);
         $this->assertDatabaseHas('roles', [ 'id' => 2, 'name' => 'admin-b' ]);

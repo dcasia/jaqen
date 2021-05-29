@@ -5,9 +5,9 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Fields\Relationships;
 
 use DigitalCreative\Jaqen\Concerns\WithEvents;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
 use DigitalCreative\Jaqen\Services\Fields\Fields\EditableField;
-use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,7 +20,7 @@ class HasOneField extends BelongsToField implements WithEvents
     {
         parent::__construct($label, $relation, $relatedResource);
 
-        $this->afterCreate(function(Model $model) {
+        $this->afterCreate(function (Model $model) {
 
             $resource = $this->getRelatedResource();
 
@@ -30,7 +30,7 @@ class HasOneField extends BelongsToField implements WithEvents
                 $this->request->input($this->relationAttribute), [ $foreignerKey => $model->getKey() ]
             );
 
-            $cloneRequest = $this->request->duplicate($this->request->query(), $requestData);
+            $cloneRequest = $this->request::createFromBase($this->request)->replace($requestData);
 
             $fields = $resource->resolveFields($cloneRequest, $this->relatedFieldsFor);
             $fields->validate($cloneRequest);

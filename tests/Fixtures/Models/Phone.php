@@ -9,4 +9,5 @@ namespace DigitalCreative\Jaqen\Tests\Fixtures\Models;
  */
 class Phone extends AbstractModel
 {
+
 }

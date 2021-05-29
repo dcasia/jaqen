@@ -6,9 +6,9 @@ namespace DigitalCreative\Jaqen\Fields\Relationships;
 
 use DigitalCreative\Jaqen\Concerns\WithEvents;
 use DigitalCreative\Jaqen\Exceptions\BelongsToManyException;
+use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
 use DigitalCreative\Jaqen\Services\Fields\Fields\FieldsCollection;
-use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Traits\EventsTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -31,7 +31,7 @@ class BelongsToManyField extends BelongsToField implements WithEvents
     {
         parent::__construct($label, $relation, $relatedResource);
 
-        $this->afterUpdate(function(Model $model) {
+        $this->afterUpdate(function (Model $model) {
 
             $resource = $this->getRelatedResource();
 
@@ -39,7 +39,7 @@ class BelongsToManyField extends BelongsToField implements WithEvents
 
         });
 
-        $this->afterCreate(function(Model $model) {
+        $this->afterCreate(function (Model $model) {
 
             $resource = $this->getRelatedResource();
 
@@ -55,9 +55,6 @@ class BelongsToManyField extends BelongsToField implements WithEvents
     }
 
     /**
-     * @param AbstractResource $resource
-     * @param Model $model
-     * @param BaseRequest $request
      * @throws BelongsToManyException
      */
     private function updateRelatedModels(AbstractResource $resource, Model $model, BaseRequest $request): void
@@ -94,11 +91,6 @@ class BelongsToManyField extends BelongsToField implements WithEvents
 
     }
 
-    /**
-     * @param FieldsCollection $pivotFields
-     * @param BaseRequest $request
-     * @return array
-     */
     private function getPivotAttributeData(FieldsCollection $pivotFields, BaseRequest $request): array
     {
         return $pivotFields->map(fn(AbstractField $field) => $field->resolveValueFromRequest($request))
@@ -106,9 +98,6 @@ class BelongsToManyField extends BelongsToField implements WithEvents
     }
 
     /**
-     * @param AbstractResource $resource
-     * @param BaseRequest $request
-     * @return array[]
      * @throws BelongsToManyException
      */
     private function createRelatedModels(AbstractResource $resource, BaseRequest $request): array
@@ -144,13 +133,6 @@ class BelongsToManyField extends BelongsToField implements WithEvents
     }
 
     /**
-     * @param BaseRequest $request
-     * @param AbstractResource $resource
-     * @param array $requestData
-     * @param FieldsCollection $pivotFields
-     *
-     * @return array
-     *
      * @throws BelongsToManyException
      */
     private function processFields(BaseRequest $request, AbstractResource $resource, array $requestData, FieldsCollection $pivotFields): array
@@ -178,7 +160,6 @@ class BelongsToManyField extends BelongsToField implements WithEvents
     }
 
     /**
-     * @param array $fieldsGroup
      * @throws BelongsToManyException
      */
     private function validateFields(array $fieldsGroup): void
