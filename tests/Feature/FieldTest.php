@@ -246,18 +246,4 @@ class FieldTest extends TestCase
         $this->assertEquals('hello_world', EditableField::make('HelloWorld', 'hello_world')->attribute);
     }
 
-    public function test_boot_works(): void
-    {
-
-        $field = $this->spy(EditableField::class);
-
-        $resource = $this->makeResource()
-                         ->addDefaultFields($field);
-
-        $resource->resolveFields($this->fieldsRequest($resource));
-
-        $field->shouldHaveReceived('boot');
-
-    }
-
 }

@@ -20,12 +20,12 @@ trait AuthorizableTrait
     {
         $this->authorizationCallback = $callback;
 
-        return self;
+        return $this;
     }
 
     public function isAuthorizedToSee(): bool
     {
-        return value($this->authorizationCallback) ?: true;
+        return value($this->authorizationCallback) ?? true;
     }
 
     /**

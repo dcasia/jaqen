@@ -4,10 +4,12 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Services\Fields\Fields;
 
+use DigitalCreative\Jaqen\Concerns\BehaveAsPanel;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Services\Fields\Traits\ResolveRulesTrait;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractFilter;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
+use DigitalCreative\Jaqen\Traits\AuthorizableTrait;
 use DigitalCreative\Jaqen\Traits\MakeableTrait;
 use DigitalCreative\Jaqen\Traits\ResolveValueTrait;
 use Illuminate\Contracts\Support\Arrayable;
@@ -21,6 +23,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable, Potentially
     use ResolveRulesTrait;
     use MakeableTrait;
     use ResolveValueTrait;
+    use AuthorizableTrait;
 
     public string $label;
     public string $attribute;
@@ -149,7 +152,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable, Potentially
         return array_merge([
             'label' => $this->label,
             'attribute' => $this->attribute,
-            'value' => $this->value,
+            'value' => $this instanceof BehaveAsPanel ? $this->getFields() : value($this->value),
             'component' => $this->component(),
             'additionalInformation' => $this->resolveAdditionalInformation(),
         ], $this->resolveData());

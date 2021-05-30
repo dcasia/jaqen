@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Tests\Feature;
 
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\EditableField;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article as ArticleModel;
 use DigitalCreative\Jaqen\Tests\Fixtures\Policies\AllowEverythingPolicy;
@@ -101,6 +102,21 @@ class AuthorizationTest extends TestCase
          */
         $this->registerPolicy($resource, AllowEverythingPolicy::class);
         $this->belongsToSearchApi($resource, $field)->assertOk();
+
+    }
+
+    public function test_fields_are_not_returned_if_arent_authorized_to_see(): void
+    {
+
+        $resource = $this->makeResource()
+                         ->addDefaultFields(
+                             EditableField::make('field-1')->canSee(fn() => false),
+                             EditableField::make('field-2')->canSee(fn() => true),
+                         );
+
+        $this->resourceFieldsApi($resource)
+             ->assertJsonCount(1)
+             ->assertJson([ [ 'attribute' => 'field-2' ] ]);
 
     }
 
