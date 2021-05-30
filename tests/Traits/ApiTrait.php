@@ -28,14 +28,14 @@ trait ApiTrait
         );
     }
 
-    public function resourceStoreApi(AbstractResource|string $resource, array $data = []): TestResponse
+    public function resourceCreateApi(AbstractResource|string $resource, array $data = []): TestResponse
     {
         return $this->postJson(
             route('jaqen.resource.store', [ 'resource' => $resource::uriKey() ]), $data
         );
     }
 
-    public function resourceDestroyApi(AbstractResource|string $resource, array $keys = null): TestResponse
+    public function resourceDeleteApi(AbstractResource|string $resource, array $keys = null): TestResponse
     {
         return $this->deleteJson(
             route('jaqen.resource.destroy', [ 'resource' => $resource::uriKey() ]),
@@ -43,7 +43,7 @@ trait ApiTrait
         );
     }
 
-    public function resourceShowApi(AbstractResource|string $resource, int|string $key): TestResponse
+    public function resourceDetailApi(AbstractResource|string $resource, int|string $key): TestResponse
     {
         return $this->get(
             route('jaqen.resource.show', [ 'resource' => $resource::uriKey(), 'key' => $key ]),
@@ -82,7 +82,7 @@ trait ApiTrait
         return $this->getJson(route('jaqen.resources'));
     }
 
-    public function belongsToSearchApi(AbstractResource|string $resource, BelongsToField $field, array $data): TestResponse
+    public function belongsToSearchApi(AbstractResource|string $resource, BelongsToField $field, array $data = []): TestResponse
     {
         return $this->getJson(
             route('jaqen.fields.belongs-to', [ 'resource' => $resource::uriKey(), 'field' => $field->getRelationAttribute() ] + $data),

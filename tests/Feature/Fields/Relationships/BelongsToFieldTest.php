@@ -146,7 +146,7 @@ class BelongsToFieldTest extends TestCase
                              BelongsToField::make('User'),
                          );
 
-        $this->resourceStoreApi($resource, $data);
+        $this->resourceCreateApi($resource, $data);
 
         $this->assertDatabaseHas('articles', $data);
 
@@ -255,7 +255,7 @@ class BelongsToFieldTest extends TestCase
                                            ->setRelatedResource(MinimalUserResource::class),
                          );
 
-        $this->resourceShowApi($resource, $article->id)
+        $this->resourceDetailApi($resource, $article->id)
              ->assertJsonPath('fields.0.attribute', 'user_id')
              ->assertJsonPath('fields.0.value', null);
 
@@ -283,7 +283,7 @@ class BelongsToFieldTest extends TestCase
                          ->with($with)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        $this->resourceShowApi($resource, $article->id)->assertOk();
+        $this->resourceDetailApi($resource, $article->id)->assertOk();
 
     }
 
@@ -305,7 +305,7 @@ class BelongsToFieldTest extends TestCase
                          ->with($with)
                          ->addDefaultFields(BelongsToField::make('User'));
 
-        $this->resourceShowApi($resource, $article->id)->assertOk();
+        $this->resourceDetailApi($resource, $article->id)->assertOk();
 
     }
 

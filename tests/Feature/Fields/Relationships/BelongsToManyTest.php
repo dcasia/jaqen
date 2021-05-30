@@ -89,7 +89,7 @@ class BelongsToManyTest extends TestCase
                              BelongsToManyField::make('Roles')->setRelatedResource(RoleResource::class),
                          );
 
-        $response = $this->resourceStoreApi($resource, [
+        $response = $this->resourceCreateApi($resource, [
             'roles' => [
                 [ 'fields' => [ 'name' => 'Admin' ] ],
                 [ 'fields' => [ 'name' => 'Programmer' ] ],
@@ -122,7 +122,7 @@ class BelongsToManyTest extends TestCase
         $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
-        $this->resourceStoreApi($resource, [ 'roles' => null ])
+        $this->resourceCreateApi($resource, [ 'roles' => null ])
              ->assertStatus(422)
              ->assertJsonFragment([
                  'roles' => [ 'The roles field is required.' ],
@@ -143,7 +143,7 @@ class BelongsToManyTest extends TestCase
         $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
-        $response = $this->resourceStoreApi($resource, [
+        $response = $this->resourceCreateApi($resource, [
             'roles' => [
                 [ 'fields' => [ 'name' => 1 ] ],
                 [ 'fields' => [ 'name' => 2 ] ],
@@ -167,7 +167,7 @@ class BelongsToManyTest extends TestCase
                                                ->setRelatedResourceFieldsFor('fieldsWithValidation'),
                          );
 
-        $response = $this->resourceStoreApi($resource, [
+        $response = $this->resourceCreateApi($resource, [
             'roles' => [
                 [ 'fields' => [ 'name' => null ] ],
                 [ 'fields' => [ 'name' => 'Programmer' ] ],
@@ -200,7 +200,7 @@ class BelongsToManyTest extends TestCase
                                                ]),
                          );
 
-        $response = $this->resourceStoreApi($resource, [
+        $response = $this->resourceCreateApi($resource, [
             'roles' => [
                 [ 'fields' => [ 'name' => 'Admin' ] ],
                 [ 'fields' => [ 'name' => 'Programmer' ] ],
@@ -228,7 +228,7 @@ class BelongsToManyTest extends TestCase
                                                ]),
                          );
 
-        $response = $this->resourceStoreApi($resource, [
+        $response = $this->resourceCreateApi($resource, [
             'roles' => [
                 [ 'fields' => [ 'name' => null ] ],
             ],
@@ -262,7 +262,7 @@ class BelongsToManyTest extends TestCase
                                                ]),
                          );
 
-        $response = $this->resourceStoreApi($resource, [
+        $response = $this->resourceCreateApi($resource, [
             'roles' => [
                 [
                     'fields' => [ 'name' => 'admin' ],
@@ -301,7 +301,7 @@ class BelongsToManyTest extends TestCase
                                                ]),
                          );
 
-        $response = $this->resourceStoreApi($resource, [
+        $response = $this->resourceCreateApi($resource, [
             'roles' => [
                 [
                     'fields' => [ 'name' => 'Admin' ],

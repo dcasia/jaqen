@@ -51,7 +51,7 @@ class PanelTest extends TestCase
         /**
          * Detail Controller
          */
-        $detailResponse = $this->resourceShowApi($resource, $user->getKey());
+        $detailResponse = $this->resourceDetailApi($resource, $user->getKey());
 
         $detailResponse->assertJsonPath('fields.0.component', 'panel');
         $detailResponse->assertJsonPath('fields.0.value.0.value', 'hello world');
@@ -78,7 +78,7 @@ class PanelTest extends TestCase
                              ])
                          );
 
-        $this->resourceStoreApi($resource, $data)->assertCreated();
+        $this->resourceCreateApi($resource, $data)->assertCreated();
 
         $this->assertDatabaseHas('users', $data);
 

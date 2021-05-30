@@ -7,17 +7,23 @@ namespace DigitalCreative\Jaqen\Services\Fields\Http\Controllers;
 use DigitalCreative\Jaqen\Fields\Relationships\BelongsToField;
 use DigitalCreative\Jaqen\Http\Requests\BelongsToResourceRequest;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\Controller;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use Throwable;
 
 class BelongsToController extends Controller
 {
 
+    /**
+     * @throws AuthorizationException|Throwable
+     */
     public function searchBelongsTo(BelongsToResourceRequest $request): JsonResponse
     {
 
         $resource = $this->resourceManager->resourceForRequest($request);
+        $resource->authorizeTo('view');
 
         $fieldAttribute = Str::of($request->route('field'))->before('_id')->__toString();
 

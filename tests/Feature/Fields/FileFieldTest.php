@@ -100,7 +100,7 @@ class FileFieldTest extends TestCase
 
         $storage->assertMissing($user->name);
 
-        $this->resourceDestroyApi($resource, keys: [ $user->id ])
+        $this->resourceDeleteApi($resource, keys: [ $user->id ])
              ->assertNoContent();
 
         $storage->assertMissing($user->name);
@@ -118,7 +118,7 @@ class FileFieldTest extends TestCase
                                       ->pruneFile()
                          );
 
-        $this->resourceStoreApi($resource, [ 'name' => UploadedFile::fake()->image('name') ])
+        $this->resourceCreateApi($resource, [ 'name' => UploadedFile::fake()->image('name') ])
              ->assertCreated();
 
         return $resource;

@@ -27,7 +27,7 @@ class FieldTest extends TestCase
                              EditableField::make('Name')->rulesForCreate('required')
                          );
 
-        $this->resourceStoreApi($resource, [ 'name' => null ])
+        $this->resourceCreateApi($resource, [ 'name' => null ])
              ->assertCreated();
 
     }
@@ -60,7 +60,7 @@ class FieldTest extends TestCase
                              EditableField::make('Name')->rulesForCreate('required')
                          );
 
-        $this->resourceStoreApi($resource);
+        $this->resourceCreateApi($resource);
 
     }
 

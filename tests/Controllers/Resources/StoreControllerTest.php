@@ -31,7 +31,7 @@ class StoreControllerTest extends TestCase
                              EditableField::make('password'),
                          );
 
-        $this->resourceStoreApi($resource, $data)
+        $this->resourceCreateApi($resource, $data)
              ->assertCreated()
              ->assertJson($data);
 
@@ -51,7 +51,7 @@ class StoreControllerTest extends TestCase
         $resource = $this->makeResource()
                          ->useRepository($repository);
 
-        $this->resourceStoreApi($resource)
+        $this->resourceCreateApi($resource)
              ->assertCreated()
              ->assertJsonFragment([ 'id' => $user->id ]);
 

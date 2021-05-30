@@ -25,7 +25,7 @@ class IndexController extends Controller
     {
 
         $resource = $this->resourceManager->resourceForRequest($request);
-        $resource->authorizeTo('view');
+        $resource->authorizeTo('viewAny');
 
         $fields = $resource->resolveFields($request);
 
