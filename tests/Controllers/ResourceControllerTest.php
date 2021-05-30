@@ -5,11 +5,11 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Tests\Controllers;
 
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\CustomNameLabelUriResource;
 use DigitalCreative\Jaqen\Tests\Fixtures\Resources\User as UserResource;
 use DigitalCreative\Jaqen\Tests\TestCase;
 use DigitalCreative\Jaqen\Tests\Traits\ResourceTrait;
-use Illuminate\Database\Eloquent\Model;
 
 class ResourceControllerTest extends TestCase
 {
@@ -35,6 +35,8 @@ class ResourceControllerTest extends TestCase
     {
         $this->registerResource(new class extends AbstractResource {
 
+            public static string $model = UserModel::class;
+
             public static function uriKey(): string
             {
                 return 'sample-uri';
@@ -48,11 +50,6 @@ class ResourceControllerTest extends TestCase
             public function label(): string
             {
                 return 'sample-label';
-            }
-
-            public function model(): Model
-            {
-                return new User();
             }
 
         });

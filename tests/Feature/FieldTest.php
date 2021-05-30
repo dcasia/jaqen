@@ -110,7 +110,7 @@ class FieldTest extends TestCase
 
         $resource = new class extends AbstractResource {
 
-            public function model(): Model
+            public function newModel(): Model
             {
                 return new UserModel();
             }

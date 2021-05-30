@@ -32,7 +32,7 @@ class ResourceManager
          * @todo implement authorized to see
          */
         return $this->resources->map(fn($class, $key) => new $class($request))
-                               ->filter(fn(AbstractResource $resource) => $resource)
+                               ->filter(fn(AbstractResource $resource) => $resource->authorizeToView())
                                ->values();
     }
 

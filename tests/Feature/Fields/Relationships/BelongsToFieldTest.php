@@ -81,7 +81,7 @@ class BelongsToFieldTest extends TestCase
 
         $class = new class() extends AbstractResource {
 
-            public function model(): Model
+            public function newModel(): Model
             {
                 return new ArticleModel();
             }

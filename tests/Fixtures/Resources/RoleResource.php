@@ -7,15 +7,11 @@ namespace DigitalCreative\Jaqen\Tests\Fixtures\Resources;
 use DigitalCreative\Jaqen\Services\Fields\Fields\EditableField;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\Role as RoleModel;
-use Illuminate\Database\Eloquent\Model;
 
 class RoleResource extends AbstractResource
 {
 
-    public function model(): Model
-    {
-        return new RoleModel();
-    }
+    public static string $model = RoleModel::class;
 
     public function fields(): array
     {

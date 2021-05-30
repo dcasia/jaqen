@@ -41,7 +41,7 @@ class ResourceTest extends TestCase
                 $this->runner = $runner;
             }
 
-            public function model(): Model
+            public function newModel(): Model
             {
                 return new UserModel();
             }
@@ -75,7 +75,7 @@ class ResourceTest extends TestCase
                 $this->runner = $runner;
             }
 
-            public function model(): Model
+            public function newModel(): Model
             {
                 return new UserModel();
             }

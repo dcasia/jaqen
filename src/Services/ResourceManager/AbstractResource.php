@@ -10,6 +10,7 @@ use DigitalCreative\Jaqen\Repository\Repository;
 use DigitalCreative\Jaqen\Repository\RepositoryInterface;
 use DigitalCreative\Jaqen\Services\Fields\Traits\ResolveFieldsTrait;
 use DigitalCreative\Jaqen\Services\ResourceManager\Traits\ResolveFiltersTrait;
+use DigitalCreative\Jaqen\Traits\AuthorizableTrait;
 use DigitalCreative\Jaqen\Traits\EventsTrait;
 use DigitalCreative\Jaqen\Traits\MakeableTrait;
 use DigitalCreative\Jaqen\Traits\ResolveUriKey;
@@ -24,13 +25,19 @@ abstract class AbstractResource implements WithEvents
     use ResolveUriKey;
     use MakeableTrait;
     use EventsTrait;
+    use AuthorizableTrait;
 
     private BaseRequest $request;
     private RepositoryInterface $repository;
 
     public array $with = [];
 
-    abstract public function model(): Model;
+    public static string $model;
+
+    public function newModel(): Model
+    {
+        return new static::$model;
+    }
 
     public function with(array $with, bool $override = true): self
     {
@@ -78,7 +85,7 @@ abstract class AbstractResource implements WithEvents
 
     public function perPage(BaseRequest $request): int
     {
-        return $this->model()->getPerPage();
+        return $this->newModel()->getPerPage();
     }
 
     public function getDescriptor(): array
@@ -120,7 +127,7 @@ abstract class AbstractResource implements WithEvents
 
     public function repository(): RepositoryInterface
     {
-        return $this->repository ?? new Repository($this->model());
+        return $this->repository ?? new Repository($this->newModel());
     }
 
 }
