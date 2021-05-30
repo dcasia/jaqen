@@ -6,9 +6,11 @@ namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers;
 
 use DigitalCreative\Jaqen\Services\ResourceManager\FilterCollection;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\IndexResourceRequest;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
+use Throwable;
 
 class IndexController extends Controller
 {
@@ -16,10 +18,14 @@ class IndexController extends Controller
     private int $perPage;
     private int $currentPage;
 
+    /**
+     * @throws AuthorizationException|Throwable
+     */
     public function handle(IndexResourceRequest $request): JsonResponse
     {
 
         $resource = $this->resourceManager->resourceForRequest($request);
+        $resource->authorizeTo('view');
 
         $fields = $resource->resolveFields($request);
 

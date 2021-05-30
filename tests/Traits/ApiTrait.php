@@ -35,11 +35,11 @@ trait ApiTrait
         );
     }
 
-    public function resourceDestroyApi(AbstractResource|string $resource, array $ids = null): TestResponse
+    public function resourceDestroyApi(AbstractResource|string $resource, array $keys = null): TestResponse
     {
         return $this->deleteJson(
             route('jaqen.resource.destroy', [ 'resource' => $resource::uriKey() ]),
-            array_filter([ 'ids' => $ids ])
+            array_filter([ 'keys' => $keys ])
         );
     }
 

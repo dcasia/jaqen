@@ -158,7 +158,7 @@ class FieldEventTest extends TestCase
             $afterDelete++;
         });
 
-        $this->resourceDestroyApi($resource, ids: $users->pluck('id')->toArray());
+        $this->resourceDestroyApi($resource, keys: $users->pluck('id')->toArray());
 
         $this->assertEquals(5, $afterDelete);
         $this->assertEquals(5, $beforeDelete);

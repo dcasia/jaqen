@@ -21,7 +21,7 @@ class DeleteControllerTest extends TestCase
         $user = UserFactory::new()->create($data);
 
         $this->registerResource(UserResource::class);
-        $this->resourceDestroyApi(UserResource::class, ids: [ $user->id ])
+        $this->resourceDestroyApi(UserResource::class, keys: [ $user->id ])
              ->assertNoContent();
 
         $this->assertDatabaseMissing('users', $data);
@@ -34,7 +34,7 @@ class DeleteControllerTest extends TestCase
         UserFactory::new()->create();
 
         $this->registerResource(UserResource::class);
-        $this->resourceDestroyApi(UserResource::class, ids: $users->pluck('id')->toArray())
+        $this->resourceDestroyApi(UserResource::class, keys: $users->pluck('id')->toArray())
              ->assertNoContent();
 
         $this->assertDatabaseCount('users', 1);

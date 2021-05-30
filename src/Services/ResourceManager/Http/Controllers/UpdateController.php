@@ -7,15 +7,21 @@ namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers;
 use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
 use DigitalCreative\Jaqen\Services\Fields\Fields\FieldsCollection;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\UpdateResourceRequest;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class UpdateController extends Controller
 {
 
+    /**
+     * @throws AuthorizationException|Throwable
+     */
     public function handle(UpdateResourceRequest $request): JsonResponse
     {
 
         $resource = $this->resourceManager->resourceForRequest($request);
+        $resource->authorizeTo('update');
 
         /**
          * Validate all fields and throw validation exception in case of invalid data

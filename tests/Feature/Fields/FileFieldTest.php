@@ -100,7 +100,7 @@ class FileFieldTest extends TestCase
 
         $storage->assertMissing($user->name);
 
-        $this->resourceDestroyApi($resource, ids: [ $user->id ])
+        $this->resourceDestroyApi($resource, keys: [ $user->id ])
              ->assertNoContent();
 
         $storage->assertMissing($user->name);
