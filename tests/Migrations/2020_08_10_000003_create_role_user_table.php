@@ -10,14 +10,10 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateRoleUserTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+
     public function up(): void
     {
-        Schema::create('role_user', static function(Blueprint $table) {
+        Schema::create('role_user', static function (Blueprint $table) {
             $table->increments('id');
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Role::class);
@@ -25,13 +21,9 @@ class CreateRoleUserTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down(): void
     {
         Schema::dropIfExists('role_user');
     }
+
 }

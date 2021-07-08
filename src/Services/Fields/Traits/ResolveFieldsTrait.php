@@ -11,6 +11,7 @@ use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
 use DigitalCreative\Jaqen\Services\Fields\Fields\FieldsCollection;
 use DigitalCreative\Jaqen\Services\Fields\FieldsData;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use LogicException;
 use RuntimeException;
@@ -57,20 +58,15 @@ trait ResolveFieldsTrait
 
     /**
      * Resolve fields and remove every field that is not necessary for this given request
-     *
-     * @param BaseRequest $request
-     * @param string|null $for
-     *
-     * @return FieldsCollection
      */
     public function resolveFields(BaseRequest $request, ?string $for = null): FieldsCollection
     {
         return once(function () use ($request, $for) {
 
+            /**
+             * First step is to determine if the fields should be retrieved from fields, fieldsFor* or invokable
+             */
             $for = $for ?? Str::camel($request->input('fieldsFor', 'fields'));
-
-            $only = $request->input('only');
-            $except = $request->input('except');
 
             /**
              * If fields has been set through ->fieldsFor()
@@ -125,36 +121,60 @@ trait ResolveFieldsTrait
 
             }
 
-            return (new FieldsCollection($fields))
-                ->when($request->isStoringResourceToDatabase(), function (FieldsCollection $fields) {
-
-                    return $fields->flatMap(function (AbstractField $field) {
-
-                        if ($field instanceof BehaveAsPanel) {
-
-                            return $field->getFields();
-
-                        }
-
-                        return [ $field ];
-
-                    });
-
-                })
-                ->when($only, function (FieldsCollection $fields, string $only) {
-                    return $fields->filter(
-                        fn(AbstractField $field) => $this->stringContains($only, $field->attribute)
-                    );
-                })
-                ->when($except, function (FieldsCollection $fields, string $except) {
-                    return $fields->filter(
-                        fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
-                    );
-                })
-                ->each(fn(AbstractField $field) => $field->boot($this, $request))
-                ->values();
+            return $this->filterFields($request, $fields);
 
         });
+    }
+
+    private function filterFields(BaseRequest $request, array $fields): FieldsCollection
+    {
+        $only = $request->input('only');
+        $except = $request->input('except');
+
+        return (new FieldsCollection($fields))
+            ->when($request->isStoringResourceToDatabase(), function (FieldsCollection $fields) {
+
+                return $fields->flatMap(function (AbstractField $field) {
+
+                    if ($field instanceof BehaveAsPanel) {
+
+                        return $field->getFields();
+
+                    }
+
+                    return [ $field ];
+
+                });
+
+            })
+            ->when($request->isSchemaFetching(), function (FieldsCollection $fields) use ($request) {
+
+                $fields->each(function (AbstractField $field) use ($request) {
+
+                    $field->resolveValueFromDefaults($request);
+
+                });
+
+                return $fields;
+
+            })
+            ->when($only, function (FieldsCollection $fields, string $only) {
+                return $fields->filter(
+                    fn(AbstractField $field) => $this->stringContains($only, $field->attribute)
+                );
+            })
+            ->when($except, function (FieldsCollection $fields, string $except) {
+                return $fields->filter(
+                    fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
+                );
+            })
+            ->authorized()
+            ->boot($this, $request);
+    }
+
+    private function authorizedFields(Collection $collection): Collection
+    {
+        return $collection->filter(fn(AbstractField $field) => $field->isAuthorizedToSee());
     }
 
     private function stringContains(string $items, string $attribute): bool

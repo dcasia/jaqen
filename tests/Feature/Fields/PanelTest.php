@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Feature\Fields;
 
-use DigitalCreative\Jaqen\Fields\Panel;
 use DigitalCreative\Jaqen\Services\Fields\Fields\EditableField;
+use DigitalCreative\Jaqen\Services\Fields\Fields\Panel;
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use DigitalCreative\Jaqen\Tests\TestCase;
@@ -51,7 +51,7 @@ class PanelTest extends TestCase
         /**
          * Detail Controller
          */
-        $detailResponse = $this->resourceShowApi($resource, $user->getKey());
+        $detailResponse = $this->resourceDetailApi($resource, $user->getKey());
 
         $detailResponse->assertJsonPath('fields.0.component', 'panel');
         $detailResponse->assertJsonPath('fields.0.value.0.value', 'hello world');
@@ -78,7 +78,7 @@ class PanelTest extends TestCase
                              ])
                          );
 
-        $this->resourceStoreApi($resource, $data)->assertCreated();
+        $this->resourceCreateApi($resource, $data)->assertCreated();
 
         $this->assertDatabaseHas('users', $data);
 
@@ -103,6 +103,70 @@ class PanelTest extends TestCase
         $this->resourceUpdateApi($resource, $user->getKey(), $data)->assertOk();
 
         $this->assertDatabaseHas('users', $data);
+
+    }
+
+    public function test_panel_returns_sub_fields_on_fields_api(): void
+    {
+        $resource = $this->makeResource()
+                         ->addDefaultFields(
+                             Panel::make('Panel 1', fn() => [ EditableField::make('Field 1') ]),
+                             Panel::make('Panel 2', [ EditableField::make('Field 2') ])
+                         );
+
+        $this->resourceFieldsApi($resource)
+             ->assertJsonPath('0.value.0.attribute', 'field_1')
+             ->assertJsonPath('1.value.0.attribute', 'field_2');
+    }
+
+    public function test_if_field_is_unauthorized_its_fields_are_not_returned(): void
+    {
+
+        $resource = $this->makeResource()
+                         ->addDefaultFields(
+                             Panel::make('Panel', [ EditableField::make('field-1') ])->canSee(fn() => false)
+                         );
+
+        $this->resourceFieldsApi($resource)
+             ->assertJsonCount(0);
+
+    }
+
+    public function test_panel_fields_authorization_works(): void
+    {
+
+        $resource = $this->makeResource()
+                         ->addDefaultFields(
+                             Panel::make('Panel', [
+                                 EditableField::make('field-1')->canSee(fn() => false),
+                                 EditableField::make('field-2')->canSee(fn() => true),
+                             ])
+                         );
+
+        $this->resourceFieldsApi($resource)
+             ->assertJsonCount(1)
+             ->assertJsonCount(1, '0.value')
+             ->assertJsonFragment([
+                 'attribute' => 'field-2',
+             ]);
+
+    }
+
+    public function test_default_values_are_returned_correctly(): void
+    {
+
+        $resource = $this->makeResource()
+                         ->addDefaultFields(
+                             Panel::make('Personal Information', [
+                                 EditableField::make('Name')->default('Default Value'),
+                             ])
+                         );
+
+        $this->resourceFieldsApi($resource)
+             ->assertJsonFragment([
+                 'attribute' => 'name',
+                 'value' => 'Default Value',
+             ]);
 
     }
 

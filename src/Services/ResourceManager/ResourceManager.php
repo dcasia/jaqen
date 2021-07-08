@@ -21,19 +21,17 @@ class ResourceManager
     {
         $this->resources = $this->resources
             ->merge($resources)
-            ->mapWithKeys(fn($resource) => [ $resource::uriKey() => $resource ]);
+            ->mapWithKeys(fn(AbstractResource|string $resource) => [ $resource::uriKey() => $resource ]);
 
         return $this;
     }
 
-    public function allAuthorizedResources(BaseRequest $request): Collection
+    public function allAuthorizedResources(): Collection
     {
-        /**
-         * @todo implement authorized to see
-         */
-        return $this->resources->map(fn($class, $key) => new $class($request))
-                               ->filter(fn(AbstractResource $resource) => $resource)
-                               ->values();
+        return $this->resources
+            ->map(fn(AbstractResource|string $resource) => $resource instanceof AbstractResource ? $resource : resolve($resource))
+            ->filter(fn(AbstractResource $resource) => $resource->authorizeToView())
+            ->values();
     }
 
     public function resourceForRequest(BaseRequest $request): AbstractResource

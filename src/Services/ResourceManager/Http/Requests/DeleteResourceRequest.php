@@ -8,10 +8,12 @@ use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 
 class DeleteResourceRequest extends BaseRequest
 {
+
     public function rules(): array
     {
         return [
-            'ids' => [ 'required', 'array' ],
+            'keys' => [ 'required', 'array' ],
         ];
     }
+
 }

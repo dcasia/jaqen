@@ -8,15 +8,11 @@ use DigitalCreative\Jaqen\Services\Fields\Fields\PasswordField;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Fixtures\Filters\FilterWithRequiredFields;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
-use Illuminate\Database\Eloquent\Model;
 
 class ResourceWithRequiredFilters extends AbstractResource
 {
 
-    public function model(): Model
-    {
-        return new UserModel();
-    }
+    public static string $model = UserModel::class;
 
     public function fields(): array
     {

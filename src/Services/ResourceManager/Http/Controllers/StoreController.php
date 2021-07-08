@@ -6,16 +6,22 @@ namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers;
 
 use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\StoreResourceRequest;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
+use Throwable;
 
 class StoreController extends Controller
 {
 
+    /**
+     * @throws AuthorizationException|Throwable
+     */
     public function handle(StoreResourceRequest $request): JsonResponse
     {
 
         $resource = $this->resourceManager->resourceForRequest($request);
+        $resource->authorizeTo('create');
 
         /**
          * Validate all fields and throw validation exception in case of invalid data

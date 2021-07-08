@@ -7,28 +7,16 @@ namespace DigitalCreative\Jaqen\Tests\Traits;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Services\ResourceManager\ResourceManager;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
 
 trait ResourceTrait
 {
 
     protected function makeResource(string $model = UserModel::class): AbstractResource
     {
-        $resource = new class($model) extends AbstractResource {
+        $resource = new class extends AbstractResource { };
 
-            public string $model;
-
-            public function __construct(string $model)
-            {
-                $this->model = $model;
-            }
-
-            public function model(): Model
-            {
-                return new $this->model;
-            }
-
-        };
+        $resource::$model = $model;
 
         $this->registerResource($resource);
 
@@ -45,6 +33,11 @@ trait ResourceTrait
         $resourceManager->setResources($resources);
 
         return $this;
+    }
+
+    protected function registerPolicy(AbstractResource|string $resource, string $policy)
+    {
+        Gate::policy($resource::$model, $policy);
     }
 
 }

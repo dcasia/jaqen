@@ -37,7 +37,7 @@ class FieldEventTest extends TestCase
 
         });
 
-        $this->resourceStoreApi($resource, [ 'name' => 'original' ]);
+        $this->resourceCreateApi($resource, [ 'name' => 'original' ]);
 
         $this->assertDatabaseHas('users', [
             'name' => 'hello world',
@@ -59,7 +59,7 @@ class FieldEventTest extends TestCase
             $this->assertInstanceOf(UserModel::class, $model);
         });
 
-        $this->resourceStoreApi($resource);
+        $this->resourceCreateApi($resource);
 
     }
 
@@ -158,7 +158,7 @@ class FieldEventTest extends TestCase
             $afterDelete++;
         });
 
-        $this->resourceDestroyApi($resource, ids: $users->pluck('id')->toArray());
+        $this->resourceDeleteApi($resource, keys: $users->pluck('id')->toArray());
 
         $this->assertEquals(5, $afterDelete);
         $this->assertEquals(5, $beforeDelete);

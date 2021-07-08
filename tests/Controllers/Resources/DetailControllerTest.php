@@ -18,7 +18,7 @@ class DetailControllerTest extends TestCase
 
         $this->registerResource(User::class);
 
-        $this->resourceShowApi(User::class, key: $user->id)
+        $this->resourceDetailApi(User::class, key: $user->id)
              ->assertOk()
              ->assertJsonStructure([
                  'key',

@@ -23,7 +23,7 @@ class HasOneFieldTest extends TestCase
                              HasOneField::make('Phone')->setRelatedResource(PhoneResource::class),
                          );
 
-        $this->resourceStoreApi($resource, [ 'phone' => [ 'number' => 123456 ] ])
+        $this->resourceCreateApi($resource, [ 'phone' => [ 'number' => 123456 ] ])
              ->assertCreated()
              ->assertJson([
                  'id' => 1,
@@ -119,7 +119,7 @@ class HasOneFieldTest extends TestCase
         $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
-        $this->resourceStoreApi($resource, [ 'phone' => [ 'number' => 'abc' ] ])
+        $this->resourceCreateApi($resource, [ 'phone' => [ 'number' => 'abc' ] ])
              ->assertStatus(422);
 
     }

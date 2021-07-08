@@ -27,7 +27,7 @@ class FieldTest extends TestCase
                              EditableField::make('Name')->rulesForCreate('required')
                          );
 
-        $this->resourceStoreApi($resource, [ 'name' => null ])
+        $this->resourceCreateApi($resource, [ 'name' => null ])
              ->assertCreated();
 
     }
@@ -60,7 +60,7 @@ class FieldTest extends TestCase
                              EditableField::make('Name')->rulesForCreate('required')
                          );
 
-        $this->resourceStoreApi($resource);
+        $this->resourceCreateApi($resource);
 
     }
 
@@ -110,7 +110,7 @@ class FieldTest extends TestCase
 
         $resource = new class extends AbstractResource {
 
-            public function model(): Model
+            public function newModel(): Model
             {
                 return new UserModel();
             }
@@ -244,20 +244,6 @@ class FieldTest extends TestCase
         $this->assertEquals('2_hello_world_2', EditableField::make(' 2 Hello  worlD 2 ')->attribute);
         $this->assertEquals('helloworld', EditableField::make('HelloWorld')->attribute);
         $this->assertEquals('hello_world', EditableField::make('HelloWorld', 'hello_world')->attribute);
-    }
-
-    public function test_boot_works(): void
-    {
-
-        $field = $this->spy(EditableField::class);
-
-        $resource = $this->makeResource()
-                         ->addDefaultFields($field);
-
-        $resource->resolveFields($this->fieldsRequest($resource));
-
-        $field->shouldHaveReceived('boot');
-
     }
 
 }

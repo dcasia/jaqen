@@ -8,6 +8,7 @@ use DigitalCreative\Jaqen\Concerns\WithCustomStore;
 use DigitalCreative\Jaqen\Concerns\WithCustomUpdate;
 use DigitalCreative\Jaqen\Concerns\WithEvents;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractFilter;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\PotentiallyMissing;
@@ -15,6 +16,18 @@ use Illuminate\Support\Collection;
 
 class FieldsCollection extends Collection
 {
+
+    public function boot(AbstractResource|AbstractFilter $resource, BaseRequest $request): self
+    {
+        return $this->each(fn(AbstractField $field) => $field->boot($resource, $request));
+    }
+
+    public function authorized(): self
+    {
+        return $this
+            ->filter(fn(AbstractField $field) => $field->isAuthorizedToSee())
+            ->values();
+    }
 
     public function resolveData(): array
     {

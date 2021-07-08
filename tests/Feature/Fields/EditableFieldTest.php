@@ -29,7 +29,7 @@ class EditableFieldTest extends TestCase
                              EditableField::make('Password')->rulesForCreate('required'),
                          );
 
-        $this->resourceStoreApi($resource, $data)->assertCreated();
+        $this->resourceCreateApi($resource, $data)->assertCreated();
 
         $this->assertDatabaseHas('users', $data);
 

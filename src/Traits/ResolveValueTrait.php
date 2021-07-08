@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 trait ResolveValueTrait
 {
     /**
-     * @var string|int|null
+     * @var string|int|callable|null
      */
     public $value;
 
@@ -58,6 +58,11 @@ trait ResolveValueTrait
     public function resolveValueFromArray(array $data, BaseRequest $request): self
     {
         return $this->setValue(data_get($data, $this->attribute), $request);
+    }
+
+    public function resolveValueFromDefaults(BaseRequest $request): self
+    {
+        return $this->setValue(null, $request);
     }
 
     /**

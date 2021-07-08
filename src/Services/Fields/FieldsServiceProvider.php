@@ -19,7 +19,8 @@ class FieldsServiceProvider extends ServiceProvider
          */
         Route::group([ 'prefix' => '/jaqen-api/fields', 'as' => 'jaqen.fields.' ], function (Router $router) {
 
-            $router->get('/belongs-to/{resource}/{field}', [ BelongsToController::class, 'searchBelongsTo' ])->name('belongs-to');
+            $router->get('/belongs-to/{resource}/{field}', [ BelongsToController::class, 'searchBelongsTo' ])
+                   ->name('belongs-to');
 
         });
     }

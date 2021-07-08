@@ -23,7 +23,7 @@ class ResourceEventTest extends TestCase
                              return [ 'name' => 'hello' ];
                          });
 
-        $this->resourceStoreApi($resource, [ 'name' => 'ignored' ])
+        $this->resourceCreateApi($resource, [ 'name' => 'ignored' ])
              ->assertCreated();
 
         $this->assertDatabaseHas('users', [ 'name' => 'hello' ]);
@@ -40,7 +40,7 @@ class ResourceEventTest extends TestCase
                              return [ 'success' => true ];
                          });
 
-        $this->resourceStoreApi($resource, [ 'name' => 'ignored' ])
+        $this->resourceCreateApi($resource, [ 'name' => 'ignored' ])
              ->assertCreated()
              ->assertJson([ 'success' => true ]);
 
@@ -61,7 +61,7 @@ class ResourceEventTest extends TestCase
                              return array_merge($data, [ 'appended' => true ]);
                          });
 
-        $this->resourceStoreApi($resource, [ 'name' => 'ignored' ])
+        $this->resourceCreateApi($resource, [ 'name' => 'ignored' ])
              ->assertCreated()
              ->assertJson([ 'success' => true, 'appended' => true ]);
 
@@ -112,7 +112,7 @@ class ResourceEventTest extends TestCase
                              $this->assertEquals($user->getKey(), $model->getKey());
                          });
 
-        $this->resourceDestroyApi($resource, [ $user->id ])
+        $this->resourceDeleteApi($resource, [ $user->id ])
              ->assertNoContent();
 
     }
@@ -128,7 +128,7 @@ class ResourceEventTest extends TestCase
                              $this->assertFalse($model->exists);
                          });
 
-        $this->resourceDestroyApi($resource, [ $user->id ])
+        $this->resourceDeleteApi($resource, [ $user->id ])
              ->assertNoContent();
 
     }

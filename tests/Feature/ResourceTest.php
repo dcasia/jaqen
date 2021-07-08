@@ -41,7 +41,7 @@ class ResourceTest extends TestCase
                 $this->runner = $runner;
             }
 
-            public function model(): Model
+            public function newModel(): Model
             {
                 return new UserModel();
             }
@@ -59,7 +59,7 @@ class ResourceTest extends TestCase
 
         $this->registerResource($resource);
 
-        $this->resourceStoreApi($resource, [ 'name' => 'test' ])
+        $this->resourceCreateApi($resource, [ 'name' => 'test' ])
              ->assertCreated()
              ->assertJson([ 'test' => 123 ]);
     }
@@ -75,7 +75,7 @@ class ResourceTest extends TestCase
                 $this->runner = $runner;
             }
 
-            public function model(): Model
+            public function newModel(): Model
             {
                 return new UserModel();
             }

@@ -7,20 +7,28 @@ namespace DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers;
 use DigitalCreative\Jaqen\Concerns\WithEvents;
 use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Requests\DeleteResourceRequest;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Response;
 use RuntimeException;
+use Throwable;
 
 class DeleteController extends Controller
 {
 
+    /**
+     * @throws AuthorizationException|Throwable
+     */
     public function handle(DeleteResourceRequest $request): Response
     {
 
-        $ids = $request->input('ids');
+        $keys = $request->input('keys');
+
         $resource = $this->resourceManager->resourceForRequest($request);
+        $resource->authorizeTo('delete');
+
         $repository = $resource->repository();
 
-        $items = $repository->findByKeys($ids);
+        $items = $repository->findByKeys($keys);
         $status = collect();
 
         foreach ($items as $model) {
