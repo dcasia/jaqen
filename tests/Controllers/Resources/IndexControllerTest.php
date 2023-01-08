@@ -138,4 +138,10 @@ class IndexControllerTest extends TestCase
                 'lastPage' => 2,
             ]);
     }
+
+    public function test_404_is_returned_if_resource_does_not_exist(): void
+    {
+        $this->resourceIndexApi(UserResource::class)
+            ->assertNotFound();
+    }
 }

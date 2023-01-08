@@ -23,7 +23,7 @@ class ResourceManager
     {
         $this->resources = $this->resources
             ->merge($resources)
-            ->mapWithKeys(fn($resource) => [ $resource::uriKey() => $resource ]);
+            ->mapWithKeys(fn ($resource) => [ $resource::uriKey() => $resource ]);
 
         return $this;
     }
@@ -33,9 +33,9 @@ class ResourceManager
         /**
          * @todo implement authorized to see
          */
-        return $this->resources->map(fn($class, $key) => new $class($request))
-                               ->filter(fn(AbstractResource $resource) => $resource)
-                               ->values();
+        return $this->resources->map(fn ($class, $key) => new $class($request))
+            ->filter(fn (AbstractResource $resource) => $resource)
+            ->values();
     }
 
     public function resourceForRequest(BaseRequest $request): AbstractResource
@@ -51,6 +51,8 @@ class ResourceManager
                 return $resource->bootFields($request);
 
             }
+
+            abort(404);
 
         });
     }
