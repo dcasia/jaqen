@@ -6,10 +6,8 @@ namespace DigitalCreative\Jaqen\Services\Fields\Fields;
 
 class SelectField extends AbstractField
 {
-
     public function options(array $options): self
     {
         return $this->withAdditionalInformation($options);
     }
-
 }

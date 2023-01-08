@@ -16,10 +16,8 @@ use DigitalCreative\Jaqen\Traits\FieldsEvents;
 
 class FieldEventTest extends TestCase
 {
-
     public function test_before_create_event_works(): void
     {
-
         /**
          * @var AbstractResource $resource
          * @var WithEvents $field
@@ -43,12 +41,10 @@ class FieldEventTest extends TestCase
             'name' => 'hello world',
             'email' => 'email@email.com',
         ]);
-
     }
 
     public function test_after_create_event_works(): void
     {
-
         /**
          * @var AbstractResource $resource
          * @var WithEvents $field
@@ -60,12 +56,10 @@ class FieldEventTest extends TestCase
         });
 
         $this->resourceStoreApi($resource);
-
     }
 
     public function test_after_update_event_works(): void
     {
-
         /**
          * @var AbstractResource $resource
          * @var WithEvents $field
@@ -79,12 +73,10 @@ class FieldEventTest extends TestCase
         });
 
         $this->resourceUpdateApi($resource, key: $user->id, data: [ 'name' => 'updated' ]);
-
     }
 
     public function test_before_update_event_works(): void
     {
-
         /**
          * @var AbstractResource $resource
          * @var WithEvents $field
@@ -105,12 +97,10 @@ class FieldEventTest extends TestCase
         $this->resourceUpdateApi($resource, key: $user->id, data: [ 'name' => 'updated' ]);
 
         $this->assertEquals('modified', $user->fresh()->name);
-
     }
 
     public function test_update_events_are_not_triggered_if_field_is_not_updated(): void
     {
-
         /**
          * @var AbstractResource $resource
          * @var WithEvents $field
@@ -130,12 +120,10 @@ class FieldEventTest extends TestCase
         $this->resourceUpdateApi($resource, UserFactory::new()->create()->id);
 
         $this->assertFalse($called);
-
     }
 
     public function test_before_and_after_delete_event_works(): void
     {
-
         /**
          * @var AbstractResource $resource
          * @var WithEvents & AbstractField $field
@@ -162,20 +150,17 @@ class FieldEventTest extends TestCase
 
         $this->assertEquals(5, $afterDelete);
         $this->assertEquals(5, $beforeDelete);
-
     }
 
     private function getPreConfiguredResource(): array
     {
-
-        $field = new class('Name') extends EditableField implements WithEvents {
+        $field = new class('Name') extends EditableField implements WithEvents
+        {
             use EventsTrait;
         };
 
         $resource = $this->makeResource()->addDefaultFields($field);
 
         return [ $resource, $field ];
-
     }
-
 }

@@ -12,13 +12,11 @@ use Illuminate\Support\Collection;
 
 class IndexController extends Controller
 {
-
     private int $perPage;
     private int $currentPage;
 
     public function handle(IndexResourceRequest $request): JsonResponse
     {
-
         $resource = $this->resourceManager->resourceForRequest($request);
 
         $fields = $resource->resolveFields($request);
@@ -31,15 +29,11 @@ class IndexController extends Controller
         $total = $resource->repository()->count($filters);
 
         $resources = $resource->repository()
-                              ->find($filters, $this->currentPage, $this->perPage, $resource->with)
-                              ->map(function (Model $model) use ($request, $fields) {
-
-                                  return [
-                                      'key' => $model->getKey(),
-                                      'fields' => $fields->getResolvedFieldsData($model, $request),
-                                  ];
-
-                              });
+            ->find($filters, $this->currentPage, $this->perPage, $resource->with)
+            ->map(fn (Model $model) => [
+                'key' => $model->getKey(),
+                'fields' => $fields->getResolvedFieldsData($model, $request),
+            ]);
 
         return response()->json([
             'total' => $total,
@@ -60,5 +54,4 @@ class IndexController extends Controller
     {
         return $resources->isNotEmpty() ? $this->firstItem($resources) + $resources->count() - 1 : null;
     }
-
 }

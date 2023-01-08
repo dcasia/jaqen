@@ -4,16 +4,13 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen;
 
-use DigitalCreative\Jaqen\Services\AbstractService;
 use DigitalCreative\Jaqen\Services\Fields\FieldsServiceProvider;
 use DigitalCreative\Jaqen\Services\ResourceManager\ResourceManagerServiceProvider;
 use DigitalCreative\Jaqen\Services\Scaffold\ScaffoldServiceProvider;
-use DigitalCreative\Jaqen\Services\Scaffold\SidebarService;
 use Illuminate\Support\ServiceProvider;
 
 abstract class JaqenServiceProvider extends ServiceProvider
 {
-
     public function boot(): void
     {
         $services = [
@@ -40,5 +37,4 @@ abstract class JaqenServiceProvider extends ServiceProvider
     {
         return [];
     }
-
 }

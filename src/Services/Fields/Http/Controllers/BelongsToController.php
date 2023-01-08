@@ -13,10 +13,8 @@ use Illuminate\Support\Str;
 
 class BelongsToController extends Controller
 {
-
     public function searchBelongsTo(BelongsToResourceRequest $request): JsonResponse
     {
-
         $resource = $this->resourceManager->resourceForRequest($request);
 
         $fieldAttribute = Str::of($request->route('field'))->before('_id')->__toString();
@@ -42,7 +40,5 @@ class BelongsToController extends Controller
         }
 
         abort(404);
-
     }
-
 }

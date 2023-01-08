@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Repository;
 
-use DigitalCreative\Jaqen\Services\ResourceManager\FilterCollection;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\FilterCollection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,16 +13,8 @@ use Illuminate\Support\Collection;
 
 class Repository implements RepositoryInterface
 {
-    /**
-     * @var Model
-     */
     private Model $model;
 
-    /**
-     * ResourceRepository constructor.
-     *
-     * @param Model $model
-     */
     public function __construct(Model $model)
     {
         $this->model = $model;
@@ -83,9 +75,7 @@ class Repository implements RepositoryInterface
         $model->forceFill($data);
 
         if ($model->isDirty()) {
-
             return $model->save();
-
         }
 
         return true;
@@ -105,5 +95,4 @@ class Repository implements RepositoryInterface
     {
         return $this->model->newInstance();
     }
-
 }

@@ -11,17 +11,13 @@ use Illuminate\Support\Facades\Route;
 
 class FieldsServiceProvider extends ServiceProvider
 {
-
     public function boot(): void
     {
         /**
          * Relationship
          */
         Route::group([ 'prefix' => '/jaqen-api/fields', 'as' => 'jaqen.fields.' ], function (Router $router) {
-
             $router->get('/belongs-to/{resource}/{field}', [ BelongsToController::class, 'searchBelongsTo' ])->name('belongs-to');
-
         });
     }
-
 }

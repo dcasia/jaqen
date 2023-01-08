@@ -8,7 +8,6 @@ use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 
 trait ResolveRulesTrait
 {
-
     /**
      * @var null|callable|array
      */
@@ -76,5 +75,4 @@ trait ResolveRulesTrait
 
         });
     }
-
 }

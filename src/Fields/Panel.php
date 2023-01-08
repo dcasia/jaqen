@@ -10,7 +10,6 @@ use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
 
 class Panel extends AbstractField implements BehaveAsPanel
 {
-
     /**
      * @var array|callable
      */
@@ -35,9 +34,7 @@ class Panel extends AbstractField implements BehaveAsPanel
          * @var AbstractField $field
          */
         foreach ($fields = $this->getFields() as $field) {
-
             $field->resolveValueFromArray($data, $request);
-
         }
 
         return $this->setValue($fields, $request);
@@ -47,5 +44,4 @@ class Panel extends AbstractField implements BehaveAsPanel
     {
         return value($this->fields);
     }
-
 }

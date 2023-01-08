@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 trait EventsTrait
 {
-
     private array $beforeCreateCallbacks = [];
     private array $afterCreateCallbacks = [];
 
@@ -123,5 +122,4 @@ trait EventsTrait
             $callback($model);
         }
     }
-
 }

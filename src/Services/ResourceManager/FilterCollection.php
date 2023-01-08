@@ -13,7 +13,6 @@ use Throwable;
 
 class FilterCollection extends Collection
 {
-
     private array $rawEncodedString;
 
     public function __construct(Collection|array $filters = [], ?string $rawEncodedString = null)
@@ -39,14 +38,11 @@ class FilterCollection extends Collection
 
     public static function decode(?string $filters): array
     {
-
         if (is_null($filters)) {
-
             return [];
-
         }
 
-        return once(static function () use ($filters) {
+        return once(function () use ($filters) {
 
             try {
 
@@ -88,7 +84,7 @@ class FilterCollection extends Collection
 
                     } catch (ValidationException $exception) {
 
-                        $exceptions[$filter::uriKey()] = $exception;
+                        $exceptions[ $filter::uriKey() ] = $exception;
 
                     }
 
@@ -102,5 +98,4 @@ class FilterCollection extends Collection
 
         });
     }
-
 }

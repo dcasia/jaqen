@@ -10,12 +10,11 @@ use Illuminate\Testing\TestResponse;
 
 trait ApiTrait
 {
-
     public function resourceIndexApi(
         AbstractResource|string $resource,
         string $filters = null,
         string $fieldsFor = null,
-        int $page = null
+        int $page = null,
     ): TestResponse
     {
         return $this->getJson(
@@ -24,14 +23,14 @@ trait ApiTrait
                 'filters' => $filters,
                 'fieldsFor' => $fieldsFor,
                 'page' => $page,
-            ]))
+            ])),
         );
     }
 
     public function resourceStoreApi(AbstractResource|string $resource, array $data = []): TestResponse
     {
         return $this->postJson(
-            route('jaqen.resource.store', [ 'resource' => $resource::uriKey() ]), $data
+            route('jaqen.resource.store', [ 'resource' => $resource::uriKey() ]), $data,
         );
     }
 
@@ -39,7 +38,7 @@ trait ApiTrait
     {
         return $this->deleteJson(
             route('jaqen.resource.destroy', [ 'resource' => $resource::uriKey() ]),
-            array_filter([ 'ids' => $ids ])
+            array_filter([ 'ids' => $ids ]),
         );
     }
 
@@ -54,7 +53,7 @@ trait ApiTrait
     {
         return $this->patchJson(
             route('jaqen.resource.show', [ 'resource' => $resource::uriKey(), 'key' => $key ]),
-            $data
+            $data,
         );
     }
 
@@ -64,7 +63,7 @@ trait ApiTrait
             route('jaqen.resource.fields', array_filter([
                 'resource' => $resource::uriKey(),
                 'fieldsFor' => $fieldsFor,
-            ]))
+            ])),
         );
     }
 
@@ -73,7 +72,7 @@ trait ApiTrait
         return $this->getJson(
             route('jaqen.resource.filters', array_filter([
                 'resource' => $resource::uriKey(),
-            ]))
+            ])),
         );
     }
 
@@ -88,6 +87,5 @@ trait ApiTrait
             route('jaqen.fields.belongs-to', [ 'resource' => $resource::uriKey(), 'field' => $field->getRelationAttribute() ] + $data),
         );
     }
-
 }
 

@@ -10,13 +10,8 @@ use Illuminate\Support\Collection;
 
 interface RepositoryInterface
 {
-
     /**
      * Whatever is returned from this method is sent back to the client after the creation
-     *
-     * @param array $data
-     *
-     * @return mixed
      */
     public function create(array $data): Model;
 
@@ -31,5 +26,4 @@ interface RepositoryInterface
     public function delete(Model $model): bool;
 
     public function count(FilterCollection $filters): int;
-
 }

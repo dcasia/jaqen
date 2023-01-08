@@ -15,12 +15,11 @@ use Illuminate\Support\Collection;
 
 class FieldsCollection extends Collection
 {
-
     public function resolveData(): array
     {
-        return $this->filter(fn(PotentiallyMissing $field) => !$field->isMissing())
-                    ->pluck('value', 'attribute')
-                    ->toArray();
+        return $this->filter(fn (PotentiallyMissing $field) => !$field->isMissing())
+            ->pluck('value', 'attribute')
+            ->toArray();
     }
 
     public function getFieldsWithEvents(): self
@@ -30,7 +29,7 @@ class FieldsCollection extends Collection
 
     public function hydrate(Model $model, BaseRequest $request): self
     {
-        return $this->map(fn(AbstractField $field) => $field->hydrateFromModel($model, $request));
+        return $this->map(fn (AbstractField $field) => $field->hydrateFromModel($model, $request));
     }
 
     public function getResolvedFieldsData(Model $model, BaseRequest $request): self
@@ -42,15 +41,14 @@ class FieldsCollection extends Collection
 
     public function validate(BaseRequest $request): array
     {
-        $rules = $this->mapWithKeys(fn(AbstractField $field) => [ $field->attribute => $field->resolveRules($request) ])
-                      ->toArray();
+        $rules = $this->mapWithKeys(fn (AbstractField $field) => [ $field->attribute => $field->resolveRules($request) ])
+            ->toArray();
 
         return $request->validate($rules);
     }
 
     public function update(AbstractResource $resource, Model $model, BaseRequest $request): bool
     {
-
         $data = $this->resolveData();
 
         /**
@@ -77,17 +75,15 @@ class FieldsCollection extends Collection
         /**
          * After Update
          */
-        $fieldsWithEvents->each(fn(WithEvents $field) => $field->runAfterUpdate($model));
+        $fieldsWithEvents->each(fn (WithEvents $field) => $field->runAfterUpdate($model));
 
         $resource->runAfterUpdate($model);
 
         return $response;
-
     }
 
     public function store(AbstractResource $resource, BaseRequest $request)
     {
-
         $data = $this->resolveData();
 
         $fieldsWithEvents = $this->getFieldsWithEvents();
@@ -114,10 +110,8 @@ class FieldsCollection extends Collection
         /**
          * After Create
          */
-        $fieldsWithEvents->each(fn(WithEvents $field) => $field->runAfterCreate($data));
+        $fieldsWithEvents->each(fn (WithEvents $field) => $field->runAfterCreate($data));
 
         return $resource->runAfterCreate($data);
-
     }
-
 }

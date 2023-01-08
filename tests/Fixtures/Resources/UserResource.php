@@ -13,9 +13,8 @@ use DigitalCreative\Jaqen\Tests\Fixtures\Filters\GenderFilter;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends AbstractResource
+class UserResource extends AbstractResource
 {
-
     public function model(): Model
     {
         return new UserModel();
@@ -45,5 +44,4 @@ class User extends AbstractResource
             GenderFilter::make(),
         ];
     }
-
 }

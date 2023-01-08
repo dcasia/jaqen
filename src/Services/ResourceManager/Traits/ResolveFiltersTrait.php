@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Services\ResourceManager\Traits;
 
-use DigitalCreative\Jaqen\Services\ResourceManager\AbstractFilter;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Services\ResourceManager\AbstractFilter;
 use Illuminate\Support\Collection;
 
 /**
@@ -13,7 +13,6 @@ use Illuminate\Support\Collection;
  */
 trait ResolveFiltersTrait
 {
-
     private array $filters = [];
 
     public function filters(): array
@@ -34,5 +33,4 @@ trait ResolveFiltersTrait
 
         return $this;
     }
-
 }

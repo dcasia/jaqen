@@ -11,11 +11,10 @@ use Illuminate\Database\Eloquent\Model;
 
 trait ResourceTrait
 {
-
     protected function makeResource(string $model = UserModel::class): AbstractResource
     {
-        $resource = new class($model) extends AbstractResource {
-
+        $resource = new class($model) extends AbstractResource
+        {
             public string $model;
 
             public function __construct(string $model)
@@ -27,25 +26,18 @@ trait ResourceTrait
             {
                 return new $this->model;
             }
-
         };
 
         $this->registerResource($resource);
 
         return $resource;
-
     }
 
     protected function registerResource(AbstractResource|string ...$resources): static
     {
-        /**
-         * @var ResourceManager $resourceManager
-         */
-        $resourceManager = resolve(ResourceManager::class);
-        $resourceManager->setResources($resources);
+        ResourceManager::resolve()->setResources($resources);
 
         return $this;
     }
-
 }
 

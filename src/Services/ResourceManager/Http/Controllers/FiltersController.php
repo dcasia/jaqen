@@ -12,7 +12,7 @@ class FiltersController extends Controller
     public function filters(IndexResourceRequest $request): JsonResponse
     {
         return response()->json(
-            $this->resourceManager->resourceForRequest($request)->resolveFilters()
+            $this->resourceManager->resourceForRequest($request)->resolveFilters(),
         );
     }
 }

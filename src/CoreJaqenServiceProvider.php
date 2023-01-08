@@ -10,28 +10,23 @@ use Illuminate\Support\ServiceProvider;
 
 class CoreJaqenServiceProvider extends ServiceProvider
 {
-
     public function boot(): void
     {
-
         if ($this->app->runningInConsole()) {
             $this->registerPublishing();
         }
 
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'jaqen');
         $this->routes();
-
     }
 
     public function registerPublishing(): void
     {
-
         $this->publishes([
             __DIR__ . '/Console/stubs/JaqenServiceProvider.stub' => app_path('Providers/JaqenServiceProvider.php'),
         ], 'jaqen-provider');
 
         $this->publishes([ __DIR__ . '/../config/config.php' => config_path('jaqen-ui.php') ], 'config');
-
     }
 
     protected function routes(): void
@@ -44,5 +39,4 @@ class CoreJaqenServiceProvider extends ServiceProvider
              ->get('/{view?}', [ MainController::class, 'index' ])
              ->where('view', '.*');
     }
-
 }

@@ -29,7 +29,7 @@ trait ResolveFieldsTrait
 
     public function fieldsFor(string $name, callable $callable): self
     {
-        $this->fields[Str::camel($name)] = $callable;
+        $this->fields[ Str::camel($name) ] = $callable;
 
         return $this;
     }
@@ -57,11 +57,6 @@ trait ResolveFieldsTrait
 
     /**
      * Resolve fields and remove every field that is not necessary for this given request
-     *
-     * @param BaseRequest $request
-     * @param string|null $for
-     *
-     * @return FieldsCollection
      */
     public function resolveFields(BaseRequest $request, ?string $for = null): FieldsCollection
     {
@@ -77,7 +72,7 @@ trait ResolveFieldsTrait
              */
             if (array_key_exists($for, $this->fields)) {
 
-                $value = value($this->fields[$for]);
+                $value = value($this->fields[ $for ]);
 
                 if (is_string($value) && class_exists($value)) {
 
@@ -143,15 +138,15 @@ trait ResolveFieldsTrait
                 })
                 ->when($only, function (FieldsCollection $fields, string $only) {
                     return $fields->filter(
-                        fn(AbstractField $field) => $this->stringContains($only, $field->attribute)
+                        fn (AbstractField $field) => $this->stringContains($only, $field->attribute),
                     );
                 })
                 ->when($except, function (FieldsCollection $fields, string $except) {
                     return $fields->filter(
-                        fn(AbstractField $field) => !$this->stringContains($except, $field->attribute)
+                        fn (AbstractField $field) => !$this->stringContains($except, $field->attribute),
                     );
                 })
-                ->each(fn(AbstractField $field) => $field->boot($this, $request))
+                ->each(fn (AbstractField $field) => $field->boot($this, $request))
                 ->values();
 
         });
@@ -160,9 +155,9 @@ trait ResolveFieldsTrait
     private function stringContains(string $items, string $attribute): bool
     {
         return Str::of($items)
-                  ->explode(',')
-                  ->map(fn(string $item) => trim($item))
-                  ->contains($attribute);
+            ->explode(',')
+            ->map(fn (string $item) => trim($item))
+            ->contains($attribute);
     }
 
     public function resolveFieldsUsingModel(Model $model, BaseRequest $request): FieldsCollection
@@ -172,25 +167,22 @@ trait ResolveFieldsTrait
 
     public function filterNonUpdatableFields(FieldsCollection $fields): FieldsCollection
     {
-        return $fields->filter(fn(AbstractField $field) => $field->isReadOnly() === false);
+        return $fields->filter(fn (AbstractField $field) => $field->isReadOnly() === false);
     }
 
     private function validateFields(FieldsCollection $fields, BaseRequest $request): array
     {
-
         $rules = $fields
-            ->mapWithKeys(fn(AbstractField $field) => [
+            ->mapWithKeys(fn (AbstractField $field) => [
                 $field->attribute => $field->resolveRules($request),
             ])
             ->toArray();
 
         return $request->validate($rules);
-
     }
 
     public function getFieldsDataFromRequest(): FieldsData
     {
-
         $request = $this->getRequest();
 
         $fields = $this->resolveFields($request);
@@ -198,11 +190,10 @@ trait ResolveFieldsTrait
         $validated = $this->validateFields($fields, $request);
 
         $data = $this->filterNonUpdatableFields($fields)
-                     ->map(fn(AbstractField $field) => $field->resolveValueFromArray($validated, $request))
-                     ->pluck('value', 'attribute');
+            ->map(fn (AbstractField $field) => $field->resolveValueFromArray($validated, $request))
+            ->pluck('value', 'attribute');
 
         return new FieldsData($data);
-
     }
 
     private function getRequest(): BaseRequest
@@ -212,7 +203,7 @@ trait ResolveFieldsTrait
 
     public function addDefaultFields(AbstractField ...$fields): self
     {
-        $this->fields['fields'] = array_merge($this->fields, $fields);
+        $this->fields[ 'fields' ] = array_merge($this->fields, $fields);
 
         return $this;
     }
@@ -220,17 +211,17 @@ trait ResolveFieldsTrait
     public function findFieldByAttribute(BaseRequest $request, string $attribute): ?AbstractField
     {
         return $this->resolveFields($request)
-                    ->first(function (AbstractField $field) use ($attribute) {
+            ->first(function (AbstractField $field) use ($attribute) {
 
-                        if ($field instanceof BelongsToField) {
+                if ($field instanceof BelongsToField) {
 
-                            return $field->getRelationAttribute() === $attribute;
+                    return $field->getRelationAttribute() === $attribute;
 
-                        }
+                }
 
-                        return $field->attribute === $attribute;
+                return $field->attribute === $attribute;
 
-                    });
+            });
     }
 
 }

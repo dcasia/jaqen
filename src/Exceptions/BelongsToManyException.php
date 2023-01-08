@@ -9,10 +9,8 @@ use Illuminate\Validation\ValidationException;
 
 class BelongsToManyException extends ValidationException
 {
-
     public static function fromValidationExceptions(array $exceptions): self
     {
-
         $payload = [];
 
         /**
@@ -21,15 +19,12 @@ class BelongsToManyException extends ValidationException
         foreach ($exceptions as $filterUriKey => $types) {
 
             foreach ($types as $type => $exception) {
-
-                $payload[$filterUriKey][$type] = [ $type => $exception->validator->errors()->messages() ];
-
+                $payload[ $filterUriKey ][ $type ] = [ $type => $exception->validator->errors()->messages() ];
             }
 
         }
 
         return self::withMessages($payload);
-
     }
 
     public function errors(): array
@@ -37,13 +32,9 @@ class BelongsToManyException extends ValidationException
         $errors = [];
 
         foreach ($this->validator->errors()->messages() as $filterUriKey => $error) {
-
-            $errors[$filterUriKey] = Arr::collapse($error);
-
+            $errors[ $filterUriKey ] = Arr::collapse($error);
         }
 
         return $errors;
-
     }
-
 }

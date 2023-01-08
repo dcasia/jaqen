@@ -8,7 +8,6 @@ use DigitalCreative\Jaqen\Services\Fields\Fields\AbstractField;
 
 abstract class Relationship extends AbstractField
 {
-
     protected ?string $relatedResource = null;
     protected ?string $relatedFieldsFor = null;
 
@@ -29,5 +28,4 @@ abstract class Relationship extends AbstractField
 
         return $this;
     }
-
 }

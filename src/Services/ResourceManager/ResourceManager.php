@@ -5,10 +5,12 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Services\ResourceManager;
 
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
+use DigitalCreative\Jaqen\Traits\ResolvableTrait;
 use Illuminate\Support\Collection;
 
 class ResourceManager
 {
+    use ResolvableTrait;
 
     private Collection $resources;
 
@@ -43,9 +45,7 @@ class ResourceManager
             if ($resource = $this->resources->get($request->route('resource'))) {
 
                 if (!$resource instanceof AbstractResource) {
-
                     $resource = new $resource();
-
                 }
 
                 return $resource->bootFields($request);
@@ -54,5 +54,4 @@ class ResourceManager
 
         });
     }
-
 }

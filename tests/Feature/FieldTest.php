@@ -15,101 +15,87 @@ use Illuminate\Validation\ValidationException;
 
 class FieldTest extends TestCase
 {
-
     public function test_field_validation_on_create_works(): void
     {
-
         $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
         $resource = $this->makeResource()
-                         ->addDefaultFields(
-                             EditableField::make('Name')->rulesForCreate('required')
-                         );
+            ->addDefaultFields(
+                EditableField::make('Name')->rulesForCreate('required'),
+            );
 
         $this->resourceStoreApi($resource, [ 'name' => null ])
-             ->assertCreated();
-
+            ->assertCreated();
     }
 
     public function test_field_validation_on_update_works(): void
     {
-
         $user = UserFactory::new()->create();
 
         $resource = $this->makeResource()
-                         ->addDefaultFields(
-                             EditableField::make('name')->rulesForUpdate('required')
-                         );
+            ->addDefaultFields(
+                EditableField::make('name')->rulesForUpdate('required'),
+            );
 
         $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
         $this->resourceUpdateApi($resource, key: $user->id, data: [ 'name' => null ]);
-
     }
 
     public function test_fields_are_validate_even_if_they_are_not_sent_on_the_request(): void
     {
-
         $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
         $resource = $this->makeResource()
-                         ->addDefaultFields(
-                             EditableField::make('Name')->rulesForCreate('required')
-                         );
+            ->addDefaultFields(
+                EditableField::make('Name')->rulesForCreate('required'),
+            );
 
         $this->resourceStoreApi($resource);
-
     }
 
     public function test_rules_for_update_works_when_value_is_not_sent(): void
     {
-
         $user = UserFactory::new()->create();
 
         $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
         $resource = $this->makeResource()
-                         ->addDefaultFields(
-                             EditableField::make('Name')->rulesForUpdate('required'),
-                             EditableField::make('email')->rulesForUpdate('required')
-                         );
+            ->addDefaultFields(
+                EditableField::make('Name')->rulesForUpdate('required'),
+                EditableField::make('email')->rulesForUpdate('required'),
+            );
 
         $this->resourceUpdateApi($resource, $user->id, [ 'name' => 'Test' ]);
-
     }
 
     public function test_custom_fields_name_gets_resolved_correctly(): void
     {
-
         $resource = $this->makeResource()
-                         ->fieldsFor('index-listing', function () {
-                             return [
-                                 EditableField::make('Name'),
-                             ];
-                         });
+            ->fieldsFor('index-listing', fn () => [
+                EditableField::make('Name'),
+            ]);
 
         $this->resourceFieldsApi($resource, fieldsFor: 'index-listing')
-             ->assertJson([
-                 [
-                     'label' => 'Name',
-                     'attribute' => 'name',
-                     'value' => null,
-                     'component' => 'editable-field',
-                     'additionalInformation' => null,
-                 ],
-             ]);
-
+            ->assertJson([
+                [
+                    'label' => 'Name',
+                    'attribute' => 'name',
+                    'value' => null,
+                    'component' => 'editable-field',
+                    'additionalInformation' => null,
+                ],
+            ]);
     }
 
     public function test_fields_is_resolved_from_method_if_exists(): void
     {
-
-        $resource = new class extends AbstractResource {
-
+        $resource = new class extends AbstractResource
+        {
             public function model(): Model
             {
                 return new UserModel();
@@ -121,27 +107,27 @@ class FieldTest extends TestCase
                     EditableField::make('Name'),
                 ];
             }
-
         };
 
         $request = $this->fieldsRequest($resource, [ 'fieldsFor' => 'demo' ]);
         $response = $resource->resolveFields($request)->toArray();
 
-        $this->assertEquals([
-            [
-                'label' => 'Name',
-                'attribute' => 'name',
-                'value' => null,
-                'component' => 'editable-field',
-                'additionalInformation' => null,
+        $this->assertEquals(
+            actual: $response,
+            expected: [
+                [
+                    'label' => 'Name',
+                    'attribute' => 'name',
+                    'value' => null,
+                    'component' => 'editable-field',
+                    'additionalInformation' => null,
+                ],
             ],
-        ], $response);
-
+        );
     }
 
     public function test_field_can_resolve_default_value(): void
     {
-
         $resource = $this->makeResource();
 
         $request = $this->fieldsRequest($resource);
@@ -149,21 +135,19 @@ class FieldTest extends TestCase
         $response = $resource
             ->addDefaultFields(
                 EditableField::make('Name')->default('Demo'),
-                EditableField::make('Email')->default(fn() => 'demo@email.com'),
+                EditableField::make('Email')->default(fn () => 'demo@email.com'),
             )
             ->resolveFields($request)
-            ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
+            ->each(fn (AbstractField $field) => $field->resolveValueFromRequest($request));
 
         $this->assertEquals(
-            [ 'name' => 'Demo', 'email' => 'demo@email.com' ],
-            $response->pluck('value', 'attribute')->toArray()
+            actual: $response->pluck('value', 'attribute')->toArray(),
+            expected: [ 'name' => 'Demo', 'email' => 'demo@email.com' ],
         );
-
     }
 
     public function test_it_returns_only_the_specified_fields(): void
     {
-
         $resource = $this->makeResource();
 
         $request = $this->fieldsRequest($resource, [ 'only' => 'first_name,last_name' ]);
@@ -175,18 +159,16 @@ class FieldTest extends TestCase
                 EditableField::make('Email')->default('demo@email.com'),
             )
             ->resolveFields($request)
-            ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
+            ->each(fn (AbstractField $field) => $field->resolveValueFromRequest($request));
 
         $this->assertEquals(
-            [ 'first_name' => 'Hello', 'last_name' => 'World' ],
-            $response->pluck('value', 'attribute')->toArray()
+            actual: $response->pluck('value', 'attribute')->toArray(),
+            expected: [ 'first_name' => 'Hello', 'last_name' => 'World' ],
         );
-
     }
 
     public function test_only_fields_remove_empty_spaces_correctly(): void
     {
-
         $resource = $this->makeResource();
 
         /**
@@ -201,18 +183,16 @@ class FieldTest extends TestCase
                 EditableField::make('Email')->default('demo@email.com'),
             )
             ->resolveFields($request)
-            ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
+            ->each(fn (AbstractField $field) => $field->resolveValueFromRequest($request));
 
         $this->assertEquals(
-            [ 'first_name' => 'Hello', 'email' => 'demo@email.com' ],
-            $response->pluck('value', 'attribute')->toArray()
+            actual: $response->pluck('value', 'attribute')->toArray(),
+            expected: [ 'first_name' => 'Hello', 'email' => 'demo@email.com' ],
         );
-
     }
 
     public function test_expect_fields_filter_works_correctly(): void
     {
-
         $resource = $this->makeResource();
 
         $request = $this->fieldsRequest($resource, [ 'except' => 'first_name , last_name' ]);
@@ -224,13 +204,12 @@ class FieldTest extends TestCase
                 EditableField::make('Email')->default('demo@email.com'),
             )
             ->resolveFields($request)
-            ->each(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
+            ->each(fn (AbstractField $field) => $field->resolveValueFromRequest($request));
 
         $this->assertEquals(
-            [ 'email' => 'demo@email.com' ],
-            $response->pluck('value', 'attribute')->toArray()
+            actual: $response->pluck('value', 'attribute')->toArray(),
+            expected: [ 'email' => 'demo@email.com' ],
         );
-
     }
 
     public function test_field_attribute_is_correctly_casted_to_lowercase(): void
@@ -248,16 +227,12 @@ class FieldTest extends TestCase
 
     public function test_boot_works(): void
     {
-
         $field = $this->spy(EditableField::class);
 
-        $resource = $this->makeResource()
-                         ->addDefaultFields($field);
+        $resource = $this->makeResource()->addDefaultFields($field);
 
         $resource->resolveFields($this->fieldsRequest($resource));
 
         $field->shouldHaveReceived('boot');
-
     }
-
 }

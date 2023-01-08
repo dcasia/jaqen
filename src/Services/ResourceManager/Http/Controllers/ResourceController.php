@@ -10,7 +10,6 @@ use Illuminate\Support\Collection;
 
 class ResourceController extends Controller
 {
-
     /**
      * Return a list of all registered resources
      */
@@ -18,7 +17,6 @@ class ResourceController extends Controller
     {
         return $this->resourceManager
             ->allAuthorizedResources($request)
-            ->map(fn(AbstractResource $resource) => $resource->getDescriptor());
+            ->map(fn (AbstractResource $resource) => $resource->getDescriptor());
     }
-
 }

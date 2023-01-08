@@ -19,7 +19,6 @@ use RuntimeException;
 
 class BelongsToManyField extends BelongsToField implements WithEvents
 {
-
     use EventsTrait;
 
     /**
@@ -46,7 +45,7 @@ class BelongsToManyField extends BelongsToField implements WithEvents
             [ $models, $pivotAttributes ] = $this->createRelatedModels($resource, $this->request);
 
             $resource->repository()->saveMany(
-                $this->getRelationInstance($model), $models, $pivotAttributes
+                $this->getRelationInstance($model), $models, $pivotAttributes,
             );
 
             $model->setRelation($this->relationAttribute, collect($models));
@@ -85,16 +84,15 @@ class BelongsToManyField extends BelongsToField implements WithEvents
             $pivotAttributes = $this->getPivotAttributeData($pivotFields, $pivotRequest);
 
             $resource->repository()
-                     ->updatePivot($this->getRelationInstance($model), $key, $pivotAttributes);
+                ->updatePivot($this->getRelationInstance($model), $key, $pivotAttributes);
 
         }
-
     }
 
     private function getPivotAttributeData(FieldsCollection $pivotFields, BaseRequest $request): array
     {
-        return $pivotFields->map(fn(AbstractField $field) => $field->resolveValueFromRequest($request))
-                           ->resolveData();
+        return $pivotFields->map(fn (AbstractField $field) => $field->resolveValueFromRequest($request))
+            ->resolveData();
     }
 
     /**
@@ -102,7 +100,6 @@ class BelongsToManyField extends BelongsToField implements WithEvents
      */
     private function createRelatedModels(AbstractResource $resource, BaseRequest $request): array
     {
-
         $models = [];
         $pivotAttributes = [];
 
@@ -129,7 +126,6 @@ class BelongsToManyField extends BelongsToField implements WithEvents
         }
 
         return [ $models, $pivotAttributes ];
-
     }
 
     /**
@@ -137,7 +133,6 @@ class BelongsToManyField extends BelongsToField implements WithEvents
      */
     private function processFields(BaseRequest $request, AbstractResource $resource, array $requestData, FieldsCollection $pivotFields): array
     {
-
         $fieldsData = data_get($requestData, 'fields', []);
         $pivotFieldsData = data_get($requestData, 'pivotFields', []);
 
@@ -149,14 +144,13 @@ class BelongsToManyField extends BelongsToField implements WithEvents
         $this->validateFields([ 'fields' => [ $fields, $fieldsRequest ], 'pivotFields' => [ $pivotFields, $pivotRequest ] ]);
 
         $fields = $resource->filterNonUpdatableFields($fields)
-                           ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($fieldsRequest));
+            ->map(fn (AbstractField $field) => $field->resolveValueFromRequest($fieldsRequest));
 
         return [
             $fields,
             $fieldsRequest,
             $pivotRequest,
         ];
-
     }
 
     /**
@@ -164,7 +158,6 @@ class BelongsToManyField extends BelongsToField implements WithEvents
      */
     private function validateFields(array $fieldsGroup): void
     {
-
         $exceptions = [];
 
         /**
@@ -172,7 +165,7 @@ class BelongsToManyField extends BelongsToField implements WithEvents
          * @var FieldsCollection $fields
          * @var BaseRequest $request
          */
-        foreach ($fieldsGroup as $attributeKey => [$fields, $request]) {
+        foreach ($fieldsGroup as $attributeKey => [ $fields, $request ]) {
 
             try {
 
@@ -180,7 +173,7 @@ class BelongsToManyField extends BelongsToField implements WithEvents
 
             } catch (ValidationException $exception) {
 
-                $exceptions[$attributeKey] = $exception;
+                $exceptions[ $attributeKey ] = $exception;
 
             }
 
@@ -193,7 +186,6 @@ class BelongsToManyField extends BelongsToField implements WithEvents
             ]);
 
         }
-
     }
 
     private function resolvePivotFields(): FieldsCollection
@@ -218,7 +210,7 @@ class BelongsToManyField extends BelongsToField implements WithEvents
 
     public function getRelationInstance(Model $model): BelongsToMany
     {
-        return once(fn() => $model->{$this->relationAttribute}());
+        return once(fn () => $model->{$this->relationAttribute}());
     }
 
     public function getPivotAccessor(Model $model = null): string
@@ -238,26 +230,25 @@ class BelongsToManyField extends BelongsToField implements WithEvents
         $pivotAccessor = $this->getPivotAccessor();
 
         return $pivotFields->getResolvedFieldsData(
-            $model->getRelation($pivotAccessor), $this->request
+            $model->getRelation($pivotAccessor), $this->request,
         );
     }
 
     protected function getRelatedResourcePayload(): array
     {
-
         $payload = [];
 
         if ($relatedResource = $this->resolveRelatedResource()) {
 
-            $payload['relatedResource'] = $relatedResource->getDescriptor();
+            $payload[ 'relatedResource' ] = $relatedResource->getDescriptor();
 
             $fields = $relatedResource->resolveFields($this->request, $this->relatedFieldsFor);
             $pivotFields = $this->resolvePivotFields();
 
             if ($this->request->isSchemaFetching()) {
 
-                $payload['relatedResource']['fields'] = $fields;
-                $payload['relatedResource']['pivotFields'] = $pivotFields;
+                $payload[ 'relatedResource' ][ 'fields' ] = $fields;
+                $payload[ 'relatedResource' ][ 'pivotFields' ] = $pivotFields;
 
                 return $payload;
 
@@ -269,9 +260,7 @@ class BelongsToManyField extends BelongsToField implements WithEvents
             $models = $this->getRelatedModelInstance();
 
             if (!$models instanceof Collection) {
-
                 throw new RuntimeException('Invalid relationship type.');
-
             }
 
             /**
@@ -279,7 +268,7 @@ class BelongsToManyField extends BelongsToField implements WithEvents
              */
             foreach ($models as $model) {
 
-                $payload['relatedResource']['resources'][] = [
+                $payload[ 'relatedResource' ][ 'resources' ][] = [
                     'key' => $model->getKey(),
                     'fields' => $fields->hydrate($model, $this->request)->toArray(),
                     'pivotFields' => $this->resolveRelatedPivotFieldsData($pivotFields, $model),
@@ -290,7 +279,5 @@ class BelongsToManyField extends BelongsToField implements WithEvents
         }
 
         return $payload;
-
     }
-
 }

@@ -4,18 +4,13 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Tests\Factories;
 
-use App\Models\User;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\Phone;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * Class PhoneFactory
- *
- * @method Phone|Collection create($attributes = [], ?Model $parent = null)
- *
- * @package DigitalCreative\Dashboard\Tests\Factories
+ * @method Phone|Collection<int, Phone> create($attributes = [], ?Model $parent = null)
  */
 class PhoneFactory extends Factory
 {

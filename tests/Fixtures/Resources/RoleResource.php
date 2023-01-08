@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class RoleResource extends AbstractResource
 {
-
     public function model(): Model
     {
         return new RoleModel();
@@ -30,5 +29,4 @@ class RoleResource extends AbstractResource
             EditableField::make('Name')->rules('required'),
         ];
     }
-
 }

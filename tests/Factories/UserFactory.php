@@ -10,15 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * Class UserFactory
- *
- * @method User|Collection create($attributes = [], ?Model $parent = null)
- *
- * @package DigitalCreative\Dashboard\Tests\Factories
+ * @method User|Collection<int, User> create($attributes = [], ?Model $parent = null)
  */
 class UserFactory extends Factory
 {
-
     protected $model = User::class;
 
     public function definition(): array
@@ -33,9 +28,8 @@ class UserFactory extends Factory
 
     public function withPhone(): self
     {
-        return $this->afterCreating(function(User $user) {
+        return $this->afterCreating(function (User $user) {
             return PhoneFactory::new()->create([ 'user_id' => $user->id ]);
         });
     }
-
 }

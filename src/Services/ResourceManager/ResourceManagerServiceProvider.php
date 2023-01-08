@@ -5,13 +5,13 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Services\ResourceManager;
 
 use Carbon\Laravel\ServiceProvider;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\ResourceController;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\FiltersController;
-use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\FieldsController;
 use DigitalCreative\Jaqen\Jaqen;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\DeleteController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\DetailController;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\FieldsController;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\FiltersController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\IndexController;
+use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\ResourceController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\StoreController;
 use DigitalCreative\Jaqen\Services\ResourceManager\Http\Controllers\UpdateController;
 use Illuminate\Contracts\Support\DeferrableProvider;
@@ -20,14 +20,12 @@ use Illuminate\Support\Facades\Route;
 
 class ResourceManagerServiceProvider extends ServiceProvider implements DeferrableProvider
 {
-
     public function boot(): void
     {
-
         $this->app->singleton(ResourceManager::class, function () {
 
             return (new ResourceManager())->setResources(
-                Jaqen::getInstance()->invokeProviderMethod('resources')
+                Jaqen::getInstance()->invokeProviderMethod('resources'),
             );
 
         });
@@ -54,5 +52,4 @@ class ResourceManagerServiceProvider extends ServiceProvider implements Deferrab
             ResourceManager::class,
         ];
     }
-
 }

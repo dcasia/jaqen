@@ -5,12 +5,12 @@
     "license": "MIT",
     "require": {
         "php": ">=8.0",
-        "spatie/once": "^3.0.0",
+        "spatie/once": "^3.1.0",
         "ext-json": "*"
     },
     "require-dev": {
-        "orchestra/testbench": "^v6.18.0",
-        "phpunit/phpunit": "^9.5.4"
+        "orchestra/testbench": "^v7.18.0",
+        "phpunit/phpunit": "^9.5.27"
     },
     "autoload": {
         "psr-4": {

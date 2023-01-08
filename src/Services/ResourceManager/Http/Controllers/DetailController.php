@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 
 class DetailController extends Controller
 {
-
     public function handle(DetailResourceRequest $request): JsonResponse
     {
         $resource = $this->resourceManager->resourceForRequest($request);
@@ -21,5 +20,4 @@ class DetailController extends Controller
             'fields' => $resource->resolveFieldsUsingModel($model, $request),
         ]);
     }
-
 }

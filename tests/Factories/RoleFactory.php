@@ -10,11 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * Class RoleFactory
- *
- * @method Role|Collection create($attributes = [], ?Model $parent = null)
- *
- * @package DigitalCreative\Dashboard\Tests\Factories
+ * @method Role|Collection<int, Role> create($attributes = [], ?Model $parent = null)
  */
 class RoleFactory extends Factory
 {

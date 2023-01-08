@@ -11,15 +11,11 @@ class FieldsController extends Controller
 {
     /**
      * Return a list of all available fields for a given resource
-     *
-     * @param FieldsResourceRequest $request
-     *
-     * @return JsonResponse
      */
     public function fields(FieldsResourceRequest $request): JsonResponse
     {
         return response()->json(
-            $this->resourceManager->resourceForRequest($request)->resolveFields($request)
+            $this->resourceManager->resourceForRequest($request)->resolveFields($request),
         );
     }
 }

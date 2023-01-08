@@ -6,7 +6,6 @@ namespace DigitalCreative\Jaqen;
 
 class Jaqen
 {
-
     private JaqenServiceProvider $provider;
 
     public function __construct(JaqenServiceProvider $provider)
@@ -27,5 +26,4 @@ class Jaqen
     {
         return app(__CLASS__);
     }
-
 }

@@ -11,10 +11,8 @@ use Illuminate\Support\Collection;
 
 class StoreController extends Controller
 {
-
     public function handle(StoreResourceRequest $request): JsonResponse
     {
-
         $resource = $this->resourceManager->resourceForRequest($request);
 
         /**
@@ -31,10 +29,8 @@ class StoreController extends Controller
          * Return an array of functions to be called after the model has been persisted to the database
          */
         $fields = $resource->filterNonUpdatableFields($fields)
-                           ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($request));
+            ->map(fn (AbstractField $field) => $field->resolveValueFromRequest($request));
 
         return response()->json($fields->store($resource, $request), 201);
-
     }
-
 }

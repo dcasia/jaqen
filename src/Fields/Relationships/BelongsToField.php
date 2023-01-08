@@ -15,7 +15,6 @@ use RuntimeException;
 
 class BelongsToField extends Relationship
 {
-
     protected ?Model $model = null;
     protected BaseRequest $request;
     protected ?string $relationAttribute;
@@ -202,5 +201,4 @@ class BelongsToField extends Relationship
     {
         return array_merge(parent::jsonSerialize(), $this->getSettings());
     }
-
 }

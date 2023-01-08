@@ -5,12 +5,12 @@ declare(strict_types = 1);
 namespace DigitalCreative\Jaqen\Tests\Controllers\Resources;
 
 use DigitalCreative\Jaqen\Tests\Factories\UserFactory;
-use DigitalCreative\Jaqen\Tests\Fixtures\Resources\User as UserResource;
+use DigitalCreative\Jaqen\Tests\Fixtures\Models\User;
+use DigitalCreative\Jaqen\Tests\Fixtures\Resources\UserResource;
 use DigitalCreative\Jaqen\Tests\TestCase;
 
 class DeleteControllerTest extends TestCase
 {
-
     public function test_resource_delete(): void
     {
         $data = [
@@ -22,9 +22,9 @@ class DeleteControllerTest extends TestCase
 
         $this->registerResource(UserResource::class);
         $this->resourceDestroyApi(UserResource::class, ids: [ $user->id ])
-             ->assertNoContent();
+            ->assertNoContent();
 
-        $this->assertDatabaseMissing('users', $data);
+        $this->assertDatabaseMissing(User::class, $data);
     }
 
     public function test_deleting_multiple_items_works(): void
@@ -35,9 +35,8 @@ class DeleteControllerTest extends TestCase
 
         $this->registerResource(UserResource::class);
         $this->resourceDestroyApi(UserResource::class, ids: $users->pluck('id')->toArray())
-             ->assertNoContent();
+            ->assertNoContent();
 
-        $this->assertDatabaseCount('users', 1);
+        $this->assertDatabaseCount(User::class, 1);
     }
-
 }

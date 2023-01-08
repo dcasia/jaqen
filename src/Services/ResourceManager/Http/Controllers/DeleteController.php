@@ -12,10 +12,8 @@ use RuntimeException;
 
 class DeleteController extends Controller
 {
-
     public function handle(DeleteResourceRequest $request): Response
     {
-
         $ids = $request->input('ids');
         $resource = $this->resourceManager->resourceForRequest($request);
         $repository = $resource->repository();
@@ -26,27 +24,23 @@ class DeleteController extends Controller
         foreach ($items as $model) {
 
             $fields = $resource->resolveFields($request)
-                               ->whereInstanceOf(WithEvents::class)
-                               ->map(fn(AbstractField $field) => $field->hydrateFromModel($model, $request));
+                ->whereInstanceOf(WithEvents::class)
+                ->map(fn (AbstractField $field) => $field->hydrateFromModel($model, $request));
 
-            $fields->each(fn(WithEvents $field) => $field->runBeforeDelete($model));
+            $fields->each(fn (WithEvents $field) => $field->runBeforeDelete($model));
             $resource->runBeforeDelete($model);
 
             $status->push($repository->delete($model));
 
-            $fields->each(fn(WithEvents $field) => $field->runAfterDelete($model));
+            $fields->each(fn (WithEvents $field) => $field->runAfterDelete($model));
             $resource->runAfterDelete($model);
 
         }
 
         if ($status->filter()->count() !== $items->count()) {
-
             throw new RuntimeException('Failed to delete resources.');
-
         }
 
         return response()->noContent();
-
     }
-
 }

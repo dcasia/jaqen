@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Services\Scaffold;
 
-use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Traits\AuthorizableTrait;
 use DigitalCreative\Jaqen\Traits\MakeableTrait;
 
@@ -26,28 +25,28 @@ class ResourceLink implements SidebarInterface
         $this->resource = $resource;
     }
 
-    public function icon(string $icon): self
+    public function icon(string $icon): static
     {
         $this->icon = $icon;
 
         return $this;
     }
 
-    public function fixed(bool $fixed = true): self
+    public function fixed(bool $fixed = true): static
     {
         $this->fixed = $fixed;
 
         return $this;
     }
 
-    public function topLevel()
+    public function topLevel(): static
     {
         $this->topLevel = true;
 
         return $this;
     }
 
-    public function addSubmenu(string $header, array $entries): self
+    public function addSubmenu(string $header, array $entries): static
     {
         $this->entries[] = [
             'label' => $header, 'items' => $entries,

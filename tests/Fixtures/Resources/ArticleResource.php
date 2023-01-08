@@ -11,9 +11,8 @@ use DigitalCreative\Jaqen\Services\ResourceManager\AbstractResource;
 use DigitalCreative\Jaqen\Tests\Fixtures\Models\Article as ArticleModel;
 use Illuminate\Database\Eloquent\Model;
 
-class Article extends AbstractResource
+class ArticleResource extends AbstractResource
 {
-
     public function model(): Model
     {
         return new ArticleModel();
@@ -25,8 +24,7 @@ class Article extends AbstractResource
             ReadOnlyField::make('id'),
             EditableField::make('Title'),
             EditableField::make('Content'),
-            BelongsToField::make('User', 'user', User::class),
+            BelongsToField::make('User', 'user', UserResource::class),
         ];
     }
-
 }

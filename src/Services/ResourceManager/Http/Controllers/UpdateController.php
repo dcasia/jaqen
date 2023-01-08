@@ -11,10 +11,8 @@ use Illuminate\Http\JsonResponse;
 
 class UpdateController extends Controller
 {
-
     public function handle(UpdateResourceRequest $request): JsonResponse
     {
-
         $resource = $this->resourceManager->resourceForRequest($request);
 
         /**
@@ -42,7 +40,5 @@ class UpdateController extends Controller
             });
 
         return response()->json($fields->update($resource, $model, $request));
-
     }
-
 }

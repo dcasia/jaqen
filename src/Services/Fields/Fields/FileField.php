@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Storage;
 
 class FileField extends AbstractField implements WithEvents
 {
-
     use EventsTrait;
 
     private string $disk = 'public';
@@ -84,5 +83,4 @@ class FileField extends AbstractField implements WithEvents
             'value' => Storage::disk($this->disk)->url($this->value),
         ]);
     }
-
 }

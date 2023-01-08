@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ResourceWithRequiredFilters extends AbstractResource
 {
-
     public function model(): Model
     {
         return new UserModel();
@@ -28,8 +27,7 @@ class ResourceWithRequiredFilters extends AbstractResource
     public function filters(): array
     {
         return [
-            new FilterWithRequiredFields(),
+            FilterWithRequiredFields::make(),
         ];
     }
-
 }

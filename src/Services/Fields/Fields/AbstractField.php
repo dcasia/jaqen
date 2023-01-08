@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace DigitalCreative\Jaqen\Services\Fields\Fields;
 
+use Closure;
 use DigitalCreative\Jaqen\Http\Requests\BaseRequest;
 use DigitalCreative\Jaqen\Services\Fields\Traits\ResolveRulesTrait;
 use DigitalCreative\Jaqen\Services\ResourceManager\AbstractFilter;
@@ -17,7 +18,6 @@ use JsonSerializable;
 
 abstract class AbstractField implements JsonSerializable, Arrayable, PotentiallyMissing
 {
-
     use ResolveRulesTrait;
     use MakeableTrait;
     use ResolveValueTrait;
@@ -29,10 +29,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable, Potentially
 
     protected AbstractResource $parentResource;
 
-    /**
-     * @var callable|mixed
-     */
-    private $readOnly = false;
+    private Closure|bool $readOnly = false;
 
     public function __construct(string $label, string $attribute = null)
     {
@@ -61,12 +58,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable, Potentially
         return $this;
     }
 
-    /**
-     * @param bool|callable $state
-     *
-     * @return $this
-     */
-    public function readOnly($state = true): self
+    public function readOnly(callable|bool $state = true): self
     {
         $this->readOnly = $state;
 
@@ -96,7 +88,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable, Potentially
 
     protected function resolveAdditionalInformation(): ?array
     {
-        $response = collect($this->additionalInformation)->flatMap(fn($value) => value($value));
+        $response = collect($this->additionalInformation)->flatMap(fn ($value) => value($value));
 
         if ($response->isEmpty()) {
             return null;
@@ -105,12 +97,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable, Potentially
         return $response->toArray();
     }
 
-    /**
-     * @param array|callable $options
-     *
-     * @return $this
-     */
-    public function withAdditionalInformation($options): self
+    public function withAdditionalInformation(callable|array $options): self
     {
         $this->additionalInformation[] = $options;
 
@@ -132,7 +119,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable, Potentially
         return $this->jsonSerialize();
     }
 
-    public function withData($data): self
+    public function withData(array $data): self
     {
         $this->data[] = $data;
 
@@ -141,7 +128,7 @@ abstract class AbstractField implements JsonSerializable, Arrayable, Potentially
 
     private function resolveData(): array
     {
-        return collect($this->data)->flatMap(fn($value) => value($value))->toArray();
+        return collect($this->data)->flatMap(fn ($value) => value($value))->toArray();
     }
 
     public function jsonSerialize(): array
@@ -154,5 +141,4 @@ abstract class AbstractField implements JsonSerializable, Arrayable, Potentially
             'additionalInformation' => $this->resolveAdditionalInformation(),
         ], $this->resolveData());
     }
-
 }

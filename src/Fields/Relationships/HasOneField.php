@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class HasOneField extends BelongsToField implements WithEvents
 {
-
     use EventsTrait;
 
     public function __construct(string $label, string $relation = null, string $relatedResource = null)
@@ -27,7 +26,7 @@ class HasOneField extends BelongsToField implements WithEvents
             $foreignerKey = $this->getRelationForeignKeyName($model);
 
             $requestData = array_merge(
-                $this->request->input($this->relationAttribute), [ $foreignerKey => $model->getKey() ]
+                $this->request->input($this->relationAttribute), [ $foreignerKey => $model->getKey() ],
             );
 
             $cloneRequest = $this->request::createFromBase($this->request)->replace($requestData);
@@ -36,11 +35,11 @@ class HasOneField extends BelongsToField implements WithEvents
             $fields->validate($cloneRequest);
 
             $fields = $resource->filterNonUpdatableFields($fields)
-                               ->push(new EditableField('__injected__', $foreignerKey))
-                               ->map(fn(AbstractField $field) => $field->resolveValueFromRequest($cloneRequest));
+                ->push(new EditableField('__injected__', $foreignerKey))
+                ->map(fn (AbstractField $field) => $field->resolveValueFromRequest($cloneRequest));
 
             $model->setRelation(
-                $this->relationAttribute, $fields->store($resource, $cloneRequest)
+                $this->relationAttribute, $fields->store($resource, $cloneRequest),
             );
 
         });
@@ -68,18 +67,14 @@ class HasOneField extends BelongsToField implements WithEvents
         $relation = $model->getRelation($this->getRelationAttribute());
 
         if ($relation instanceof Model) {
-
             return $this->setValue($relation->getKey(), $request);
-
         }
 
         return $this;
-
     }
 
     public function getRelationAttributeKey(): string
     {
         return $this->relationAttribute;
     }
-
 }
